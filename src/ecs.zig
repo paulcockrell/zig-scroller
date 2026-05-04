@@ -19,6 +19,8 @@ pub const World = struct {
     screen_width: i32 = 0,
     screen_height: i32 = 0,
 
+    scroll_speed: i32 = 100,
+
     allocator: std.mem.Allocator,
     next_entity: Entity = 0,
 
@@ -159,7 +161,7 @@ pub const Query = struct {
     pub fn obstacles(
         world: *World,
         ctx: anytype,
-        func: fn (@TypeOf(ctx), Entity, *Position, *Velocity, *World) void,
+        func: fn (ctx: @TypeOf(ctx), ent: Entity, pos: *Position, vel: *Velocity, world: *World) void,
     ) void {
         var it = world.obstacles.iterator();
 
