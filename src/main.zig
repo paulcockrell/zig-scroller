@@ -28,13 +28,27 @@ fn renderSystem(world: *ecs.World) void {
     var it = world.positions.iterator();
 
     while (it.next()) |entry| {
-        const e = entry.key_ptr.*;
+        const ent = entry.key_ptr.*;
         const pos = entry.value_ptr.*;
 
-        if (world.players.contains(e)) {
-            raylib.drawRectangle(@intFromFloat(pos.x), @intFromFloat(pos.y), 20, 20, raylib.Color.green);
-        } else if (world.obstacles.contains(e)) {
-            raylib.drawRectangle(@intFromFloat(pos.x), @intFromFloat(pos.y), 20, 60, raylib.Color.red);
+        if (world.players.contains(ent)) {
+            raylib.drawRectangle(
+                @intFromFloat(pos.x),
+                @intFromFloat(pos.y),
+                20,
+                20,
+                raylib.Color.green,
+            );
+        }
+
+        if (world.obstacles.contains(ent)) {
+            raylib.drawRectangle(
+                @intFromFloat(pos.x),
+                @intFromFloat(pos.y),
+                20,
+                60,
+                raylib.Color.red,
+            );
         }
     }
 }
@@ -53,6 +67,7 @@ pub fn main(init: std.process.Init) !void {
     defer world.deinit();
 
     _ = try ecs.spawnPlayer(&world);
+    _ = try ecs.spawnObstacle(&world);
 
     while (!raylib.windowShouldClose()) {
         const dt = raylib.getFrameTime();

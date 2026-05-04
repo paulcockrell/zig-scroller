@@ -51,25 +51,95 @@ pub const World = struct {
 };
 
 pub fn spawnPlayer(world: *World) !Entity {
-    const e = world.createEntity();
+    const ent = world.createEntity();
 
-    try world.positions.put(e, .{ .x = 100, .y = 200 });
-    try world.velocities.put(e, .{ .dx = 0, .dy = 0 });
-    try world.players.put(e, {});
+    try world.positions.put(
+        ent,
+        .{ .x = 100, .y = 200 },
+    );
+    try world.velocities.put(
+        ent,
+        .{ .dx = 0, .dy = 0 },
+    );
+    try world.players.put(
+        ent,
+        {},
+    );
 
-    return e;
+    return ent;
+}
+
+pub fn spawnObstacle(world: *World) !Entity {
+    const ent = world.createEntity();
+
+    try world.positions.put(
+        ent,
+        .{ .x = 500, .y = 200 },
+    );
+    try world.velocities.put(
+        ent,
+        .{ .dx = 0, .dy = 0 },
+    );
+    try world.obstacles.put(
+        ent,
+        {},
+    );
+
+    return ent;
 }
 
 pub fn movementSystem(world: *World, dt: f32) void {
-    var it = world.positions.iterator();
+    Query.player(world, dt, struct {
+        fn run(delta: f32, e: Entity, position: *Position, velocity: *Velocity) void {
+            _ = e;
+            position.x += velocity.dx * delta;
+            position.y += velocity.dy * delta;
+        }
+    }.run);
+}
 
-    while (it.next()) |entry| {
-        const e = entry.key_ptr.*;
-        const pos = entry.value_ptr;
+pub const Query = struct {
+    pub fn player(
+        world: *World,
+        ctx: anytype,
+        func: fn (ctx: @TypeOf(ctx), ent: Entity, pos: *Position, vel: *Velocity) void,
+    ) void {
+        var it = world.players.iterator();
 
-        if (world.velocities.get(e)) |vel| {
-            pos.x += vel.dx * dt;
-            pos.y += vel.dy * dt;
+        while (it.next()) |entry| {
+            const ent = entry.key_ptr.*;
+
+            const pos = world.positions.getPtr(ent) orelse continue;
+            const vel = world.velocities.getPtr(ent) orelse continue;
+
+            func(
+                ctx,
+                ent,
+                pos,
+                vel,
+            );
         }
     }
-}
+
+    pub fn obstacle(
+        world: *World,
+        ctx: anytype,
+        func: fn (@TypeOf(ctx), Entity, *Position, *Velocity) void,
+    ) void {
+        var it = world.obstacles.iterator();
+
+        while (it.next()) |entry| {
+            const ent = entry.key_ptr.*;
+
+            const pos = world.positions.getPtr(ent) orelse continue;
+            const vel = world.velocities.getPtr(ent) orelse continue;
+
+            func(
+                ctx,
+                ent,
+                pos,
+                vel,
+            );
+        }
+    }
+};
