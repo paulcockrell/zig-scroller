@@ -66,7 +66,7 @@ pub fn spawnPlayer(world: *World) !Entity {
     );
     try world.velocities.put(
         ent,
-        .{ .dx = 0, .dy = 0 },
+        .{ .dx = 0.0, .dy = 0.0 },
     );
     try world.players.put(
         ent,
@@ -85,7 +85,7 @@ pub fn spawnObstacle(world: *World) !Entity {
     );
     try world.velocities.put(
         ent,
-        .{ .dx = -2, .dy = 0 },
+        .{ .dx = 150.0, .dy = 0.0 },
     );
     try world.obstacles.put(
         ent,
@@ -93,45 +93,6 @@ pub fn spawnObstacle(world: *World) !Entity {
     );
 
     return ent;
-}
-
-pub fn movementSystem(world: *World, dt: f32) void {
-    Query.players(world, dt, struct {
-        fn run(
-            delta: f32,
-            _: Entity,
-            pos: *Position,
-            vel: *Velocity,
-            wrld: *World,
-        ) void {
-            pos.y += vel.dy * delta;
-
-            if (pos.y < 100.0) {
-                vel.dy = vel.dy * -1;
-            }
-
-            if (pos.y >= @as(f32, @floatFromInt(wrld.screen_height)) / 2.0) {
-                vel.dy = 0;
-                pos.y = @as(f32, @floatFromInt(wrld.screen_height)) / 2.0;
-            }
-        }
-    }.run);
-
-    Query.obstacles(world, dt, struct {
-        fn run(
-            delta: f32,
-            _: Entity,
-            pos: *Position,
-            vel: *Velocity,
-            wrld: *World,
-        ) void {
-            pos.x -= vel.dx * delta;
-
-            if (pos.x < 0) {
-                pos.x = @as(f32, @floatFromInt(wrld.screen_width)) + 100.0;
-            }
-        }
-    }.run);
 }
 
 pub const Query = struct {
