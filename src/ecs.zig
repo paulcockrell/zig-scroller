@@ -16,6 +16,9 @@ pub const Player = struct {};
 pub const Obstacle = struct {};
 
 pub const World = struct {
+    screen_width: i32 = 0,
+    screen_height: i32 = 0,
+
     allocator: std.mem.Allocator,
     next_entity: Entity = 0,
 
@@ -25,8 +28,10 @@ pub const World = struct {
     players: std.AutoHashMap(Entity, void),
     obstacles: std.AutoHashMap(Entity, void),
 
-    pub fn init(allocator: std.mem.Allocator) World {
+    pub fn init(allocator: std.mem.Allocator, screen_width: i32, screen_height: i32) World {
         return .{
+            .screen_width = screen_width,
+            .screen_height = screen_height,
             .allocator = allocator,
             .positions = std.AutoHashMap(Entity, Position).init(allocator),
             .velocities = std.AutoHashMap(Entity, Velocity).init(allocator),
@@ -55,7 +60,7 @@ pub fn spawnPlayer(world: *World) !Entity {
 
     try world.positions.put(
         ent,
-        .{ .x = 100, .y = 200 },
+        .{ .x = 100.0, .y = @as(f32, @floatFromInt(world.screen_height)) / 2.0 },
     );
     try world.velocities.put(
         ent,
@@ -74,11 +79,11 @@ pub fn spawnObstacle(world: *World) !Entity {
 
     try world.positions.put(
         ent,
-        .{ .x = 500, .y = 200 },
+        .{ .x = @as(f32, @floatFromInt(world.screen_width)), .y = @as(f32, @floatFromInt(world.screen_height)) / 2.0 },
     );
     try world.velocities.put(
         ent,
-        .{ .dx = 0, .dy = 0 },
+        .{ .dx = -2, .dy = 0 },
     );
     try world.obstacles.put(
         ent,
@@ -89,20 +94,49 @@ pub fn spawnObstacle(world: *World) !Entity {
 }
 
 pub fn movementSystem(world: *World, dt: f32) void {
-    Query.player(world, dt, struct {
-        fn run(delta: f32, e: Entity, position: *Position, velocity: *Velocity) void {
-            _ = e;
-            position.x += velocity.dx * delta;
-            position.y += velocity.dy * delta;
+    Query.players(world, dt, struct {
+        fn run(
+            delta: f32,
+            _: Entity,
+            pos: *Position,
+            vel: *Velocity,
+            wrld: *World,
+        ) void {
+            pos.y += vel.dy * delta;
+
+            if (pos.y < 100.0) {
+                vel.dy = vel.dy * -1;
+            }
+
+            if (pos.y >= @as(f32, @floatFromInt(wrld.screen_height)) / 2.0) {
+                vel.dy = 0;
+                pos.y = @as(f32, @floatFromInt(wrld.screen_height)) / 2.0;
+            }
+        }
+    }.run);
+
+    Query.obstacles(world, dt, struct {
+        fn run(
+            delta: f32,
+            _: Entity,
+            pos: *Position,
+            vel: *Velocity,
+            wrld: *World,
+        ) void {
+            pos.x -= vel.dx * delta;
+
+            if (pos.x < 0) {
+                pos.x = @as(f32, @floatFromInt(wrld.screen_width)) + 100.0;
+            }
         }
     }.run);
 }
 
 pub const Query = struct {
-    pub fn player(
+    pub fn players(
         world: *World,
         ctx: anytype,
-        func: fn (ctx: @TypeOf(ctx), ent: Entity, pos: *Position, vel: *Velocity) void,
+        func: fn (ctx: @TypeOf(ctx), ent: Entity, pos: *Position, vel: *Velocity, world: *World) void,
     ) void {
         var it = world.players.iterator();
 
@@ -117,14 +151,15 @@ pub const Query = struct {
                 ent,
                 pos,
                 vel,
+                world,
             );
         }
     }
 
-    pub fn obstacle(
+    pub fn obstacles(
         world: *World,
         ctx: anytype,
-        func: fn (@TypeOf(ctx), Entity, *Position, *Velocity) void,
+        func: fn (@TypeOf(ctx), Entity, *Position, *Velocity, *World) void,
     ) void {
         var it = world.obstacles.iterator();
 
@@ -139,6 +174,7 @@ pub const Query = struct {
                 ent,
                 pos,
                 vel,
+                world,
             );
         }
     }
