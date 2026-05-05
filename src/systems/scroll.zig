@@ -9,6 +9,7 @@ fn obstacleScroll(
     _: ecs.Entity,
     pos: *ecs.Position,
     vel: *ecs.Velocity,
+    _: *ecs.Dimension,
     _: *ecs.World,
 ) void {
     pos.x -= vel.dx * delta;

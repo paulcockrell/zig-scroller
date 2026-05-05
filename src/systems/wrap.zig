@@ -13,6 +13,7 @@ fn obstacleWrap(
     _: ecs.Entity,
     pos: *ecs.Position,
     _: *ecs.Velocity,
+    _: *ecs.Dimension,
     wrld: *ecs.World,
 ) void {
     if (pos.x < 0) {

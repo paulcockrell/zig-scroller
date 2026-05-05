@@ -12,13 +12,14 @@ fn playerRenderer(
     _: ecs.Entity,
     pos: *ecs.Position,
     _: *ecs.Velocity,
+    dim: *ecs.Dimension,
     _: *ecs.World,
 ) void {
     raylib.drawRectangle(
         @intFromFloat(pos.x),
         @intFromFloat(pos.y),
-        20,
-        20,
+        @intFromFloat(dim.width),
+        @intFromFloat(dim.height),
         raylib.Color.green,
     );
 }
@@ -28,14 +29,15 @@ fn obstacleRenderer(
     _: ecs.Entity,
     pos: *ecs.Position,
     _: *ecs.Velocity,
+    dim: *ecs.Dimension,
     _: *ecs.World,
 ) void {
     std.debug.print("drawing obstacle {} {}\n", .{ pos.x, pos.y });
     raylib.drawRectangle(
         @intFromFloat(pos.x),
         @intFromFloat(pos.y),
-        20,
-        60,
+        @intFromFloat(dim.width),
+        @intFromFloat(dim.height),
         raylib.Color.red,
     );
 }

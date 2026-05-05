@@ -7,6 +7,7 @@ const input = @import("systems/input.zig");
 const gravity = @import("systems/gravity.zig");
 const movement = @import("systems/movement.zig");
 const render = @import("systems/render.zig");
+const collision = @import("systems/collision.zig");
 
 pub fn main(init: std.process.Init) !void {
     const allocator = init.gpa;
@@ -39,6 +40,7 @@ pub fn main(init: std.process.Init) !void {
         movement.system(&world, delta);
         scroll.system(&world, delta);
         wrap.system(&world, delta);
+        collision.system(&world);
 
         raylib.beginDrawing();
         defer raylib.endDrawing();

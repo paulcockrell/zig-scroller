@@ -12,6 +12,7 @@ fn spaceInput(
     _: ecs.Entity,
     _: *ecs.Position,
     vel: *ecs.Velocity,
+    _: *ecs.Dimension,
     _: *ecs.World,
 ) void {
     vel.dy = -100; //jump force

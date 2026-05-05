@@ -12,6 +12,11 @@ pub const Velocity = struct {
     dy: f32,
 };
 
+pub const Dimension = struct {
+    width: f32,
+    height: f32,
+};
+
 pub const Player = struct {};
 pub const Obstacle = struct {};
 
@@ -26,6 +31,7 @@ pub const World = struct {
 
     positions: std.AutoHashMap(Entity, Position),
     velocities: std.AutoHashMap(Entity, Velocity),
+    dimensions: std.AutoHashMap(Entity, Dimension),
 
     players: std.AutoHashMap(Entity, void),
     obstacles: std.AutoHashMap(Entity, void),
@@ -37,6 +43,7 @@ pub const World = struct {
             .allocator = allocator,
             .positions = std.AutoHashMap(Entity, Position).init(allocator),
             .velocities = std.AutoHashMap(Entity, Velocity).init(allocator),
+            .dimensions = std.AutoHashMap(Entity, Dimension).init(allocator),
             .players = std.AutoHashMap(Entity, void).init(allocator),
             .obstacles = std.AutoHashMap(Entity, void).init(allocator),
         };
@@ -45,6 +52,7 @@ pub const World = struct {
     pub fn deinit(self: *World) void {
         self.positions.deinit();
         self.velocities.deinit();
+        self.dimensions.deinit();
         self.players.deinit();
         self.obstacles.deinit();
     }
@@ -60,6 +68,10 @@ pub const World = struct {
 pub fn spawnPlayer(world: *World) !Entity {
     const ent = world.createEntity();
 
+    try world.players.put(
+        ent,
+        {},
+    );
     try world.positions.put(
         ent,
         .{ .x = 100.0, .y = @as(f32, @floatFromInt(world.screen_height)) / 2.0 },
@@ -68,9 +80,9 @@ pub fn spawnPlayer(world: *World) !Entity {
         ent,
         .{ .dx = 0.0, .dy = 0.0 },
     );
-    try world.players.put(
+    try world.dimensions.put(
         ent,
-        {},
+        .{ .width = 100.0, .height = 100.0 },
     );
 
     return ent;
@@ -79,6 +91,10 @@ pub fn spawnPlayer(world: *World) !Entity {
 pub fn spawnObstacle(world: *World) !Entity {
     const ent = world.createEntity();
 
+    try world.obstacles.put(
+        ent,
+        {},
+    );
     try world.positions.put(
         ent,
         .{ .x = @as(f32, @floatFromInt(world.screen_width)), .y = @as(f32, @floatFromInt(world.screen_height)) / 2.0 },
@@ -87,9 +103,9 @@ pub fn spawnObstacle(world: *World) !Entity {
         ent,
         .{ .dx = 150.0, .dy = 0.0 },
     );
-    try world.obstacles.put(
+    try world.dimensions.put(
         ent,
-        {},
+        .{ .width = 100.0, .height = 100.0 },
     );
 
     return ent;
@@ -99,7 +115,14 @@ pub const Query = struct {
     pub fn players(
         world: *World,
         ctx: anytype,
-        func: fn (ctx: @TypeOf(ctx), ent: Entity, pos: *Position, vel: *Velocity, world: *World) void,
+        func: fn (
+            ctx: @TypeOf(ctx),
+            ent: Entity,
+            pos: *Position,
+            vel: *Velocity,
+            dim: *Dimension,
+            world: *World,
+        ) void,
     ) void {
         var it = world.players.iterator();
 
@@ -108,12 +131,14 @@ pub const Query = struct {
 
             const pos = world.positions.getPtr(ent) orelse continue;
             const vel = world.velocities.getPtr(ent) orelse continue;
+            const dim = world.dimensions.getPtr(ent) orelse continue;
 
             func(
                 ctx,
                 ent,
                 pos,
                 vel,
+                dim,
                 world,
             );
         }
@@ -122,7 +147,14 @@ pub const Query = struct {
     pub fn obstacles(
         world: *World,
         ctx: anytype,
-        func: fn (ctx: @TypeOf(ctx), ent: Entity, pos: *Position, vel: *Velocity, world: *World) void,
+        func: fn (
+            ctx: @TypeOf(ctx),
+            ent: Entity,
+            pos: *Position,
+            vel: *Velocity,
+            dim: *Dimension,
+            world: *World,
+        ) void,
     ) void {
         var it = world.obstacles.iterator();
 
@@ -131,12 +163,14 @@ pub const Query = struct {
 
             const pos = world.positions.getPtr(ent) orelse continue;
             const vel = world.velocities.getPtr(ent) orelse continue;
+            const dim = world.dimensions.getPtr(ent) orelse continue;
 
             func(
                 ctx,
                 ent,
                 pos,
                 vel,
+                dim,
                 world,
             );
         }

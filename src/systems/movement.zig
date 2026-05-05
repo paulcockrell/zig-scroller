@@ -9,6 +9,7 @@ fn playerMovement(
     _: ecs.Entity,
     pos: *ecs.Position,
     vel: *ecs.Velocity,
+    _: *ecs.Dimension,
     wrld: *ecs.World,
 ) void {
     pos.y += vel.dy * dt;
