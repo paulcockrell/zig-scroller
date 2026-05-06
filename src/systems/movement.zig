@@ -10,7 +10,7 @@ fn playerMovement(
     pos: *ecs.Position,
     vel: *ecs.Velocity,
     _: *ecs.Dimension,
-    wrld: *ecs.World,
+    world: *ecs.World,
 ) void {
     pos.y += vel.dy * dt;
 
@@ -18,8 +18,8 @@ fn playerMovement(
         vel.dy = vel.dy * -1;
     }
 
-    if (pos.y >= @as(f32, @floatFromInt(wrld.screen_height)) / 2.0) {
+    if (pos.y >= ecs.groundY(world)) {
+        pos.y = ecs.groundY(world);
         vel.dy = 0;
-        pos.y = @as(f32, @floatFromInt(wrld.screen_height)) / 2.0;
     }
 }
