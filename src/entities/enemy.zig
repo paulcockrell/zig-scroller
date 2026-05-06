@@ -11,7 +11,7 @@ pub fn spawn(world: *ecs.World) !ecs.Entity {
     );
     try world.positions.put(
         ent,
-        .{ .x = @as(f32, @floatFromInt(world.screen_width)), .y = @as(f32, @floatFromInt(world.screen_height)) / 2.0 },
+        .{ .x = @as(f32, @floatFromInt(world.screen_width)), .y = ecs.groundY(world) },
     );
     try world.velocities.put(
         ent,

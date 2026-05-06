@@ -1,5 +1,8 @@
 const raylib = @import("raylib");
 const ecs = @import("../ecs.zig");
+const std = @import("std");
+
+const JUMP_FORCE: f32 = -500.0;
 
 pub fn system(world: *ecs.World) void {
     if (!raylib.isKeyPressed(raylib.KeyboardKey.space)) return;
@@ -10,10 +13,12 @@ pub fn system(world: *ecs.World) void {
 fn spaceInput(
     _: void,
     _: ecs.Entity,
-    _: *ecs.Position,
+    pos: *ecs.Position,
     vel: *ecs.Velocity,
     _: *ecs.Dimension,
-    _: *ecs.World,
+    world: *ecs.World,
 ) void {
-    vel.dy = -100; //jump force
+    if (pos.y < ecs.groundY(world)) return;
+
+    vel.dy = JUMP_FORCE;
 }

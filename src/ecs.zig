@@ -162,3 +162,7 @@ pub const Query = struct {
         }
     }
 };
+
+pub fn groundY(world: *World) f32 {
+    return @as(f32, @floatFromInt(world.screen_height)) / 2.0;
+}

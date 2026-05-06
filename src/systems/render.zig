@@ -62,7 +62,6 @@ fn ringRenderer(
     dim: *ecs.Dimension,
     _: *ecs.World,
 ) void {
-    std.debug.print("drawing ring {} {}\n", .{ pos.x, pos.y });
     raylib.drawRectangle(
         @intFromFloat(pos.x),
         @intFromFloat(pos.y),
