@@ -2,7 +2,7 @@ const std = @import("std");
 const ecs = @import("../ecs.zig");
 
 pub fn system(world: *ecs.World) void {
-    ecs.Query.players(world, {}, checkObstacleCollision);
+    ecs.Query.players(world, {}, checkEntityCollision);
 }
 
 const PlayerCtx = struct {
@@ -12,7 +12,7 @@ const PlayerCtx = struct {
     h: f32,
 };
 
-fn checkObstacleCollision(
+fn checkEntityCollision(
     _: void,
     _: ecs.Entity,
     player_pos: *ecs.Position,
@@ -26,15 +26,16 @@ fn checkObstacleCollision(
         .w = player_dim.width,
         .h = player_dim.height,
     };
-    ecs.Query.obstacles(world, ctx, checkObstacle);
+    ecs.Query.enemies(world, ctx, checkEntity);
+    ecs.Query.rings(world, ctx, checkEntity);
 }
 
-fn checkObstacle(
+fn checkEntity(
     player_ctx: PlayerCtx,
     _: ecs.Entity,
-    obstacle_pos: *ecs.Position,
+    other_pos: *ecs.Position,
     _: *ecs.Velocity,
-    obstacle_dim: *ecs.Dimension,
+    other_dim: *ecs.Dimension,
     _: *ecs.World,
 ) void {
     if (overlap(
@@ -42,10 +43,10 @@ fn checkObstacle(
         player_ctx.y,
         player_ctx.w,
         player_ctx.h,
-        obstacle_pos.x,
-        obstacle_pos.y,
-        obstacle_dim.width,
-        obstacle_dim.height,
+        other_pos.x,
+        other_pos.y,
+        other_dim.width,
+        other_dim.height,
     )) {
         std.debug.print("Collision!\n", .{});
     }

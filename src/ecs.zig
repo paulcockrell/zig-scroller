@@ -17,9 +17,6 @@ pub const Dimension = struct {
     height: f32,
 };
 
-pub const Player = struct {};
-pub const Obstacle = struct {};
-
 pub const World = struct {
     screen_width: i32 = 0,
     screen_height: i32 = 0,
@@ -34,7 +31,8 @@ pub const World = struct {
     dimensions: std.AutoHashMap(Entity, Dimension),
 
     players: std.AutoHashMap(Entity, void),
-    obstacles: std.AutoHashMap(Entity, void),
+    enemies: std.AutoHashMap(Entity, void),
+    rings: std.AutoHashMap(Entity, void),
 
     pub fn init(allocator: std.mem.Allocator, screen_width: i32, screen_height: i32) World {
         return .{
@@ -45,7 +43,8 @@ pub const World = struct {
             .velocities = std.AutoHashMap(Entity, Velocity).init(allocator),
             .dimensions = std.AutoHashMap(Entity, Dimension).init(allocator),
             .players = std.AutoHashMap(Entity, void).init(allocator),
-            .obstacles = std.AutoHashMap(Entity, void).init(allocator),
+            .enemies = std.AutoHashMap(Entity, void).init(allocator),
+            .rings = std.AutoHashMap(Entity, void).init(allocator),
         };
     }
 
@@ -54,7 +53,8 @@ pub const World = struct {
         self.velocities.deinit();
         self.dimensions.deinit();
         self.players.deinit();
-        self.obstacles.deinit();
+        self.enemies.deinit();
+        self.rings.deinit();
     }
 
     pub fn createEntity(self: *World) Entity {
@@ -64,52 +64,6 @@ pub const World = struct {
         return id;
     }
 };
-
-pub fn spawnPlayer(world: *World) !Entity {
-    const ent = world.createEntity();
-
-    try world.players.put(
-        ent,
-        {},
-    );
-    try world.positions.put(
-        ent,
-        .{ .x = 100.0, .y = @as(f32, @floatFromInt(world.screen_height)) / 2.0 },
-    );
-    try world.velocities.put(
-        ent,
-        .{ .dx = 0.0, .dy = 0.0 },
-    );
-    try world.dimensions.put(
-        ent,
-        .{ .width = 100.0, .height = 100.0 },
-    );
-
-    return ent;
-}
-
-pub fn spawnObstacle(world: *World) !Entity {
-    const ent = world.createEntity();
-
-    try world.obstacles.put(
-        ent,
-        {},
-    );
-    try world.positions.put(
-        ent,
-        .{ .x = @as(f32, @floatFromInt(world.screen_width)), .y = @as(f32, @floatFromInt(world.screen_height)) / 2.0 },
-    );
-    try world.velocities.put(
-        ent,
-        .{ .dx = 150.0, .dy = 0.0 },
-    );
-    try world.dimensions.put(
-        ent,
-        .{ .width = 100.0, .height = 100.0 },
-    );
-
-    return ent;
-}
 
 pub const Query = struct {
     pub fn players(
@@ -144,7 +98,7 @@ pub const Query = struct {
         }
     }
 
-    pub fn obstacles(
+    pub fn enemies(
         world: *World,
         ctx: anytype,
         func: fn (
@@ -156,7 +110,39 @@ pub const Query = struct {
             world: *World,
         ) void,
     ) void {
-        var it = world.obstacles.iterator();
+        var it = world.enemies.iterator();
+
+        while (it.next()) |entry| {
+            const ent = entry.key_ptr.*;
+
+            const pos = world.positions.getPtr(ent) orelse continue;
+            const vel = world.velocities.getPtr(ent) orelse continue;
+            const dim = world.dimensions.getPtr(ent) orelse continue;
+
+            func(
+                ctx,
+                ent,
+                pos,
+                vel,
+                dim,
+                world,
+            );
+        }
+    }
+
+    pub fn rings(
+        world: *World,
+        ctx: anytype,
+        func: fn (
+            ctx: @TypeOf(ctx),
+            ent: Entity,
+            pos: *Position,
+            vel: *Velocity,
+            dim: *Dimension,
+            world: *World,
+        ) void,
+    ) void {
+        var it = world.rings.iterator();
 
         while (it.next()) |entry| {
             const ent = entry.key_ptr.*;

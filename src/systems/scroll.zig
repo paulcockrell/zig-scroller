@@ -1,10 +1,19 @@
 const ecs = @import("../ecs.zig");
 
 pub fn system(world: *ecs.World, delta: f32) void {
-    ecs.Query.obstacles(world, delta, obstacleScroll);
+    ecs.Query.enemies(
+        world,
+        delta,
+        entityScroll,
+    );
+    ecs.Query.rings(
+        world,
+        delta,
+        entityScroll,
+    );
 }
 
-fn obstacleScroll(
+fn entityScroll(
     delta: f32,
     _: ecs.Entity,
     pos: *ecs.Position,

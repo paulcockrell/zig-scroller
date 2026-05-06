@@ -3,8 +3,21 @@ const raylib = @import("raylib");
 const ecs = @import("../ecs.zig");
 
 pub fn system(world: *ecs.World) void {
-    ecs.Query.players(world, {}, playerRenderer);
-    ecs.Query.obstacles(world, {}, obstacleRenderer);
+    ecs.Query.players(
+        world,
+        {},
+        playerRenderer,
+    );
+    ecs.Query.enemies(
+        world,
+        {},
+        enemyRenderer,
+    );
+    ecs.Query.rings(
+        world,
+        {},
+        ringRenderer,
+    );
 }
 
 fn playerRenderer(
@@ -24,7 +37,7 @@ fn playerRenderer(
     );
 }
 
-fn obstacleRenderer(
+fn enemyRenderer(
     _: void,
     _: ecs.Entity,
     pos: *ecs.Position,
@@ -32,12 +45,29 @@ fn obstacleRenderer(
     dim: *ecs.Dimension,
     _: *ecs.World,
 ) void {
-    std.debug.print("drawing obstacle {} {}\n", .{ pos.x, pos.y });
     raylib.drawRectangle(
         @intFromFloat(pos.x),
         @intFromFloat(pos.y),
         @intFromFloat(dim.width),
         @intFromFloat(dim.height),
         raylib.Color.red,
+    );
+}
+
+fn ringRenderer(
+    _: void,
+    _: ecs.Entity,
+    pos: *ecs.Position,
+    _: *ecs.Velocity,
+    dim: *ecs.Dimension,
+    _: *ecs.World,
+) void {
+    std.debug.print("drawing ring {} {}\n", .{ pos.x, pos.y });
+    raylib.drawRectangle(
+        @intFromFloat(pos.x),
+        @intFromFloat(pos.y),
+        @intFromFloat(dim.width),
+        @intFromFloat(dim.height),
+        raylib.Color.yellow,
     );
 }

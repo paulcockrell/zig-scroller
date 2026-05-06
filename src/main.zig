@@ -8,6 +8,9 @@ const gravity = @import("systems/gravity.zig");
 const movement = @import("systems/movement.zig");
 const render = @import("systems/render.zig");
 const collision = @import("systems/collision.zig");
+const player = @import("entities/player.zig");
+const enemy = @import("entities/enemy.zig");
+const ring = @import("entities/ring.zig");
 
 pub fn main(init: std.process.Init) !void {
     const allocator = init.gpa;
@@ -29,8 +32,9 @@ pub fn main(init: std.process.Init) !void {
     );
     defer world.deinit();
 
-    _ = try ecs.spawnPlayer(&world);
-    _ = try ecs.spawnObstacle(&world);
+    _ = try player.spawn(&world);
+    _ = try enemy.spawn(&world);
+    _ = try ring.spawn(&world);
 
     while (!raylib.windowShouldClose()) {
         const delta = raylib.getFrameTime();

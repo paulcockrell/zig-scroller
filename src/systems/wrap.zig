@@ -1,14 +1,20 @@
+const std = @import("std");
 const ecs = @import("../ecs.zig");
 
 pub fn system(world: *ecs.World, delta: f32) void {
-    ecs.Query.obstacles(
+    ecs.Query.enemies(
         world,
         delta,
-        obstacleWrap,
+        entityWrap,
+    );
+    ecs.Query.rings(
+        world,
+        delta,
+        entityWrap,
     );
 }
 
-fn obstacleWrap(
+fn entityWrap(
     _: f32,
     _: ecs.Entity,
     pos: *ecs.Position,
@@ -17,6 +23,10 @@ fn obstacleWrap(
     wrld: *ecs.World,
 ) void {
     if (pos.x < 0) {
-        pos.x = @as(f32, @floatFromInt(wrld.screen_width)) + 100.0;
+        var prng = std.Random.DefaultPrng.init(std.testing.random_seed);
+        const rand = prng.random();
+        const offset = rand.intRangeAtMost(u16, 100, 1000);
+
+        pos.x = @as(f32, @floatFromInt(wrld.screen_width + offset));
     }
 }
