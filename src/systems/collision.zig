@@ -10,13 +10,15 @@ const PlayerCtx = struct {
     y: f32,
     w: f32,
     h: f32,
+    dy: f32,
+    dx: f32,
 };
 
 fn checkEntityCollision(
     _: void,
     _: ecs.Entity,
     player_pos: *ecs.Position,
-    _: *ecs.Velocity,
+    player_vel: *ecs.Velocity,
     player_dim: *ecs.Dimension,
     world: *ecs.World,
 ) void {
@@ -25,31 +27,105 @@ fn checkEntityCollision(
         .y = player_pos.y,
         .w = player_dim.width,
         .h = player_dim.height,
+        .dy = player_vel.dy,
+        .dx = player_vel.dx,
     };
-    ecs.Query.enemies(world, ctx, checkEntity);
-    ecs.Query.rings(world, ctx, checkEntity);
+    ecs.Query.enemies(world, ctx, checkEnemyCollision);
+    ecs.Query.rings(world, ctx, checkRingCollision);
 }
 
-fn checkEntity(
+fn checkEnemyCollision(
     player_ctx: PlayerCtx,
-    _: ecs.Entity,
-    other_pos: *ecs.Position,
+    enemy: ecs.Entity,
+    enemy_pos: *ecs.Position,
     _: *ecs.Velocity,
-    other_dim: *ecs.Dimension,
-    _: *ecs.World,
+    enemy_dim: *ecs.Dimension,
+    world: *ecs.World,
+) void {
+    if (stomp(
+        player_ctx.x,
+        player_ctx.y,
+        player_ctx.w,
+        player_ctx.h,
+        player_ctx.dy,
+        enemy_pos.x,
+        enemy_pos.y,
+        enemy_dim.width,
+        enemy_dim.height,
+    )) {
+        std.debug.print("Enemy stomp!\n", .{});
+
+        // TODO: trigger second 'bounce' of player
+
+        world.needs_reset.put(enemy, {}) catch |err| {
+            std.debug.print("Entity reset failed {}\n", .{err});
+        };
+    }
+
+    if (overlap(
+        player_ctx.x,
+        player_ctx.y,
+        player_ctx.w,
+        player_ctx.h,
+        enemy_pos.x,
+        enemy_pos.y,
+        enemy_dim.width,
+        enemy_dim.height,
+    )) {
+        std.debug.print("Enemy collision!\n", .{});
+    }
+}
+
+fn checkRingCollision(
+    player_ctx: PlayerCtx,
+    ring: ecs.Entity,
+    ring_pos: *ecs.Position,
+    _: *ecs.Velocity,
+    ring_dim: *ecs.Dimension,
+    world: *ecs.World,
 ) void {
     if (overlap(
         player_ctx.x,
         player_ctx.y,
         player_ctx.w,
         player_ctx.h,
-        other_pos.x,
-        other_pos.y,
-        other_dim.width,
-        other_dim.height,
+        ring_pos.x,
+        ring_pos.y,
+        ring_dim.width,
+        ring_dim.height,
     )) {
-        std.debug.print("Collision!\n", .{});
+        const score = world.updateScore(1);
+        std.debug.print("Ring collision! New score {}\n", .{score});
+
+        world.needs_reset.put(ring, {}) catch |err| {
+            std.debug.print("Entity reset failed {}\n", .{err});
+        };
     }
+}
+
+fn stomp(
+    x1: f32,
+    y1: f32,
+    w1: f32,
+    h1: f32,
+    dy1: f32,
+    x2: f32,
+    y2: f32,
+    w2: f32,
+    h2: f32,
+) bool {
+    if (dy1 <= 0) return false; // if obj1 is not falling return
+
+    return overlap(
+        x1,
+        y1,
+        w1,
+        h1,
+        x2,
+        y2,
+        w2,
+        h2,
+    );
 }
 
 fn overlap(

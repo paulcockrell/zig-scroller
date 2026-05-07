@@ -17,14 +17,19 @@ pub const Dimension = struct {
     height: f32,
 };
 
+pub const NeedsReset = struct {};
+
 pub const World = struct {
+    allocator: std.mem.Allocator,
+
+    next_entity: Entity = 0,
+
     screen_width: i32 = 0,
     screen_height: i32 = 0,
 
     scroll_speed: i32 = 100,
 
-    allocator: std.mem.Allocator,
-    next_entity: Entity = 0,
+    score: i32 = 0,
 
     positions: std.AutoHashMap(Entity, Position),
     velocities: std.AutoHashMap(Entity, Velocity),
@@ -33,6 +38,8 @@ pub const World = struct {
     players: std.AutoHashMap(Entity, void),
     enemies: std.AutoHashMap(Entity, void),
     rings: std.AutoHashMap(Entity, void),
+
+    needs_reset: std.AutoHashMap(Entity, void),
 
     pub fn init(allocator: std.mem.Allocator, screen_width: i32, screen_height: i32) World {
         return .{
@@ -45,6 +52,7 @@ pub const World = struct {
             .players = std.AutoHashMap(Entity, void).init(allocator),
             .enemies = std.AutoHashMap(Entity, void).init(allocator),
             .rings = std.AutoHashMap(Entity, void).init(allocator),
+            .needs_reset = std.AutoHashMap(Entity, void).init(allocator),
         };
     }
 
@@ -55,6 +63,7 @@ pub const World = struct {
         self.players.deinit();
         self.enemies.deinit();
         self.rings.deinit();
+        self.needs_reset.deinit();
     }
 
     pub fn createEntity(self: *World) Entity {
@@ -62,6 +71,11 @@ pub const World = struct {
         self.next_entity += 1;
 
         return id;
+    }
+
+    pub fn updateScore(self: *World, val: i32) i32 {
+        self.score += val;
+        return self.score;
     }
 };
 
@@ -157,6 +171,25 @@ pub const Query = struct {
                 pos,
                 vel,
                 dim,
+                world,
+            );
+        }
+    }
+
+    pub fn needs_reset(
+        world: *World,
+        func: fn (
+            ent: Entity,
+            world: *World,
+        ) void,
+    ) void {
+        var it = world.needs_reset.iterator();
+
+        while (it.next()) |entry| {
+            const ent = entry.key_ptr.*;
+
+            func(
+                ent,
                 world,
             );
         }

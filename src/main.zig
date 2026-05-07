@@ -1,6 +1,8 @@
 const std = @import("std");
 const raylib = @import("raylib");
+
 const ecs = @import("ecs.zig");
+
 const scroll = @import("systems/scroll.zig");
 const wrap = @import("systems/wrap.zig");
 const input = @import("systems/input.zig");
@@ -8,6 +10,8 @@ const gravity = @import("systems/gravity.zig");
 const movement = @import("systems/movement.zig");
 const render = @import("systems/render.zig");
 const collision = @import("systems/collision.zig");
+const reset_entity = @import("systems/reset_entity.zig");
+
 const player = @import("entities/player.zig");
 const enemy = @import("entities/enemy.zig");
 const ring = @import("entities/ring.zig");
@@ -45,6 +49,7 @@ pub fn main(init: std.process.Init) !void {
         scroll.system(&world, delta);
         wrap.system(&world, delta);
         collision.system(&world);
+        reset_entity.system(&world);
 
         raylib.beginDrawing();
         defer raylib.endDrawing();
