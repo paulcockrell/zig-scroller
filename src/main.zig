@@ -12,6 +12,7 @@ const render = @import("systems/render.zig");
 const collision = @import("systems/collision.zig");
 const reset_entity = @import("systems/reset_entity.zig");
 const jump_intents = @import("systems/jump_intent.zig");
+const dificulty = @import("systems/dificulty.zig");
 
 const player = @import("entities/player.zig");
 const enemy = @import("entities/enemy.zig");
@@ -45,6 +46,7 @@ pub fn main(init: std.process.Init) !void {
 
     while (!raylib.windowShouldClose()) {
         const delta = raylib.getFrameTime();
+        world.time += delta;
 
         input.system(&world);
         collision.system(&world);
@@ -54,6 +56,7 @@ pub fn main(init: std.process.Init) !void {
         scroll.system(&world, delta);
         wrap.system(&world, delta);
         reset_entity.system(&world);
+        dificulty.system(&world);
 
         raylib.beginDrawing();
         defer raylib.endDrawing();

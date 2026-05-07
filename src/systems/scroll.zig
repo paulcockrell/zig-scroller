@@ -17,9 +17,9 @@ fn entityScroll(
     delta: f32,
     _: ecs.Entity,
     pos: *ecs.Position,
-    vel: *ecs.Velocity,
+    _: *ecs.Velocity,
     _: *ecs.Dimension,
-    _: *ecs.World,
+    world: *ecs.World,
 ) void {
-    pos.x -= vel.dx * delta;
+    pos.x -= world.scroll_speed * delta;
 }

@@ -1,5 +1,9 @@
 const std = @import("std");
 
+pub const BASE_SCROLL_SPEED: f32 = 150.0;
+pub const SCROLL_SPEED_FACTOR: f32 = 5.0;
+pub const MAX_SCROLL_SPEED: f32 = 600.0;
+
 pub const Entity = u32;
 
 pub const Position = struct {
@@ -31,8 +35,6 @@ pub const World = struct {
     screen_width: i32 = 0,
     screen_height: i32 = 0,
 
-    scroll_speed: i32 = 100,
-
     score: i32 = 0,
 
     positions: std.AutoHashMap(Entity, Position),
@@ -48,6 +50,9 @@ pub const World = struct {
 
     prng: std.Random.Xoshiro256,
 
+    time: f32,
+    scroll_speed: f32,
+
     pub fn init(allocator: std.mem.Allocator, screen_width: i32, screen_height: i32) World {
         return .{
             .screen_width = screen_width,
@@ -62,6 +67,8 @@ pub const World = struct {
             .needs_reset = std.AutoHashMap(Entity, void).init(allocator),
             .jump_intents = std.AutoHashMap(Entity, JumpIntent).init(allocator),
             .prng = std.Random.DefaultPrng.init(std.testing.random_seed),
+            .time = 0.0,
+            .scroll_speed = BASE_SCROLL_SPEED,
         };
     }
 
