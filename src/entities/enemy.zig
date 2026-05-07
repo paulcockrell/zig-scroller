@@ -1,3 +1,4 @@
+const std = @import("std");
 const ecs = @import("../ecs.zig");
 
 pub const Enemy = struct {};
@@ -11,7 +12,7 @@ pub fn spawn(world: *ecs.World) !ecs.Entity {
     );
     try world.positions.put(
         ent,
-        .{ .x = @as(f32, @floatFromInt(world.screen_width)), .y = ecs.groundY(world) },
+        .{ .x = @as(f32, @floatFromInt(world.screen_width + world.rng(0, 1000))), .y = ecs.groundY(world) },
     );
     try world.velocities.put(
         ent,

@@ -19,10 +19,5 @@ pub fn resetEntity(ent: ecs.Entity, world: *ecs.World) void {
 // Use the same reset x position func for now
 fn resetPos(world: *ecs.World, ent: ecs.Entity) void {
     const pos = world.positions.getPtr(ent) orelse return;
-
-    var prng = std.Random.DefaultPrng.init(std.testing.random_seed);
-    const rand = prng.random();
-    const offset = rand.intRangeAtMost(u16, 100, 1000);
-
-    pos.x = @as(f32, @floatFromInt(world.screen_width + offset));
+    pos.x = @as(f32, @floatFromInt(world.screen_width + world.rng(0, 1000)));
 }

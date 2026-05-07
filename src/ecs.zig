@@ -46,6 +46,8 @@ pub const World = struct {
     needs_reset: std.AutoHashMap(Entity, void),
     jump_intents: std.AutoHashMap(Entity, JumpIntent),
 
+    prng: std.Random.Xoshiro256,
+
     pub fn init(allocator: std.mem.Allocator, screen_width: i32, screen_height: i32) World {
         return .{
             .screen_width = screen_width,
@@ -59,6 +61,7 @@ pub const World = struct {
             .rings = std.AutoHashMap(Entity, void).init(allocator),
             .needs_reset = std.AutoHashMap(Entity, void).init(allocator),
             .jump_intents = std.AutoHashMap(Entity, JumpIntent).init(allocator),
+            .prng = std.Random.DefaultPrng.init(std.testing.random_seed),
         };
     }
 
@@ -83,6 +86,13 @@ pub const World = struct {
     pub fn updateScore(self: *World, val: i32) i32 {
         self.score += val;
         return self.score;
+    }
+
+    pub fn rng(world: *World, floor: u16, ceil: u16) u16 {
+        const rand = world.prng.random();
+        const offset = rand.intRangeAtMost(u16, floor, ceil);
+
+        return offset;
     }
 };
 

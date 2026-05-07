@@ -38,8 +38,10 @@ pub fn main(init: std.process.Init) !void {
     defer world.deinit();
 
     _ = try player.spawn(&world);
-    _ = try enemy.spawn(&world);
-    _ = try ring.spawn(&world);
+    for (0..5) |_| {
+        _ = try enemy.spawn(&world);
+        _ = try ring.spawn(&world);
+    }
 
     while (!raylib.windowShouldClose()) {
         const delta = raylib.getFrameTime();
