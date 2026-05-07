@@ -1,11 +1,14 @@
 const std = @import("std");
 const ecs = @import("../ecs.zig");
 
+const JUMP_FORCE: f32 = -250.0;
+
 pub fn system(world: *ecs.World) void {
     ecs.Query.players(world, {}, checkEntityCollision);
 }
 
 const PlayerCtx = struct {
+    ent: ecs.Entity,
     x: f32,
     y: f32,
     w: f32,
@@ -16,19 +19,20 @@ const PlayerCtx = struct {
 
 fn checkEntityCollision(
     _: void,
-    _: ecs.Entity,
-    player_pos: *ecs.Position,
-    player_vel: *ecs.Velocity,
-    player_dim: *ecs.Dimension,
+    ent: ecs.Entity,
+    pos: *ecs.Position,
+    vel: *ecs.Velocity,
+    dim: *ecs.Dimension,
     world: *ecs.World,
 ) void {
     const ctx = PlayerCtx{
-        .x = player_pos.x,
-        .y = player_pos.y,
-        .w = player_dim.width,
-        .h = player_dim.height,
-        .dy = player_vel.dy,
-        .dx = player_vel.dx,
+        .ent = ent,
+        .x = pos.x,
+        .y = pos.y,
+        .w = dim.width,
+        .h = dim.height,
+        .dy = vel.dy,
+        .dx = vel.dx,
     };
     ecs.Query.enemies(world, ctx, checkEnemyCollision);
     ecs.Query.rings(world, ctx, checkRingCollision);
@@ -55,11 +59,15 @@ fn checkEnemyCollision(
     )) {
         std.debug.print("Enemy stomp!\n", .{});
 
-        // TODO: trigger second 'bounce' of player
+        world.jump_intents.put(player_ctx.ent, .{ .force = JUMP_FORCE }) catch |err| {
+            std.debug.print("Entity jump intent failed {}\n", .{err});
+        };
 
         world.needs_reset.put(enemy, {}) catch |err| {
             std.debug.print("Entity reset failed {}\n", .{err});
         };
+
+        return;
     }
 
     if (overlap(

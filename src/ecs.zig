@@ -17,6 +17,10 @@ pub const Dimension = struct {
     height: f32,
 };
 
+pub const JumpIntent = struct {
+    force: f32,
+};
+
 pub const NeedsReset = struct {};
 
 pub const World = struct {
@@ -40,6 +44,7 @@ pub const World = struct {
     rings: std.AutoHashMap(Entity, void),
 
     needs_reset: std.AutoHashMap(Entity, void),
+    jump_intents: std.AutoHashMap(Entity, JumpIntent),
 
     pub fn init(allocator: std.mem.Allocator, screen_width: i32, screen_height: i32) World {
         return .{
@@ -53,6 +58,7 @@ pub const World = struct {
             .enemies = std.AutoHashMap(Entity, void).init(allocator),
             .rings = std.AutoHashMap(Entity, void).init(allocator),
             .needs_reset = std.AutoHashMap(Entity, void).init(allocator),
+            .jump_intents = std.AutoHashMap(Entity, JumpIntent).init(allocator),
         };
     }
 
@@ -64,6 +70,7 @@ pub const World = struct {
         self.enemies.deinit();
         self.rings.deinit();
         self.needs_reset.deinit();
+        self.jump_intents.deinit();
     }
 
     pub fn createEntity(self: *World) Entity {
@@ -191,6 +198,27 @@ pub const Query = struct {
             func(
                 ent,
                 world,
+            );
+        }
+    }
+
+    pub fn jump_intent(
+        world: *World,
+        func: fn (
+            vel: *Velocity,
+            intent: *JumpIntent,
+        ) void,
+    ) void {
+        var it = world.jump_intents.iterator();
+
+        while (it.next()) |entry| {
+            const ent = entry.key_ptr.*;
+            const vel = world.velocities.getPtr(ent) orelse continue;
+            const intent = world.jump_intents.getPtr(ent) orelse continue;
+
+            func(
+                vel,
+                intent,
             );
         }
     }

@@ -11,6 +11,7 @@ const movement = @import("systems/movement.zig");
 const render = @import("systems/render.zig");
 const collision = @import("systems/collision.zig");
 const reset_entity = @import("systems/reset_entity.zig");
+const jump_intents = @import("systems/jump_intent.zig");
 
 const player = @import("entities/player.zig");
 const enemy = @import("entities/enemy.zig");
@@ -44,11 +45,12 @@ pub fn main(init: std.process.Init) !void {
         const delta = raylib.getFrameTime();
 
         input.system(&world);
+        collision.system(&world);
+        jump_intents.system(&world);
         gravity.system(&world, delta);
         movement.system(&world, delta);
         scroll.system(&world, delta);
         wrap.system(&world, delta);
-        collision.system(&world);
         reset_entity.system(&world);
 
         raylib.beginDrawing();
