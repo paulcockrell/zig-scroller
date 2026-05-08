@@ -19,11 +19,13 @@ const resource = @import("systems/resource.zig");
 const player = @import("entities/player.zig");
 const enemy = @import("entities/enemy.zig");
 const ring = @import("entities/ring.zig");
+const platform = @import("entities/platform.zig");
+const background = @import("entities/background.zig");
 
 pub fn main(init: std.process.Init) !void {
     const allocator = init.gpa;
-    const screen_width: i32 = 1000;
-    const screen_height: i32 = 800;
+    const screen_width: i32 = 800;
+    const screen_height: i32 = 600;
 
     raylib.setTargetFPS(60);
     raylib.initWindow(
@@ -47,6 +49,8 @@ pub fn main(init: std.process.Init) !void {
     };
 
     _ = try player.spawn(&world);
+    _ = try platform.spawn(&world);
+    _ = try background.spawn(&world);
     for (0..5) |_| {
         _ = try enemy.spawn(&world);
         _ = try ring.spawn(&world);

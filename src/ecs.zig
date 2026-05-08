@@ -28,7 +28,7 @@ pub const JumpIntent = struct {
 
 pub const NeedsReset = struct {};
 
-pub const SpriteTag = enum(u2) { player, enemy, ring };
+pub const SpriteTag = enum { player, enemy, ring, background, platform };
 
 pub const World = struct {
     allocator: std.mem.Allocator,
@@ -48,6 +48,8 @@ pub const World = struct {
     players: std.AutoHashMap(Entity, void),
     enemies: std.AutoHashMap(Entity, void),
     rings: std.AutoHashMap(Entity, void),
+    platforms: std.AutoHashMap(Entity, void),
+    backgrounds: std.AutoHashMap(Entity, void),
 
     needs_reset: std.AutoHashMap(Entity, void),
     jump_intents: std.AutoHashMap(Entity, JumpIntent),
@@ -68,6 +70,8 @@ pub const World = struct {
             .players = std.AutoHashMap(Entity, void).init(allocator),
             .enemies = std.AutoHashMap(Entity, void).init(allocator),
             .rings = std.AutoHashMap(Entity, void).init(allocator),
+            .platforms = std.AutoHashMap(Entity, void).init(allocator),
+            .backgrounds = std.AutoHashMap(Entity, void).init(allocator),
             .needs_reset = std.AutoHashMap(Entity, void).init(allocator),
             .jump_intents = std.AutoHashMap(Entity, JumpIntent).init(allocator),
             .sprites = std.AutoHashMap(SpriteTag, raylib.Texture2D).init(allocator),
@@ -84,6 +88,8 @@ pub const World = struct {
         self.players.deinit();
         self.enemies.deinit();
         self.rings.deinit();
+        self.platforms.deinit();
+        self.backgrounds.deinit();
         self.needs_reset.deinit();
         self.jump_intents.deinit();
         self.sprites.deinit();
@@ -187,6 +193,70 @@ pub const Query = struct {
         ) void,
     ) void {
         var it = world.rings.iterator();
+
+        while (it.next()) |entry| {
+            const ent = entry.key_ptr.*;
+
+            const pos = world.positions.getPtr(ent) orelse continue;
+            const vel = world.velocities.getPtr(ent) orelse continue;
+            const dim = world.dimensions.getPtr(ent) orelse continue;
+
+            func(
+                ctx,
+                ent,
+                pos,
+                vel,
+                dim,
+                world,
+            );
+        }
+    }
+
+    pub fn backgrounds(
+        world: *World,
+        ctx: anytype,
+        func: fn (
+            ctx: @TypeOf(ctx),
+            ent: Entity,
+            pos: *Position,
+            vel: *Velocity,
+            dim: *Dimension,
+            world: *World,
+        ) void,
+    ) void {
+        var it = world.backgrounds.iterator();
+
+        while (it.next()) |entry| {
+            const ent = entry.key_ptr.*;
+
+            const pos = world.positions.getPtr(ent) orelse continue;
+            const vel = world.velocities.getPtr(ent) orelse continue;
+            const dim = world.dimensions.getPtr(ent) orelse continue;
+
+            func(
+                ctx,
+                ent,
+                pos,
+                vel,
+                dim,
+                world,
+            );
+        }
+    }
+
+    pub fn platforms(
+        world: *World,
+        ctx: anytype,
+        func: fn (
+            ctx: @TypeOf(ctx),
+            ent: Entity,
+            pos: *Position,
+            vel: *Velocity,
+            dim: *Dimension,
+            world: *World,
+        ) void,
+    ) void {
+        var it = world.platforms.iterator();
 
         while (it.next()) |entry| {
             const ent = entry.key_ptr.*;

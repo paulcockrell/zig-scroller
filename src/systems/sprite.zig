@@ -3,6 +3,16 @@ const std = @import("std");
 const raylib = @import("raylib");
 
 pub fn system(world: *ecs.World) void {
+    ecs.Query.backgrounds(
+        world,
+        {},
+        backgroundRenderer,
+    );
+    ecs.Query.platforms(
+        world,
+        {},
+        platformRenderer,
+    );
     ecs.Query.players(
         world,
         {},
@@ -104,5 +114,63 @@ fn ringRenderer(
         raylib.drawTextureRec(texture, rl_rect, rl_pos, .white);
     } else {
         std.debug.print("Failed to load ring texture. Not rendering\n", .{});
+    }
+}
+
+fn platformRenderer(
+    _: void,
+    _: ecs.Entity,
+    pos: *ecs.Position,
+    _: *ecs.Velocity,
+    dim: *ecs.Dimension,
+    world: *ecs.World,
+) void {
+    const platform_texture = world.sprites.getEntry(ecs.SpriteTag.platform);
+
+    if (platform_texture) |entry| {
+        const texture = entry.value_ptr.*;
+        const rl_rect = raylib.Rectangle.init(
+            0.0,
+            0.0,
+            dim.width,
+            dim.height,
+        );
+        const rl_pos = raylib.Vector2.init(
+            pos.x,
+            pos.y,
+        );
+
+        raylib.drawTextureRec(texture, rl_rect, rl_pos, .white);
+    } else {
+        std.debug.print("Failed to load platform texture. Not rendering\n", .{});
+    }
+}
+
+fn backgroundRenderer(
+    _: void,
+    _: ecs.Entity,
+    pos: *ecs.Position,
+    _: *ecs.Velocity,
+    dim: *ecs.Dimension,
+    world: *ecs.World,
+) void {
+    const background_texture = world.sprites.getEntry(ecs.SpriteTag.background);
+
+    if (background_texture) |entry| {
+        const texture = entry.value_ptr.*;
+        const rl_rect = raylib.Rectangle.init(
+            0.0,
+            0.0,
+            dim.width,
+            dim.height,
+        );
+        const rl_pos = raylib.Vector2.init(
+            pos.x,
+            pos.y,
+        );
+
+        raylib.drawTextureRec(texture, rl_rect, rl_pos, .white);
+    } else {
+        std.debug.print("Failed to load background texture. Not rendering\n", .{});
     }
 }

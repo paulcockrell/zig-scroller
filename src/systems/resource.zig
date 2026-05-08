@@ -6,28 +6,54 @@ pub fn system(world: *ecs.World) !void {
     try load_player_sprite(world);
     try load_enemy_sprite(world);
     try load_ring_sprite(world);
+    try load_background_sprite(world);
+    try load_platform_sprite(world);
 }
 
 fn load_player_sprite(world: *ecs.World) !void {
-    const player_image = try raylib.loadImage("resources/sonic.png");
-    const player_texture = try raylib.loadTextureFromImage(player_image);
-    raylib.unloadImage(player_image);
-
-    try world.sprites.put(ecs.SpriteTag.player, player_texture);
+    try load_sprite(
+        world,
+        "resources/player.png",
+        ecs.SpriteTag.player,
+    );
 }
 
 fn load_enemy_sprite(world: *ecs.World) !void {
-    const enemy_image = try raylib.loadImage("resources/motobug.png");
-    const enemy_texture = try raylib.loadTextureFromImage(enemy_image);
-    raylib.unloadImage(enemy_image);
-
-    try world.sprites.put(ecs.SpriteTag.enemy, enemy_texture);
+    try load_sprite(
+        world,
+        "resources/motobug.png",
+        ecs.SpriteTag.enemy,
+    );
 }
 
 fn load_ring_sprite(world: *ecs.World) !void {
-    const ring_image = try raylib.loadImage("resources/ring.png");
-    const ring_texture = try raylib.loadTextureFromImage(ring_image);
-    raylib.unloadImage(ring_image);
+    try load_sprite(
+        world,
+        "resources/ring.png",
+        ecs.SpriteTag.ring,
+    );
+}
 
-    try world.sprites.put(ecs.SpriteTag.ring, ring_texture);
+fn load_background_sprite(world: *ecs.World) !void {
+    try load_sprite(
+        world,
+        "resources/background.png",
+        ecs.SpriteTag.background,
+    );
+}
+
+fn load_platform_sprite(world: *ecs.World) !void {
+    try load_sprite(
+        world,
+        "resources/platform.png",
+        ecs.SpriteTag.platform,
+    );
+}
+
+fn load_sprite(world: *ecs.World, img_path: [:0]const u8, sprite_tag: ecs.SpriteTag) !void {
+    const image = try raylib.loadImage(img_path);
+    const texture = try raylib.loadTextureFromImage(image);
+    raylib.unloadImage(image);
+
+    try world.sprites.put(sprite_tag, texture);
 }
