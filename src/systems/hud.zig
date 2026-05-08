@@ -19,7 +19,7 @@ fn drawScore(world: *ecs.World) void {
 }
 
 fn drawSpeed(world: *ecs.World) void {
-    const scroll_speed = @as(u16, @intFromFloat(world.scroll_speed));
+    const scroll_speed = @as(i32, @intFromFloat(world.scroll_speed));
 
     var text_color = raylib.Color.white;
     text_color = switch (scroll_speed) {
@@ -38,10 +38,8 @@ fn drawSpeed(world: *ecs.World) void {
 }
 
 fn drawTime(world: *ecs.World) void {
-    const time = @as(u16, @intFromFloat(world.time));
-
     raylib.drawText(
-        raylib.textFormat("Time: %03i secs", .{time}),
+        raylib.textFormat("Time: %.1fs", .{world.time}),
         10,
         50,
         20,
