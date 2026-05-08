@@ -12,7 +12,8 @@ const render = @import("systems/render.zig");
 const collision = @import("systems/collision.zig");
 const reset_entity = @import("systems/reset_entity.zig");
 const jump_intents = @import("systems/jump_intent.zig");
-const dificulty = @import("systems/dificulty.zig");
+const difficulty = @import("systems/difficulty.zig");
+const hud = @import("systems/hud.zig");
 
 const player = @import("entities/player.zig");
 const enemy = @import("entities/enemy.zig");
@@ -56,7 +57,8 @@ pub fn main(init: std.process.Init) !void {
         scroll.system(&world, delta);
         wrap.system(&world, delta);
         reset_entity.system(&world);
-        dificulty.system(&world);
+        difficulty.system(&world);
+        hud.system(&world);
 
         raylib.beginDrawing();
         defer raylib.endDrawing();
