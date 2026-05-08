@@ -8,6 +8,11 @@ pub fn system(world: *ecs.World) void {
         {},
         playerRenderer,
     );
+    ecs.Query.enemies(
+        world,
+        {},
+        enemyRenderer,
+    );
 }
 
 fn playerRenderer(
@@ -18,9 +23,9 @@ fn playerRenderer(
     dim: *ecs.Dimension,
     world: *ecs.World,
 ) void {
-    const sonic_texture = world.sprites.getEntry(ecs.SpriteTag.player);
+    const player_texture = world.sprites.getEntry(ecs.SpriteTag.player);
 
-    if (sonic_texture) |entry| {
+    if (player_texture) |entry| {
         const texture = entry.value_ptr.*;
         const rl_rect = raylib.Rectangle.init(
             0.0,
@@ -36,5 +41,34 @@ fn playerRenderer(
         raylib.drawTextureRec(texture, rl_rect, rl_pos, .white);
     } else {
         std.debug.print("Failed to load player texture. Not rendering\n", .{});
+    }
+}
+
+fn enemyRenderer(
+    _: void,
+    _: ecs.Entity,
+    pos: *ecs.Position,
+    _: *ecs.Velocity,
+    dim: *ecs.Dimension,
+    world: *ecs.World,
+) void {
+    const enemy_texture = world.sprites.getEntry(ecs.SpriteTag.enemy);
+
+    if (enemy_texture) |entry| {
+        const texture = entry.value_ptr.*;
+        const rl_rect = raylib.Rectangle.init(
+            0.0,
+            0.0,
+            dim.width,
+            dim.height,
+        );
+        const rl_pos = raylib.Vector2.init(
+            pos.x,
+            pos.y,
+        );
+
+        raylib.drawTextureRec(texture, rl_rect, rl_pos, .white);
+    } else {
+        std.debug.print("Failed to load enemy texture. Not rendering\n", .{});
     }
 }
