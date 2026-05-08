@@ -8,7 +8,6 @@ const wrap = @import("systems/wrap.zig");
 const input = @import("systems/input.zig");
 const gravity = @import("systems/gravity.zig");
 const movement = @import("systems/movement.zig");
-const render = @import("systems/render.zig");
 const collision = @import("systems/collision.zig");
 const reset_entity = @import("systems/reset_entity.zig");
 const jump_intents = @import("systems/jump_intent.zig");
@@ -66,13 +65,12 @@ pub fn main(init: std.process.Init) !void {
         wrap.system(&world, delta);
         reset_entity.system(&world);
         difficulty.system(&world);
-        hud.system(&world);
-        sprite.system(&world);
 
         raylib.beginDrawing();
         defer raylib.endDrawing();
 
         raylib.clearBackground(raylib.Color.black);
-        render.system(&world);
+        sprite.system(&world);
+        hud.system(&world);
     }
 }

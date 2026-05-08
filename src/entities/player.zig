@@ -11,7 +11,7 @@ pub fn spawn(world: *ecs.World) !ecs.Entity {
     );
     try world.positions.put(
         ent,
-        .{ .x = 100.0, .y = ecs.groundY(world) },
+        .{ .x = 200.0, .y = ecs.groundY(world) },
     );
     try world.velocities.put(
         ent,

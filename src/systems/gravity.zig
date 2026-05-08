@@ -1,7 +1,7 @@
 const ecs = @import("../ecs.zig");
 const std = @import("std");
 
-const GRAVITY: f32 = 650.0;
+const GRAVITY: f32 = 400.0;
 const MAX_FALL_SPEED: f32 = 400.0;
 
 pub fn system(world: *ecs.World, delta: f32) void {

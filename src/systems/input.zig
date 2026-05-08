@@ -2,7 +2,7 @@ const raylib = @import("raylib");
 const ecs = @import("../ecs.zig");
 const std = @import("std");
 
-const JUMP_FORCE: f32 = -500.0;
+const JUMP_FORCE: f32 = -250.0;
 
 pub fn system(world: *ecs.World) void {
     if (!raylib.isKeyPressed(raylib.KeyboardKey.space)) return;
