@@ -19,7 +19,7 @@ pub fn spawn(world: *ecs.World) !ecs.Entity {
     );
     try world.dimensions.put(
         ent,
-        .{ .width = 100.0, .height = 100.0 },
+        .{ .width = 32.0, .height = 44.0 },
     );
 
     return ent;

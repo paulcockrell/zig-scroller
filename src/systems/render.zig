@@ -3,11 +3,6 @@ const raylib = @import("raylib");
 const ecs = @import("../ecs.zig");
 
 pub fn system(world: *ecs.World) void {
-    ecs.Query.players(
-        world,
-        {},
-        playerRenderer,
-    );
     ecs.Query.enemies(
         world,
         {},
@@ -17,23 +12,6 @@ pub fn system(world: *ecs.World) void {
         world,
         {},
         ringRenderer,
-    );
-}
-
-fn playerRenderer(
-    _: void,
-    _: ecs.Entity,
-    pos: *ecs.Position,
-    _: *ecs.Velocity,
-    dim: *ecs.Dimension,
-    _: *ecs.World,
-) void {
-    raylib.drawRectangle(
-        @intFromFloat(pos.x),
-        @intFromFloat(pos.y),
-        @intFromFloat(dim.width),
-        @intFromFloat(dim.height),
-        raylib.Color.green,
     );
 }
 
