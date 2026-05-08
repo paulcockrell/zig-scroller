@@ -7,13 +7,18 @@ pub fn system(world: *ecs.World) void {
 
     if (sonic_texture) |entry| {
         const texture = entry.value_ptr.*;
-
-        raylib.drawTexture(
-            texture,
-            @divTrunc(world.screen_width, 2) - @divTrunc(texture.width, 2),
-            @divTrunc(world.screen_height, 2) - @divTrunc(texture.height, 2),
-            raylib.Color.white,
+        const pos = raylib.Vector2.init(
+            @as(f32, @floatFromInt(@divTrunc(world.screen_width, 2))),
+            @as(f32, @floatFromInt(@divTrunc(world.screen_height, 2))),
         );
+        const frame_rect = raylib.Rectangle.init(
+            0,
+            0,
+            32,
+            44,
+        );
+
+        raylib.drawTextureRec(texture, frame_rect, pos, .white);
     } else {
         std.debug.print("Failed to load player texture. Not rendering\n", .{});
     }
