@@ -1,4 +1,5 @@
 const std = @import("std");
+const raylib = @import("raylib");
 
 pub const BASE_SCROLL_SPEED: f32 = 150.0;
 pub const SCROLL_SPEED_FACTOR: f32 = 5.0;
@@ -27,6 +28,8 @@ pub const JumpIntent = struct {
 
 pub const NeedsReset = struct {};
 
+pub const SpriteTag = enum(u2) { player, enemy, ring };
+
 pub const World = struct {
     allocator: std.mem.Allocator,
 
@@ -40,6 +43,7 @@ pub const World = struct {
     positions: std.AutoHashMap(Entity, Position),
     velocities: std.AutoHashMap(Entity, Velocity),
     dimensions: std.AutoHashMap(Entity, Dimension),
+    sprites: std.AutoHashMap(SpriteTag, raylib.Texture2D),
 
     players: std.AutoHashMap(Entity, void),
     enemies: std.AutoHashMap(Entity, void),
@@ -66,6 +70,7 @@ pub const World = struct {
             .rings = std.AutoHashMap(Entity, void).init(allocator),
             .needs_reset = std.AutoHashMap(Entity, void).init(allocator),
             .jump_intents = std.AutoHashMap(Entity, JumpIntent).init(allocator),
+            .sprites = std.AutoHashMap(SpriteTag, raylib.Texture2D).init(allocator),
             .prng = std.Random.DefaultPrng.init(std.testing.random_seed),
             .time = 0.0,
             .scroll_speed = BASE_SCROLL_SPEED,
@@ -81,6 +86,7 @@ pub const World = struct {
         self.rings.deinit();
         self.needs_reset.deinit();
         self.jump_intents.deinit();
+        self.sprites.deinit();
     }
 
     pub fn createEntity(self: *World) Entity {

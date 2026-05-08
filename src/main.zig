@@ -14,6 +14,8 @@ const reset_entity = @import("systems/reset_entity.zig");
 const jump_intents = @import("systems/jump_intent.zig");
 const difficulty = @import("systems/difficulty.zig");
 const hud = @import("systems/hud.zig");
+const sprite = @import("systems/sprite.zig");
+const resource = @import("systems/resource.zig");
 
 const player = @import("entities/player.zig");
 const enemy = @import("entities/enemy.zig");
@@ -39,6 +41,12 @@ pub fn main(init: std.process.Init) !void {
     );
     defer world.deinit();
 
+    // must come before entities are spawned
+    resource.system(&world) catch |err| {
+        std.debug.print("Failed to load resources. Exiting. {}", .{err});
+        return;
+    };
+
     _ = try player.spawn(&world);
     for (0..5) |_| {
         _ = try enemy.spawn(&world);
@@ -59,6 +67,7 @@ pub fn main(init: std.process.Init) !void {
         reset_entity.system(&world);
         difficulty.system(&world);
         hud.system(&world);
+        sprite.system(&world);
 
         raylib.beginDrawing();
         defer raylib.endDrawing();
