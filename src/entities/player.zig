@@ -1,9 +1,14 @@
 const ecs = @import("../ecs.zig");
 
+const START_POS: f32 = 250.0;
+const WIDTH: f32 = 32.0;
+const HEIGHT: f32 = 44.0;
+
 pub const Player = struct {};
 
 pub fn spawn(world: *ecs.World) !void {
     const ent = world.createEntity();
+    const y = ecs.groundY(world) - HEIGHT;
 
     try world.players.put(
         ent,
@@ -11,7 +16,7 @@ pub fn spawn(world: *ecs.World) !void {
     );
     try world.positions.put(
         ent,
-        .{ .x = 200.0, .y = ecs.groundY(world) },
+        .{ .x = START_POS, .y = y },
     );
     try world.velocities.put(
         ent,
@@ -19,6 +24,6 @@ pub fn spawn(world: *ecs.World) !void {
     );
     try world.dimensions.put(
         ent,
-        .{ .width = 32.0, .height = 44.0 },
+        .{ .width = WIDTH, .height = HEIGHT },
     );
 }

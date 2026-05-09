@@ -1,10 +1,16 @@
 const std = @import("std");
 const ecs = @import("../ecs.zig");
 
+const WIDTH: f32 = 48.0;
+const HEIGHT: f32 = 30.0;
+const DX: f32 = 150.0;
+
 pub const Enemy = struct {};
 
 pub fn spawn(world: *ecs.World) !void {
     const ent = world.createEntity();
+    const x = @as(f32, @floatFromInt(world.screen_width + world.rng(0, 1000)));
+    const y = ecs.groundY(world) - HEIGHT;
 
     try world.enemies.put(
         ent,
@@ -12,14 +18,14 @@ pub fn spawn(world: *ecs.World) !void {
     );
     try world.positions.put(
         ent,
-        .{ .x = @as(f32, @floatFromInt(world.screen_width + world.rng(0, 1000))), .y = ecs.groundY(world) },
+        .{ .x = x, .y = y },
     );
     try world.velocities.put(
         ent,
-        .{ .dx = 150.0, .dy = 0.0 },
+        .{ .dx = DX, .dy = 0.0 },
     );
     try world.dimensions.put(
         ent,
-        .{ .width = 48.0, .height = 30.0 },
+        .{ .width = WIDTH, .height = HEIGHT },
     );
 }
