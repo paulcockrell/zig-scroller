@@ -2,7 +2,7 @@ const ecs = @import("../ecs.zig");
 
 pub const Ring = struct {};
 
-pub fn spawn(world: *ecs.World) !ecs.Entity {
+pub fn spawn(world: *ecs.World) !void {
     const ent = world.createEntity();
 
     try world.rings.put(
@@ -21,6 +21,4 @@ pub fn spawn(world: *ecs.World) !ecs.Entity {
         ent,
         .{ .width = 16.0, .height = 16.0 },
     );
-
-    return ent;
 }

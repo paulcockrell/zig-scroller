@@ -2,7 +2,7 @@ const ecs = @import("../ecs.zig");
 
 pub const Player = struct {};
 
-pub fn spawn(world: *ecs.World) !ecs.Entity {
+pub fn spawn(world: *ecs.World) !void {
     const ent = world.createEntity();
 
     try world.players.put(
@@ -21,6 +21,4 @@ pub fn spawn(world: *ecs.World) !ecs.Entity {
         ent,
         .{ .width = 32.0, .height = 44.0 },
     );
-
-    return ent;
 }

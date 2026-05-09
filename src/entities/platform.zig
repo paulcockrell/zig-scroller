@@ -1,9 +1,17 @@
 const std = @import("std");
 const ecs = @import("../ecs.zig");
 
+pub const WIDTH: f32 = 1280.0;
+pub const HEIGHT: f32 = 160.0;
+
 pub const Platform = struct {};
 
-pub fn spawn(world: *ecs.World) !ecs.Entity {
+pub fn spawn(world: *ecs.World) !void {
+    try spawnPlatform(world, 0, ecs.groundY(world));
+    try spawnPlatform(world, WIDTH, ecs.groundY(world));
+}
+
+fn spawnPlatform(world: *ecs.World, x: f32, y: f32) !void {
     const ent = world.createEntity();
 
     try world.platforms.put(
@@ -12,7 +20,7 @@ pub fn spawn(world: *ecs.World) !ecs.Entity {
     );
     try world.positions.put(
         ent,
-        .{ .x = 0, .y = ecs.groundY(world) },
+        .{ .x = x, .y = y },
     );
     try world.velocities.put(
         ent,
@@ -20,8 +28,6 @@ pub fn spawn(world: *ecs.World) !ecs.Entity {
     );
     try world.dimensions.put(
         ent,
-        .{ .width = 1280.0, .height = 160.0 },
+        .{ .width = WIDTH, .height = HEIGHT },
     );
-
-    return ent;
 }

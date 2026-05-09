@@ -4,17 +4,18 @@ const raylib = @import("raylib");
 const ecs = @import("ecs.zig");
 
 const scroll = @import("systems/scroll.zig");
-const wrap = @import("systems/wrap.zig");
 const input = @import("systems/input.zig");
 const gravity = @import("systems/gravity.zig");
 const movement = @import("systems/movement.zig");
 const collision = @import("systems/collision.zig");
-const reset_entity = @import("systems/reset_entity.zig");
 const jump_intents = @import("systems/jump_intent.zig");
 const difficulty = @import("systems/difficulty.zig");
 const hud = @import("systems/hud.zig");
 const sprite = @import("systems/sprite.zig");
 const resource = @import("systems/resource.zig");
+const entity_wrap = @import("systems/entity_wrap.zig");
+const entity_reset = @import("systems/entity_reset.zig");
+const scenery_wrap = @import("systems/scenery_wrap.zig");
 
 const player = @import("entities/player.zig");
 const enemy = @import("entities/enemy.zig");
@@ -48,12 +49,12 @@ pub fn main(init: std.process.Init) !void {
         return;
     };
 
-    _ = try player.spawn(&world);
-    _ = try platform.spawn(&world);
-    _ = try background.spawn(&world);
+    try player.spawn(&world);
+    try platform.spawn(&world);
+    try background.spawn(&world);
     for (0..5) |_| {
-        _ = try enemy.spawn(&world);
-        _ = try ring.spawn(&world);
+        try enemy.spawn(&world);
+        try ring.spawn(&world);
     }
 
     while (!raylib.windowShouldClose()) {
@@ -66,8 +67,9 @@ pub fn main(init: std.process.Init) !void {
         gravity.system(&world, delta);
         movement.system(&world, delta);
         scroll.system(&world, delta);
-        wrap.system(&world, delta);
-        reset_entity.system(&world);
+        entity_wrap.system(&world, delta);
+        entity_reset.system(&world);
+        scenery_wrap.system(&world, delta);
         difficulty.system(&world);
 
         raylib.beginDrawing();
