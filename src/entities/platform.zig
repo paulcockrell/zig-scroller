@@ -7,8 +7,8 @@ pub const HEIGHT: f32 = 66.0;
 pub const Platform = struct {};
 
 pub fn spawn(world: *ecs.World) !void {
-    try spawnPlatform(world, 0, ecs.groundY(world) + HEIGHT / 2);
-    try spawnPlatform(world, WIDTH, ecs.groundY(world) + HEIGHT / 2);
+    try spawnPlatform(world, 0, ecs.groundY(world));
+    try spawnPlatform(world, WIDTH, ecs.groundY(world));
 }
 
 fn spawnPlatform(world: *ecs.World, x: f32, y: f32) !void {

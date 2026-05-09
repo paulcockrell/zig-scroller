@@ -24,7 +24,7 @@ fn spawnBackground(world: *ecs.World, x: f32, y: f32) !void {
     );
     try world.velocities.put(
         ent,
-        .{ .dx = 100.0, .dy = 0.0 },
+        .{ .dx = (world.scroll_speed * -1) + 10.0, .dy = 0.0 },
     );
     try world.dimensions.put(
         ent,

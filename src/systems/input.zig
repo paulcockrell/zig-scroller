@@ -13,12 +13,12 @@ pub fn system(world: *ecs.World) void {
 fn spaceInput(
     _: void,
     ent: ecs.Entity,
-    pos: *ecs.Position,
-    _: *ecs.Velocity,
+    _: *ecs.Position,
+    vel: *ecs.Velocity,
     _: *ecs.Dimension,
     world: *ecs.World,
 ) void {
-    if (pos.y < ecs.groundY(world)) return;
+    if (vel.dy < 0) return; // already in jump
 
     world.jump_intents.put(ent, .{ .force = JUMP_FORCE }) catch |err| {
         std.debug.print("Entity jump intent failed {}\n", .{err});

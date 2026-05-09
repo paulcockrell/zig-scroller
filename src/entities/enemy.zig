@@ -3,7 +3,6 @@ const ecs = @import("../ecs.zig");
 
 const WIDTH: f32 = 48.0;
 const HEIGHT: f32 = 30.0;
-const DX: f32 = 150.0;
 
 pub const Enemy = struct {};
 
@@ -22,7 +21,7 @@ pub fn spawn(world: *ecs.World) !void {
     );
     try world.velocities.put(
         ent,
-        .{ .dx = DX, .dy = 0.0 },
+        .{ .dx = 270, .dy = 0.0 },
     );
     try world.dimensions.put(
         ent,
