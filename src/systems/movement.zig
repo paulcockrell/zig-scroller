@@ -1,4 +1,5 @@
 const ecs = @import("../ecs.zig");
+const std = @import("std");
 
 pub fn system(world: *ecs.World, delta: f32) void {
     ecs.Query.players(world, delta, playerMovement);
@@ -9,17 +10,15 @@ fn playerMovement(
     _: ecs.Entity,
     pos: *ecs.Position,
     vel: *ecs.Velocity,
-    _: *ecs.Dimension,
+    dim: *ecs.Dimension,
     world: *ecs.World,
 ) void {
     pos.y += vel.dy * dt;
 
-    if (pos.y < 100.0) {
-        vel.dy = vel.dy * -1;
-    }
-
-    if (pos.y >= ecs.groundY(world)) {
-        pos.y = ecs.groundY(world);
-        vel.dy = 0;
+    if (vel.dy > 0.0) { // falling
+        if (pos.y > ecs.groundY(world) - dim.height) { // below ground
+            pos.y = ecs.groundY(world) - dim.height;
+            vel.dy = 0;
+        }
     }
 }
