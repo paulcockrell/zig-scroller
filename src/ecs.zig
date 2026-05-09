@@ -38,6 +38,7 @@ pub const World = struct {
     screen_width: i32 = 0,
     screen_height: i32 = 0,
 
+    health: i32 = 10,
     score: i32 = 0,
 
     positions: std.AutoHashMap(Entity, Position),
@@ -100,6 +101,11 @@ pub const World = struct {
         self.next_entity += 1;
 
         return id;
+    }
+
+    pub fn updateHealth(self: *World, val: i32) i32 {
+        self.health -= val;
+        return self.health;
     }
 
     pub fn updateScore(self: *World, val: i32) i32 {

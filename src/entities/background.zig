@@ -28,6 +28,6 @@ fn spawnBackground(world: *ecs.World, x: f32, y: f32) !void {
     );
     try world.dimensions.put(
         ent,
-        .{ .width = 1920.0, .height = 540.0 },
+        .{ .width = WIDTH, .height = HEIGHT },
     );
 }

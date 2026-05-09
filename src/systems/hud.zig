@@ -6,6 +6,7 @@ pub fn system(world: *ecs.World) void {
     drawScore(world);
     drawSpeed(world);
     drawTime(world);
+    drawHealth(world);
 }
 
 fn drawScore(world: *ecs.World) void {
@@ -44,5 +45,15 @@ fn drawTime(world: *ecs.World) void {
         50,
         20,
         raylib.Color.blue,
+    );
+}
+
+fn drawHealth(world: *ecs.World) void {
+    raylib.drawText(
+        raylib.textFormat("Health: %03i", .{world.health}),
+        10,
+        70,
+        20,
+        raylib.Color.white,
     );
 }

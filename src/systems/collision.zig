@@ -80,7 +80,11 @@ fn checkEnemyCollision(
         enemy_dim.width,
         enemy_dim.height,
     )) {
-        std.debug.print("Enemy collision!\n", .{});
+        _ = world.updateHealth(1);
+
+        world.needs_reset.put(enemy, {}) catch |err| {
+            std.debug.print("Entity reset failed {}\n", .{err});
+        };
     }
 }
 
@@ -102,8 +106,7 @@ fn checkRingCollision(
         ring_dim.width,
         ring_dim.height,
     )) {
-        const score = world.updateScore(1);
-        std.debug.print("Ring collision! New score {}\n", .{score});
+        _ = world.updateScore(1);
 
         world.needs_reset.put(ring, {}) catch |err| {
             std.debug.print("Entity reset failed {}\n", .{err});
