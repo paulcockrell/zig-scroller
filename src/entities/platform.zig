@@ -23,7 +23,7 @@ fn spawnPlatform(world: *ecs.World, x: f32, y: f32) !void {
         .{
             .animation_timer = 0,
             .frame_duration = 0,
-            .current_frame = 0,
+            .frame_idx = 0,
             .frame_count = FRAME_COUNT,
         },
     );

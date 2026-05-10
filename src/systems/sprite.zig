@@ -43,7 +43,7 @@ fn playerRenderer(
     process_animation(anim, delta);
 
     const rect_x =
-        0.0 + (@as(f32, @floatFromInt(anim.current_frame + 1)) * dim.width);
+        0.0 + (@as(f32, @floatFromInt(anim.frame_idx)) * dim.width);
 
     const rect_y =
         if (player.isJumping(world, ent)) rect_y: {
@@ -82,7 +82,7 @@ fn enemyRenderer(
     const enemy_texture = world.sprites.getEntry(ecs.SpriteTag.enemy) orelse return;
     const texture = enemy_texture.value_ptr.*;
     const rl_rect = raylib.Rectangle.init(
-        0.0 + (@as(f32, @floatFromInt(anim.current_frame + 1)) * dim.width),
+        0.0 + (@as(f32, @floatFromInt(anim.frame_idx + 1)) * dim.width),
         0.0,
         dim.width,
         dim.height,
@@ -109,7 +109,7 @@ fn ringRenderer(
     const ring_texture = world.sprites.getEntry(ecs.SpriteTag.ring) orelse return;
     const texture = ring_texture.value_ptr.*;
     const rl_rect = raylib.Rectangle.init(
-        0.0 + (@as(f32, @floatFromInt(anim.current_frame + 1)) * dim.width),
+        0.0 + (@as(f32, @floatFromInt(anim.frame_idx + 1)) * dim.width),
         0.0,
         dim.width,
         dim.height,
@@ -136,7 +136,7 @@ fn platformRenderer(
     const platform_texture = world.sprites.getEntry(ecs.SpriteTag.platform) orelse return;
     const texture = platform_texture.value_ptr.*;
     const rl_rect = raylib.Rectangle.init(
-        0.0 + (@as(f32, @floatFromInt(anim.current_frame + 1)) * dim.width),
+        0.0 + (@as(f32, @floatFromInt(anim.frame_idx + 1)) * dim.width),
         0.0,
         dim.width,
         dim.height,
@@ -163,7 +163,7 @@ fn backgroundRenderer(
     const background_texture = world.sprites.getEntry(ecs.SpriteTag.background) orelse return;
     const texture = background_texture.value_ptr.*;
     const rl_rect = raylib.Rectangle.init(
-        0.0 + (@as(f32, @floatFromInt(anim.current_frame + 1)) * dim.width),
+        0.0 + (@as(f32, @floatFromInt(anim.frame_idx + 1)) * dim.width),
         0.0,
         dim.width,
         dim.height,
@@ -181,7 +181,8 @@ fn process_animation(anim: *ecs.Animation, delta: f32) void {
 
     anim.animation_timer += delta;
     if (anim.animation_timer >= anim.frame_duration) {
-        anim.current_frame += 1;
-        if (anim.current_frame + 1 > anim.frame_count) anim.current_frame = 0;
+        anim.animation_timer -= anim.frame_duration;
+        anim.frame_idx += 1;
+        if (anim.frame_idx + 1 > anim.frame_count) anim.frame_idx = 0;
     }
 }

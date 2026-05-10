@@ -1,7 +1,7 @@
 const std = @import("std");
 const raylib = @import("raylib");
 
-pub const BASE_SCROLL_SPEED: f32 = 50.0;
+pub const BASE_SCROLL_SPEED: f32 = 0.0;
 pub const SCROLL_SPEED_FACTOR: f32 = 5.0;
 pub const MAX_SCROLL_SPEED: f32 = 400.0;
 pub const FPS: i32 = 60;
@@ -13,7 +13,7 @@ pub const SpriteTag = enum { player, enemy, ring, background, platform };
 pub const Animation = struct {
     animation_timer: f32,
     frame_duration: f32,
-    current_frame: i32,
+    frame_idx: i32,
     frame_count: i32,
 };
 

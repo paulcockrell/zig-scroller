@@ -8,7 +8,7 @@ const FRAME_COUNT: i32 = 8;
 pub fn spawn(world: *ecs.World) !void {
     const ent = world.createEntity();
     const y = ecs.groundY(world) - HEIGHT;
-    const frame_duration = @as(f32, @floatFromInt(FRAME_COUNT)) / @as(f32, @floatFromInt(ecs.FPS));
+    const frame_duration: f32 = 1.0 / 24.0;
 
     try world.players.put(
         ent,
@@ -20,7 +20,7 @@ pub fn spawn(world: *ecs.World) !void {
         .{
             .animation_timer = 0,
             .frame_duration = frame_duration,
-            .current_frame = 0,
+            .frame_idx = 0,
             .frame_count = FRAME_COUNT,
         },
     );

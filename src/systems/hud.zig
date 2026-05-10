@@ -24,8 +24,8 @@ fn drawSpeed(world: *ecs.World) void {
 
     var text_color = raylib.Color.white;
     text_color = switch (scroll_speed) {
-        0...200 => raylib.Color.green,
-        201...400 => raylib.Color.orange,
+        0...100 => raylib.Color.green,
+        101...300 => raylib.Color.orange,
         else => raylib.Color.red,
     };
 
@@ -49,11 +49,18 @@ fn drawTime(world: *ecs.World) void {
 }
 
 fn drawHealth(world: *ecs.World) void {
+    var text_color = raylib.Color.white;
+    text_color = switch (world.health) {
+        0...3 => raylib.Color.red,
+        4...7 => raylib.Color.orange,
+        else => raylib.Color.green,
+    };
+
     raylib.drawText(
         raylib.textFormat("Health: %03i", .{world.health}),
         10,
         70,
         20,
-        raylib.Color.white,
+        text_color,
     );
 }
