@@ -37,3 +37,11 @@ pub fn spawn(world: *ecs.World) !void {
         .{ .width = WIDTH, .height = HEIGHT },
     );
 }
+
+pub fn isJumping(world: *ecs.World, ent: ecs.Entity) bool {
+    const pos = world.positions.getPtr(ent) orelse return false;
+    const dim = world.dimensions.getPtr(ent) orelse return false;
+    const jumping = pos.y + dim.height < ecs.groundY(world);
+
+    return jumping;
+}

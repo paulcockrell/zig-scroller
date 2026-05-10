@@ -17,6 +17,7 @@ pub fn system(world: *ecs.World, delta: f32) void {
 fn entityWrap(
     _: f32,
     entity: ecs.Entity,
+    _: *ecs.Animation,
     pos: *ecs.Position,
     _: *ecs.Velocity,
     _: *ecs.Dimension,

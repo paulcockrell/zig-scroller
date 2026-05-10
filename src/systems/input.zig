@@ -1,6 +1,7 @@
 const raylib = @import("raylib");
 const ecs = @import("../ecs.zig");
 const std = @import("std");
+const player = @import("../entities/player.zig");
 
 const JUMP_FORCE: f32 = -250.0;
 
@@ -14,12 +15,12 @@ fn playerInput(
     _: void,
     ent: ecs.Entity,
     _: *ecs.Animation,
-    pos: *ecs.Position,
+    _: *ecs.Position,
     _: *ecs.Velocity,
-    dim: *ecs.Dimension,
+    _: *ecs.Dimension,
     world: *ecs.World,
 ) void {
-    if (pos.y + dim.height < ecs.groundY(world)) return; // already in jump
+    if (player.isJumping(world, ent)) return;
 
     world.jump_intents.put(ent, .{ .force = JUMP_FORCE }) catch |err| {
         std.debug.print("Entity jump intent failed {}\n", .{err});

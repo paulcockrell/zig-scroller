@@ -2,12 +2,13 @@ const ecs = @import("../ecs.zig");
 
 const WIDTH: f32 = 16.0;
 const HEIGHT: f32 = 16.0;
-const FRAME_COUNT: i32 = 1;
+const FRAME_COUNT: i32 = 16;
 
 pub fn spawn(world: *ecs.World) !void {
     const ent = world.createEntity();
     const x = @as(f32, @floatFromInt(world.screen_width + world.rng(0, 500)));
     const y = ecs.groundY(world) - HEIGHT;
+    const frame_duration = @as(f32, @floatFromInt(FRAME_COUNT)) / @as(f32, @floatFromInt(ecs.FPS));
 
     try world.rings.put(
         ent,
@@ -18,7 +19,7 @@ pub fn spawn(world: *ecs.World) !void {
         ent,
         .{
             .animation_timer = 0,
-            .frame_duration = 0,
+            .frame_duration = frame_duration,
             .current_frame = 0,
             .frame_count = FRAME_COUNT,
         },

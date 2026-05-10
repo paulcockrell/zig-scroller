@@ -26,6 +26,7 @@ pub fn system(world: *ecs.World, delta: f32) void {
 fn entityScroll(
     delta: f32,
     _: ecs.Entity,
+    _: *ecs.Animation,
     pos: *ecs.Position,
     vel: *ecs.Velocity,
     _: *ecs.Dimension,

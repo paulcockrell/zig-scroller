@@ -9,6 +9,7 @@ pub fn system(world: *ecs.World, delta: f32) void {
 fn wrapBackgroundTile(
     _: f32,
     entity: ecs.Entity,
+    _: *ecs.Animation,
     position: *ecs.Position,
     _: *ecs.Velocity,
     _: *ecs.Dimension,
@@ -28,6 +29,7 @@ fn wrapBackgroundTile(
 fn wrapPlatformTile(
     _: f32,
     entity: ecs.Entity,
+    _: *ecs.Animation,
     position: *ecs.Position,
     _: *ecs.Velocity,
     _: *ecs.Dimension,

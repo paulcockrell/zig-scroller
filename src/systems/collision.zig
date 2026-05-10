@@ -42,6 +42,7 @@ fn checkEntityCollision(
 fn checkEnemyCollision(
     player_ctx: PlayerCtx,
     enemy: ecs.Entity,
+    _: *ecs.Animation,
     enemy_pos: *ecs.Position,
     _: *ecs.Velocity,
     enemy_dim: *ecs.Dimension,
@@ -92,6 +93,7 @@ fn checkEnemyCollision(
 fn checkRingCollision(
     player_ctx: PlayerCtx,
     ring: ecs.Entity,
+    _: *ecs.Animation,
     ring_pos: *ecs.Position,
     _: *ecs.Velocity,
     ring_dim: *ecs.Dimension,

@@ -174,6 +174,7 @@ pub const Query = struct {
         func: fn (
             ctx: @TypeOf(ctx),
             ent: Entity,
+            anim: *Animation,
             pos: *Position,
             vel: *Velocity,
             dim: *Dimension,
@@ -185,6 +186,7 @@ pub const Query = struct {
         while (it.next()) |entry| {
             const ent = entry.key_ptr.*;
 
+            const anim = world.animations.getPtr(ent) orelse continue;
             const pos = world.positions.getPtr(ent) orelse continue;
             const vel = world.velocities.getPtr(ent) orelse continue;
             const dim = world.dimensions.getPtr(ent) orelse continue;
@@ -192,6 +194,7 @@ pub const Query = struct {
             func(
                 ctx,
                 ent,
+                anim,
                 pos,
                 vel,
                 dim,
@@ -206,6 +209,7 @@ pub const Query = struct {
         func: fn (
             ctx: @TypeOf(ctx),
             ent: Entity,
+            anim: *Animation,
             pos: *Position,
             vel: *Velocity,
             dim: *Dimension,
@@ -217,6 +221,7 @@ pub const Query = struct {
         while (it.next()) |entry| {
             const ent = entry.key_ptr.*;
 
+            const anim = world.animations.getPtr(ent) orelse continue;
             const pos = world.positions.getPtr(ent) orelse continue;
             const vel = world.velocities.getPtr(ent) orelse continue;
             const dim = world.dimensions.getPtr(ent) orelse continue;
@@ -224,6 +229,7 @@ pub const Query = struct {
             func(
                 ctx,
                 ent,
+                anim,
                 pos,
                 vel,
                 dim,
@@ -238,6 +244,7 @@ pub const Query = struct {
         func: fn (
             ctx: @TypeOf(ctx),
             ent: Entity,
+            anim: *Animation,
             pos: *Position,
             vel: *Velocity,
             dim: *Dimension,
@@ -249,6 +256,7 @@ pub const Query = struct {
         while (it.next()) |entry| {
             const ent = entry.key_ptr.*;
 
+            const anim = world.animations.getPtr(ent) orelse continue;
             const pos = world.positions.getPtr(ent) orelse continue;
             const vel = world.velocities.getPtr(ent) orelse continue;
             const dim = world.dimensions.getPtr(ent) orelse continue;
@@ -256,6 +264,7 @@ pub const Query = struct {
             func(
                 ctx,
                 ent,
+                anim,
                 pos,
                 vel,
                 dim,
@@ -270,6 +279,7 @@ pub const Query = struct {
         func: fn (
             ctx: @TypeOf(ctx),
             ent: Entity,
+            anim: *Animation,
             pos: *Position,
             vel: *Velocity,
             dim: *Dimension,
@@ -281,6 +291,7 @@ pub const Query = struct {
         while (it.next()) |entry| {
             const ent = entry.key_ptr.*;
 
+            const anim = world.animations.getPtr(ent) orelse continue;
             const pos = world.positions.getPtr(ent) orelse continue;
             const vel = world.velocities.getPtr(ent) orelse continue;
             const dim = world.dimensions.getPtr(ent) orelse continue;
@@ -288,6 +299,7 @@ pub const Query = struct {
             func(
                 ctx,
                 ent,
+                anim,
                 pos,
                 vel,
                 dim,
