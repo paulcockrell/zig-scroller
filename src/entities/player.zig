@@ -1,9 +1,9 @@
 const ecs = @import("../ecs.zig");
 
-const START_POS: f32 = 250.0;
-const WIDTH: f32 = 32.0;
-const HEIGHT: f32 = 44.0;
-const FRAME_COUNT: i32 = 8;
+pub const START_POS: f32 = 250.0;
+pub const WIDTH: f32 = 32.0;
+pub const HEIGHT: f32 = 44.0;
+pub const FRAME_COUNT: i32 = 8;
 
 pub fn spawn(world: *ecs.World) !void {
     const ent = world.createEntity();
