@@ -40,6 +40,9 @@ pub fn main(init: std.process.Init) !void {
     raylib.initAudioDevice();
     defer raylib.closeAudioDevice();
 
+    const bg_music = try raylib.loadMusicStream("resources/audio/monume-drum-amp-bass-dnb-music-dampb-drum-and-bass-519203.mp3");
+    raylib.playMusicStream(bg_music);
+
     var world = ecs.World.init(
         allocator,
         screen_width,
@@ -83,5 +86,7 @@ pub fn main(init: std.process.Init) !void {
         raylib.clearBackground(raylib.Color.black);
         sprite.system(&world, delta);
         hud.system(&world);
+
+        raylib.updateMusicStream(bg_music);
     }
 }

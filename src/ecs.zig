@@ -4,12 +4,16 @@ const resource = @import("systems/resource.zig");
 
 pub const BASE_SCROLL_SPEED: f32 = 0.0;
 pub const SCROLL_SPEED_FACTOR: f32 = 5.0;
-pub const MAX_SCROLL_SPEED: f32 = 400.0;
+pub const MAX_SCROLL_SPEED: f32 = 300.0;
 pub const FPS: i32 = 60;
 
 pub const Entity = u32;
 
 pub const SoundTag = enum { background, jump, ring, hit, stomp };
+
+pub const SoundParams = struct {
+    volume: f32,
+};
 
 pub const SpriteTag = enum { player, enemy, ring, background, platform };
 
@@ -67,7 +71,7 @@ pub const World = struct {
 
     needs_reset: std.AutoHashMap(Entity, void),
     jump_intents: std.AutoHashMap(Entity, JumpIntent),
-    sound_intents: std.AutoHashMap(SoundTag, void),
+    sound_intents: std.AutoHashMap(SoundTag, SoundParams),
 
     prng: std.Random.Xoshiro256,
 
@@ -92,7 +96,7 @@ pub const World = struct {
             .sprites = std.AutoHashMap(SpriteTag, raylib.Texture2D).init(allocator),
             .animations = std.AutoHashMap(Entity, Animation).init(allocator),
             .sounds = std.AutoHashMap(SoundTag, raylib.Sound).init(allocator),
-            .sound_intents = std.AutoHashMap(SoundTag, void).init(allocator),
+            .sound_intents = std.AutoHashMap(SoundTag, SoundParams).init(allocator),
             .prng = std.Random.DefaultPrng.init(std.testing.random_seed),
             .time = 0.0,
             .scroll_speed = BASE_SCROLL_SPEED,
@@ -364,16 +368,19 @@ pub const Query = struct {
         world: *World,
         func: fn (
             sound_tag: SoundTag,
+            sound_params: *SoundParams,
             world: *World,
         ) void,
     ) void {
         var it = world.sound_intents.iterator();
 
         while (it.next()) |entry| {
-            const ent = entry.key_ptr.*;
+            const sound_tag = entry.key_ptr.*;
+            const sound_params = entry.value_ptr;
 
             func(
-                ent,
+                sound_tag,
+                sound_params,
                 world,
             );
         }

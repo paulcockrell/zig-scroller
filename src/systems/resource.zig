@@ -68,18 +68,18 @@ fn load_sprite(world: *ecs.World, img_path: [:0]const u8, sprite_tag: ecs.Sprite
 }
 
 fn load_sounds(world: *ecs.World) !void {
-    try load_background_sound(world);
+    // try load_background_sound(world);
     try load_jump_sound(world);
     try load_ring_sound(world);
     try load_hit_sound(world);
     try load_stomp_sound(world);
 }
 
-fn load_background_sound(world: *ecs.World) !void {
-    const background = try raylib.loadSound("resources/audio/monume-drum-amp-bass-dnb-music-dampb-drum-and-bass-519203.mp3");
-    raylib.playSound(background);
-    try world.sounds.put(ecs.SoundTag.background, background);
-}
+// fn load_background_sound(world: *ecs.World) !void {
+//     const background = try raylib.loadSound("resources/audio/background.wav");
+//     raylib.playSound(background);
+//     try world.sounds.put(ecs.SoundTag.background, background);
+// }
 
 fn load_jump_sound(world: *ecs.World) !void {
     const jump = try raylib.loadSound("resources/audio/lumora_studios-pixel-jump-319167.mp3");

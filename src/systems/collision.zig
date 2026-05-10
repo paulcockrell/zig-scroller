@@ -67,7 +67,7 @@ fn checkEnemyCollision(
             std.debug.print("Entity reset failed {}\n", .{err});
         };
 
-        world.sound_intents.put(ecs.SoundTag.stomp, {}) catch |err| {
+        world.sound_intents.put(ecs.SoundTag.stomp, .{ .volume = 0.3 }) catch |err| {
             std.debug.print("Stomp sound intent failed {}\n", .{err});
         };
 
@@ -90,7 +90,7 @@ fn checkEnemyCollision(
             std.debug.print("Entity reset failed {}\n", .{err});
         };
 
-        world.sound_intents.put(ecs.SoundTag.hit, {}) catch |err| {
+        world.sound_intents.put(ecs.SoundTag.hit, .{ .volume = 0.3 }) catch |err| {
             std.debug.print("Hit sound intent failed {}\n", .{err});
         };
     }
@@ -121,7 +121,7 @@ fn checkRingCollision(
             std.debug.print("Entity reset failed {}\n", .{err});
         };
 
-        world.sound_intents.put(ecs.SoundTag.ring, {}) catch |err| {
+        world.sound_intents.put(ecs.SoundTag.ring, .{ .volume = 0.3 }) catch |err| {
             std.debug.print("Ring sound intent failed {}\n", .{err});
         };
     }

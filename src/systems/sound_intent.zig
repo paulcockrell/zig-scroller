@@ -7,9 +7,14 @@ pub fn system(world: *ecs.World) void {
     world.sound_intents.clearRetainingCapacity();
 }
 
-fn play_sound(sound_tag: ecs.SoundTag, world: *ecs.World) void {
+fn play_sound(
+    sound_tag: ecs.SoundTag,
+    sound_params: *ecs.SoundParams,
+    world: *ecs.World,
+) void {
     const sound = world.sounds.get(sound_tag);
     if (sound) |s| {
+        raylib.setSoundVolume(s, sound_params.volume);
         raylib.playSound(s);
     } else {
         std.debug.print("Couldn't find sound with tag {}\n", .{sound_tag});

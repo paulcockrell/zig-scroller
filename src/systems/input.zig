@@ -26,7 +26,7 @@ fn playerInput(
         std.debug.print("Entity jump intent failed {}\n", .{err});
     };
 
-    world.sound_intents.put(ecs.SoundTag.jump, {}) catch |err| {
+    world.sound_intents.put(ecs.SoundTag.jump, .{ .volume = 0.3 }) catch |err| {
         std.debug.print("Jump sound intent failed {}\n", .{err});
     };
 }
