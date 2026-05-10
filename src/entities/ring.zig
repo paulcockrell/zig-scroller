@@ -2,8 +2,7 @@ const ecs = @import("../ecs.zig");
 
 const WIDTH: f32 = 16.0;
 const HEIGHT: f32 = 16.0;
-
-pub const Ring = struct {};
+const FRAME_COUNT: i32 = 1;
 
 pub fn spawn(world: *ecs.World) !void {
     const ent = world.createEntity();
@@ -13,6 +12,16 @@ pub fn spawn(world: *ecs.World) !void {
     try world.rings.put(
         ent,
         {},
+    );
+
+    try world.animations.put(
+        ent,
+        .{
+            .animation_timer = 0,
+            .frame_duration = 0,
+            .current_frame = 0,
+            .frame_count = FRAME_COUNT,
+        },
     );
     try world.positions.put(
         ent,

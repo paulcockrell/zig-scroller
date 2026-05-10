@@ -21,7 +21,7 @@ fn load_player_sprite(world: *ecs.World) !void {
 fn load_enemy_sprite(world: *ecs.World) !void {
     try load_sprite(
         world,
-        "resources/motobug.png",
+        "resources/enemy.png",
         ecs.SpriteTag.enemy,
     );
 }

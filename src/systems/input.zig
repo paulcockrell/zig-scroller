@@ -13,6 +13,7 @@ pub fn system(world: *ecs.World) void {
 fn playerInput(
     _: void,
     ent: ecs.Entity,
+    _: *ecs.Animation,
     pos: *ecs.Position,
     _: *ecs.Velocity,
     dim: *ecs.Dimension,

@@ -28,7 +28,7 @@ pub fn main(init: std.process.Init) !void {
     const screen_width: i32 = 800;
     const screen_height: i32 = 600;
 
-    raylib.setTargetFPS(60);
+    raylib.setTargetFPS(ecs.FPS);
     raylib.initWindow(
         screen_width,
         screen_height,
@@ -76,7 +76,7 @@ pub fn main(init: std.process.Init) !void {
         defer raylib.endDrawing();
 
         raylib.clearBackground(raylib.Color.black);
-        sprite.system(&world);
+        sprite.system(&world, delta);
         hud.system(&world);
     }
 }

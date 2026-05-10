@@ -20,6 +20,7 @@ const PlayerCtx = struct {
 fn checkEntityCollision(
     _: void,
     ent: ecs.Entity,
+    _: *ecs.Animation,
     pos: *ecs.Position,
     vel: *ecs.Velocity,
     dim: *ecs.Dimension,

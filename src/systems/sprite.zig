@@ -2,7 +2,7 @@ const ecs = @import("../ecs.zig");
 const std = @import("std");
 const raylib = @import("raylib");
 
-pub fn system(world: *ecs.World) void {
+pub fn system(world: *ecs.World, delta: f32) void {
     ecs.Query.backgrounds(
         world,
         {},
@@ -15,7 +15,7 @@ pub fn system(world: *ecs.World) void {
     );
     ecs.Query.players(
         world,
-        {},
+        delta,
         playerRenderer,
     );
     ecs.Query.enemies(
@@ -31,32 +31,33 @@ pub fn system(world: *ecs.World) void {
 }
 
 fn playerRenderer(
-    _: void,
+    delta: f32,
     _: ecs.Entity,
+    anim: *ecs.Animation,
     pos: *ecs.Position,
     _: *ecs.Velocity,
     dim: *ecs.Dimension,
     world: *ecs.World,
 ) void {
-    const player_texture = world.sprites.getEntry(ecs.SpriteTag.player);
-
-    if (player_texture) |entry| {
-        const texture = entry.value_ptr.*;
-        const rl_rect = raylib.Rectangle.init(
-            0.0,
-            0.0,
-            dim.width,
-            dim.height,
-        );
-        const rl_pos = raylib.Vector2.init(
-            pos.x,
-            pos.y,
-        );
-
-        raylib.drawTextureRec(texture, rl_rect, rl_pos, .white);
-    } else {
-        std.debug.print("Failed to load player texture. Not rendering\n", .{});
+    anim.animation_timer += delta;
+    if (anim.animation_timer >= anim.frame_duration) {
+        anim.current_frame += 1;
+        if (anim.current_frame + 1 > anim.frame_count) anim.current_frame = 0;
     }
+    const player_texture = world.sprites.getEntry(ecs.SpriteTag.player) orelse return;
+    const texture = player_texture.value_ptr.*;
+    const rl_rect = raylib.Rectangle.init(
+        0.0 + (@as(f32, @floatFromInt(anim.current_frame + 1)) * dim.width),
+        0.0,
+        dim.width,
+        dim.height,
+    );
+    const rl_pos = raylib.Vector2.init(
+        pos.x,
+        pos.y,
+    );
+
+    raylib.drawTextureRec(texture, rl_rect, rl_pos, .white);
 }
 
 fn enemyRenderer(
@@ -67,25 +68,20 @@ fn enemyRenderer(
     dim: *ecs.Dimension,
     world: *ecs.World,
 ) void {
-    const enemy_texture = world.sprites.getEntry(ecs.SpriteTag.enemy);
+    const enemy_texture = world.sprites.getEntry(ecs.SpriteTag.enemy) orelse return;
+    const texture = enemy_texture.value_ptr.*;
+    const rl_rect = raylib.Rectangle.init(
+        0.0,
+        0.0,
+        dim.width,
+        dim.height,
+    );
+    const rl_pos = raylib.Vector2.init(
+        pos.x,
+        pos.y,
+    );
 
-    if (enemy_texture) |entry| {
-        const texture = entry.value_ptr.*;
-        const rl_rect = raylib.Rectangle.init(
-            0.0,
-            0.0,
-            dim.width,
-            dim.height,
-        );
-        const rl_pos = raylib.Vector2.init(
-            pos.x,
-            pos.y,
-        );
-
-        raylib.drawTextureRec(texture, rl_rect, rl_pos, .white);
-    } else {
-        std.debug.print("Failed to load enemy texture. Not rendering\n", .{});
-    }
+    raylib.drawTextureRec(texture, rl_rect, rl_pos, .white);
 }
 
 fn ringRenderer(
@@ -96,25 +92,20 @@ fn ringRenderer(
     dim: *ecs.Dimension,
     world: *ecs.World,
 ) void {
-    const ring_texture = world.sprites.getEntry(ecs.SpriteTag.ring);
+    const ring_texture = world.sprites.getEntry(ecs.SpriteTag.ring) orelse return;
+    const texture = ring_texture.value_ptr.*;
+    const rl_rect = raylib.Rectangle.init(
+        0.0,
+        0.0,
+        dim.width,
+        dim.height,
+    );
+    const rl_pos = raylib.Vector2.init(
+        pos.x,
+        pos.y,
+    );
 
-    if (ring_texture) |entry| {
-        const texture = entry.value_ptr.*;
-        const rl_rect = raylib.Rectangle.init(
-            0.0,
-            0.0,
-            dim.width,
-            dim.height,
-        );
-        const rl_pos = raylib.Vector2.init(
-            pos.x,
-            pos.y,
-        );
-
-        raylib.drawTextureRec(texture, rl_rect, rl_pos, .white);
-    } else {
-        std.debug.print("Failed to load ring texture. Not rendering\n", .{});
-    }
+    raylib.drawTextureRec(texture, rl_rect, rl_pos, .white);
 }
 
 fn platformRenderer(
@@ -125,25 +116,20 @@ fn platformRenderer(
     dim: *ecs.Dimension,
     world: *ecs.World,
 ) void {
-    const platform_texture = world.sprites.getEntry(ecs.SpriteTag.platform);
+    const platform_texture = world.sprites.getEntry(ecs.SpriteTag.platform) orelse return;
+    const texture = platform_texture.value_ptr.*;
+    const rl_rect = raylib.Rectangle.init(
+        0.0,
+        0.0,
+        dim.width,
+        dim.height,
+    );
+    const rl_pos = raylib.Vector2.init(
+        pos.x,
+        pos.y,
+    );
 
-    if (platform_texture) |entry| {
-        const texture = entry.value_ptr.*;
-        const rl_rect = raylib.Rectangle.init(
-            0.0,
-            0.0,
-            dim.width,
-            dim.height,
-        );
-        const rl_pos = raylib.Vector2.init(
-            pos.x,
-            pos.y,
-        );
-
-        raylib.drawTextureRec(texture, rl_rect, rl_pos, .white);
-    } else {
-        std.debug.print("Failed to load platform texture. Not rendering\n", .{});
-    }
+    raylib.drawTextureRec(texture, rl_rect, rl_pos, .white);
 }
 
 fn backgroundRenderer(
@@ -154,23 +140,18 @@ fn backgroundRenderer(
     dim: *ecs.Dimension,
     world: *ecs.World,
 ) void {
-    const background_texture = world.sprites.getEntry(ecs.SpriteTag.background);
+    const background_texture = world.sprites.getEntry(ecs.SpriteTag.background) orelse return;
+    const texture = background_texture.value_ptr.*;
+    const rl_rect = raylib.Rectangle.init(
+        0.0,
+        0.0,
+        dim.width,
+        dim.height,
+    );
+    const rl_pos = raylib.Vector2.init(
+        pos.x,
+        pos.y,
+    );
 
-    if (background_texture) |entry| {
-        const texture = entry.value_ptr.*;
-        const rl_rect = raylib.Rectangle.init(
-            0.0,
-            0.0,
-            dim.width,
-            dim.height,
-        );
-        const rl_pos = raylib.Vector2.init(
-            pos.x,
-            pos.y,
-        );
-
-        raylib.drawTextureRec(texture, rl_rect, rl_pos, .white);
-    } else {
-        std.debug.print("Failed to load background texture. Not rendering\n", .{});
-    }
+    raylib.drawTextureRec(texture, rl_rect, rl_pos, .white);
 }

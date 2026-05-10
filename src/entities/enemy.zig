@@ -3,17 +3,27 @@ const ecs = @import("../ecs.zig");
 
 const WIDTH: f32 = 48.0;
 const HEIGHT: f32 = 30.0;
-
-pub const Enemy = struct {};
+const FRAME_COUNT: i32 = 5;
 
 pub fn spawn(world: *ecs.World) !void {
     const ent = world.createEntity();
     const x = @as(f32, @floatFromInt(world.screen_width + world.rng(0, 1000)));
     const y = ecs.groundY(world) - HEIGHT;
+    const frame_duration = @as(f32, @floatFromInt(FRAME_COUNT)) / @as(f32, @floatFromInt(ecs.FPS));
 
     try world.enemies.put(
         ent,
         {},
+    );
+
+    try world.animations.put(
+        ent,
+        .{
+            .animation_timer = 0,
+            .frame_duration = frame_duration,
+            .current_frame = 0,
+            .frame_count = FRAME_COUNT,
+        },
     );
     try world.positions.put(
         ent,

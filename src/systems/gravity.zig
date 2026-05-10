@@ -11,6 +11,7 @@ pub fn system(world: *ecs.World, delta: f32) void {
 fn applyPlayerGravity(
     delta: f32,
     _: ecs.Entity,
+    _: *ecs.Animation,
     pos: *ecs.Position,
     vel: *ecs.Velocity,
     dim: *ecs.Dimension,

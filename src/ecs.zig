@@ -1,11 +1,21 @@
 const std = @import("std");
 const raylib = @import("raylib");
 
-pub const BASE_SCROLL_SPEED: f32 = 150.0;
+pub const BASE_SCROLL_SPEED: f32 = 50.0;
 pub const SCROLL_SPEED_FACTOR: f32 = 5.0;
-pub const MAX_SCROLL_SPEED: f32 = 600.0;
+pub const MAX_SCROLL_SPEED: f32 = 400.0;
+pub const FPS: i32 = 60;
 
 pub const Entity = u32;
+
+pub const SpriteTag = enum { player, enemy, ring, background, platform };
+
+pub const Animation = struct {
+    animation_timer: f32,
+    frame_duration: f32,
+    current_frame: i32,
+    frame_count: i32,
+};
 
 pub const Position = struct {
     x: f32,
@@ -28,8 +38,6 @@ pub const JumpIntent = struct {
 
 pub const NeedsReset = struct {};
 
-pub const SpriteTag = enum { player, enemy, ring, background, platform };
-
 pub const World = struct {
     allocator: std.mem.Allocator,
 
@@ -45,6 +53,7 @@ pub const World = struct {
     velocities: std.AutoHashMap(Entity, Velocity),
     dimensions: std.AutoHashMap(Entity, Dimension),
     sprites: std.AutoHashMap(SpriteTag, raylib.Texture2D),
+    animations: std.AutoHashMap(Entity, Animation),
 
     players: std.AutoHashMap(Entity, void),
     enemies: std.AutoHashMap(Entity, void),
@@ -76,6 +85,7 @@ pub const World = struct {
             .needs_reset = std.AutoHashMap(Entity, void).init(allocator),
             .jump_intents = std.AutoHashMap(Entity, JumpIntent).init(allocator),
             .sprites = std.AutoHashMap(SpriteTag, raylib.Texture2D).init(allocator),
+            .animations = std.AutoHashMap(Entity, Animation).init(allocator),
             .prng = std.Random.DefaultPrng.init(std.testing.random_seed),
             .time = 0.0,
             .scroll_speed = BASE_SCROLL_SPEED,
@@ -94,6 +104,7 @@ pub const World = struct {
         self.needs_reset.deinit();
         self.jump_intents.deinit();
         self.sprites.deinit();
+        self.animations.deinit();
     }
 
     pub fn createEntity(self: *World) Entity {
@@ -128,6 +139,7 @@ pub const Query = struct {
         func: fn (
             ctx: @TypeOf(ctx),
             ent: Entity,
+            anim: *Animation,
             pos: *Position,
             vel: *Velocity,
             dim: *Dimension,
@@ -139,6 +151,7 @@ pub const Query = struct {
         while (it.next()) |entry| {
             const ent = entry.key_ptr.*;
 
+            const anim = world.animations.getPtr(ent) orelse continue;
             const pos = world.positions.getPtr(ent) orelse continue;
             const vel = world.velocities.getPtr(ent) orelse continue;
             const dim = world.dimensions.getPtr(ent) orelse continue;
@@ -146,6 +159,7 @@ pub const Query = struct {
             func(
                 ctx,
                 ent,
+                anim,
                 pos,
                 vel,
                 dim,

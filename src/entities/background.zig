@@ -1,10 +1,9 @@
 const std = @import("std");
 const ecs = @import("../ecs.zig");
 
-pub const WIDTH: f32 = 1920.0;
-pub const HEIGHT: f32 = 540.0;
-
-pub const Background = struct {};
+const WIDTH: f32 = 1920.0;
+const HEIGHT: f32 = 540.0;
+const FRAME_COUNT: i32 = 1;
 
 pub fn spawn(world: *ecs.World) !void {
     try spawnBackground(world, 0.0, 0.0);
@@ -17,6 +16,16 @@ fn spawnBackground(world: *ecs.World, x: f32, y: f32) !void {
     try world.backgrounds.put(
         ent,
         {},
+    );
+
+    try world.animations.put(
+        ent,
+        .{
+            .animation_timer = 0,
+            .frame_duration = 0,
+            .current_frame = 0,
+            .frame_count = FRAME_COUNT,
+        },
     );
     try world.positions.put(
         ent,
