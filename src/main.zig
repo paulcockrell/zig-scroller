@@ -8,7 +8,7 @@ const input = @import("systems/input.zig");
 const gravity = @import("systems/gravity.zig");
 const movement = @import("systems/movement.zig");
 const collision = @import("systems/collision.zig");
-const jump_intents = @import("systems/jump_intent.zig");
+const jump_intent = @import("systems/jump_intent.zig");
 const difficulty = @import("systems/difficulty.zig");
 const hud = @import("systems/hud.zig");
 const sprite = @import("systems/sprite.zig");
@@ -16,6 +16,7 @@ const resource = @import("systems/resource.zig");
 const entity_wrap = @import("systems/entity_wrap.zig");
 const entity_reset = @import("systems/entity_reset.zig");
 const scenery_wrap = @import("systems/scenery_wrap.zig");
+const sound_intent = @import("systems/sound_intent.zig");
 
 const player = @import("entities/player.zig");
 const enemy = @import("entities/enemy.zig");
@@ -66,7 +67,7 @@ pub fn main(init: std.process.Init) !void {
 
         input.system(&world);
         collision.system(&world);
-        jump_intents.system(&world);
+        jump_intent.system(&world);
         gravity.system(&world, delta);
         movement.system(&world, delta);
         scroll.system(&world, delta);
@@ -74,6 +75,7 @@ pub fn main(init: std.process.Init) !void {
         entity_reset.system(&world);
         scenery_wrap.system(&world, delta);
         difficulty.system(&world);
+        sound_intent.system(&world);
 
         raylib.beginDrawing();
         defer raylib.endDrawing();

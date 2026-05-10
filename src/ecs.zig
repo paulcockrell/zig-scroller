@@ -1,5 +1,6 @@
 const std = @import("std");
 const raylib = @import("raylib");
+const resource = @import("systems/resource.zig");
 
 pub const BASE_SCROLL_SPEED: f32 = 0.0;
 pub const SCROLL_SPEED_FACTOR: f32 = 5.0;
@@ -8,7 +9,7 @@ pub const FPS: i32 = 60;
 
 pub const Entity = u32;
 
-pub const SoundTag = enum { background, jump, ring, hit };
+pub const SoundTag = enum { background, jump, ring, hit, stomp };
 
 pub const SpriteTag = enum { player, enemy, ring, background, platform };
 
@@ -56,7 +57,7 @@ pub const World = struct {
     dimensions: std.AutoHashMap(Entity, Dimension),
     sprites: std.AutoHashMap(SpriteTag, raylib.Texture2D),
     animations: std.AutoHashMap(Entity, Animation),
-    sounds: std.AutoHashMap(SoundTag, raylib.AudioStream),
+    sounds: std.AutoHashMap(SoundTag, raylib.Sound),
 
     players: std.AutoHashMap(Entity, void),
     enemies: std.AutoHashMap(Entity, void),
@@ -90,7 +91,7 @@ pub const World = struct {
             .jump_intents = std.AutoHashMap(Entity, JumpIntent).init(allocator),
             .sprites = std.AutoHashMap(SpriteTag, raylib.Texture2D).init(allocator),
             .animations = std.AutoHashMap(Entity, Animation).init(allocator),
-            .sounds = std.AutoHashMap(SoundTag, raylib.AudioStream).init(allocator),
+            .sounds = std.AutoHashMap(SoundTag, raylib.Sound).init(allocator),
             .sound_intents = std.AutoHashMap(SoundTag, void).init(allocator),
             .prng = std.Random.DefaultPrng.init(std.testing.random_seed),
             .time = 0.0,
@@ -99,6 +100,7 @@ pub const World = struct {
     }
 
     pub fn deinit(self: *World) void {
+        resource.deinit(self);
         self.positions.deinit();
         self.velocities.deinit();
         self.dimensions.deinit();
@@ -340,6 +342,7 @@ pub const Query = struct {
         func: fn (
             vel: *Velocity,
             intent: *JumpIntent,
+            world: *World,
         ) void,
     ) void {
         var it = world.jump_intents.iterator();
@@ -352,6 +355,48 @@ pub const Query = struct {
             func(
                 vel,
                 intent,
+                world,
+            );
+        }
+    }
+
+    pub fn sound_intents(
+        world: *World,
+        func: fn (
+            sound_tag: SoundTag,
+            world: *World,
+        ) void,
+    ) void {
+        var it = world.sound_intents.iterator();
+
+        while (it.next()) |entry| {
+            const ent = entry.key_ptr.*;
+
+            func(
+                ent,
+                world,
+            );
+        }
+    }
+
+    pub fn sounds(
+        world: *World,
+        func: fn (
+            sound_tag: SoundTag,
+            sound: *raylib.Sound,
+            world: *World,
+        ) void,
+    ) void {
+        var it = world.sounds.iterator();
+
+        while (it.next()) |entry| {
+            const sound_tag = entry.key_ptr.*;
+            const sound = entry.value_ptr;
+
+            func(
+                sound_tag,
+                sound,
+                world,
             );
         }
     }

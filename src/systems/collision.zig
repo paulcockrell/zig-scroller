@@ -59,14 +59,16 @@ fn checkEnemyCollision(
         enemy_dim.width,
         enemy_dim.height,
     )) {
-        std.debug.print("Enemy stomp!\n", .{});
-
         world.jump_intents.put(player_ctx.ent, .{ .force = JUMP_FORCE }) catch |err| {
             std.debug.print("Entity jump intent failed {}\n", .{err});
         };
 
         world.needs_reset.put(enemy, {}) catch |err| {
             std.debug.print("Entity reset failed {}\n", .{err});
+        };
+
+        world.sound_intents.put(ecs.SoundTag.stomp, {}) catch |err| {
+            std.debug.print("Stomp sound intent failed {}\n", .{err});
         };
 
         return;
@@ -86,6 +88,10 @@ fn checkEnemyCollision(
 
         world.needs_reset.put(enemy, {}) catch |err| {
             std.debug.print("Entity reset failed {}\n", .{err});
+        };
+
+        world.sound_intents.put(ecs.SoundTag.hit, {}) catch |err| {
+            std.debug.print("Hit sound intent failed {}\n", .{err});
         };
     }
 }
@@ -113,6 +119,10 @@ fn checkRingCollision(
 
         world.needs_reset.put(ring, {}) catch |err| {
             std.debug.print("Entity reset failed {}\n", .{err});
+        };
+
+        world.sound_intents.put(ecs.SoundTag.ring, {}) catch |err| {
+            std.debug.print("Ring sound intent failed {}\n", .{err});
         };
     }
 }
