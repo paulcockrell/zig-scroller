@@ -36,6 +36,9 @@ pub fn main(init: std.process.Init) !void {
     );
     defer raylib.closeWindow();
 
+    raylib.initAudioDevice();
+    defer raylib.closeAudioDevice();
+
     var world = ecs.World.init(
         allocator,
         screen_width,

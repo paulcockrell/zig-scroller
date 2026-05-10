@@ -8,6 +8,8 @@ pub const FPS: i32 = 60;
 
 pub const Entity = u32;
 
+pub const SoundTag = enum { background, jump, ring, hit };
+
 pub const SpriteTag = enum { player, enemy, ring, background, platform };
 
 pub const Animation = struct {
@@ -54,6 +56,7 @@ pub const World = struct {
     dimensions: std.AutoHashMap(Entity, Dimension),
     sprites: std.AutoHashMap(SpriteTag, raylib.Texture2D),
     animations: std.AutoHashMap(Entity, Animation),
+    sounds: std.AutoHashMap(SoundTag, raylib.AudioStream),
 
     players: std.AutoHashMap(Entity, void),
     enemies: std.AutoHashMap(Entity, void),
@@ -63,6 +66,7 @@ pub const World = struct {
 
     needs_reset: std.AutoHashMap(Entity, void),
     jump_intents: std.AutoHashMap(Entity, JumpIntent),
+    sound_intents: std.AutoHashMap(SoundTag, void),
 
     prng: std.Random.Xoshiro256,
 
@@ -86,6 +90,8 @@ pub const World = struct {
             .jump_intents = std.AutoHashMap(Entity, JumpIntent).init(allocator),
             .sprites = std.AutoHashMap(SpriteTag, raylib.Texture2D).init(allocator),
             .animations = std.AutoHashMap(Entity, Animation).init(allocator),
+            .sounds = std.AutoHashMap(SoundTag, raylib.AudioStream).init(allocator),
+            .sound_intents = std.AutoHashMap(SoundTag, void).init(allocator),
             .prng = std.Random.DefaultPrng.init(std.testing.random_seed),
             .time = 0.0,
             .scroll_speed = BASE_SCROLL_SPEED,
@@ -105,6 +111,8 @@ pub const World = struct {
         self.jump_intents.deinit();
         self.sprites.deinit();
         self.animations.deinit();
+        self.sounds.deinit();
+        self.sound_intents.deinit();
     }
 
     pub fn createEntity(self: *World) Entity {
