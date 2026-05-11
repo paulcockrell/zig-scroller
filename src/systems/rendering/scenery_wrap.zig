@@ -1,5 +1,5 @@
-const ecs = @import("../ecs.zig");
 const std = @import("std");
+const ecs = @import("../../ecs.zig");
 
 pub fn system(world: *ecs.World, delta: f32) void {
     ecs.Query.backgrounds(world, delta, wrapBackgroundTile);

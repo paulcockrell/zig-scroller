@@ -1,5 +1,5 @@
 const std = @import("std");
-const ecs = @import("../ecs.zig");
+const ecs = @import("../../ecs.zig");
 
 const JUMP_FORCE: f32 = -250.0;
 

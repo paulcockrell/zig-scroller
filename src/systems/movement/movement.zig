@@ -1,7 +1,7 @@
-const ecs = @import("../ecs.zig");
 const std = @import("std");
-const background = @import("../entities/background.zig");
-const player = @import("../entities/player.zig");
+const ecs = @import("../../ecs.zig");
+const background = @import("../../entities/background.zig");
+const player = @import("../../entities/player.zig");
 
 pub fn system(world: *ecs.World, delta: f32) void {
     ecs.Query.players(world, delta, movement);

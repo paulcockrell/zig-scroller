@@ -3,20 +3,21 @@ const raylib = @import("raylib");
 
 const ecs = @import("ecs.zig");
 
-const scroll = @import("systems/scroll.zig");
-const input = @import("systems/input.zig");
-const gravity = @import("systems/gravity.zig");
-const movement = @import("systems/movement.zig");
-const collision = @import("systems/collision.zig");
-const jump_intent = @import("systems/jump_intent.zig");
-const difficulty = @import("systems/difficulty.zig");
-const hud = @import("systems/hud.zig");
-const sprite = @import("systems/sprite.zig");
-const resource = @import("systems/resource.zig");
-const entity_wrap = @import("systems/entity_wrap.zig");
-const entity_reset = @import("systems/entity_reset.zig");
-const scenery_wrap = @import("systems/scenery_wrap.zig");
-const sound_intent = @import("systems/sound_intent.zig");
+const scroll = @import("systems/rendering/scroll.zig");
+const input = @import("systems/input/keyboard.zig");
+const gravity = @import("systems/physics/gravity.zig");
+const movement = @import("systems/movement/movement.zig");
+const collision = @import("systems/movement/collision.zig");
+const jump_intent = @import("systems/movement/jump_intent.zig");
+const difficulty = @import("systems/gameplay/difficulty.zig");
+const hud = @import("systems/rendering/hud.zig");
+const sprite = @import("systems/rendering/sprite.zig");
+const resource_audio = @import("systems/resources/audio.zig");
+const resource_textures = @import("systems/resources/textures.zig");
+const entity_wrap = @import("systems/rendering/entity_wrap.zig");
+const entity_reset = @import("systems/gameplay/entity_reset.zig");
+const scenery_wrap = @import("systems/rendering/scenery_wrap.zig");
+const sound_intent = @import("systems/audio/sound_intent.zig");
 
 const player = @import("entities/player.zig");
 const enemy = @import("entities/enemy.zig");
@@ -50,9 +51,14 @@ pub fn main(init: std.process.Init) !void {
     );
     defer world.deinit();
 
+    resource_textures.system(&world) catch |err| {
+        std.debug.print("Failed to load texture resources. Exiting. {}", .{err});
+        return;
+    };
+
     // must come before entities are spawned
-    resource.system(&world) catch |err| {
-        std.debug.print("Failed to load resources. Exiting. {}", .{err});
+    resource_audio.system(&world) catch |err| {
+        std.debug.print("Failed to load audio resources. Exiting. {}", .{err});
         return;
     };
 

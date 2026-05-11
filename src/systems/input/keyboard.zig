@@ -1,7 +1,7 @@
-const raylib = @import("raylib");
-const ecs = @import("../ecs.zig");
 const std = @import("std");
-const player = @import("../entities/player.zig");
+const raylib = @import("raylib");
+const ecs = @import("../../ecs.zig");
+const player = @import("../../entities/player.zig");
 
 const JUMP_FORCE: f32 = -250.0;
 

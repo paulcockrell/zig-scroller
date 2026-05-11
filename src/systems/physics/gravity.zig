@@ -1,5 +1,5 @@
-const ecs = @import("../ecs.zig");
 const std = @import("std");
+const ecs = @import("../../ecs.zig");
 
 const GRAVITY: f32 = 500.0;
 const MAX_FALL_SPEED: f32 = 400.0;
