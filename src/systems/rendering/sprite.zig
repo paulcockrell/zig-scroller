@@ -42,30 +42,24 @@ fn playerRenderer(
 ) void {
     process_animation(anim, delta);
 
-    const rect_x =
+    const x =
         0.0 + (@as(f32, @floatFromInt(anim.frame_idx)) * dim.width);
 
-    const rect_y =
+    const y =
         if (player.isJumping(world, ent)) rect_y: {
             break :rect_y dim.height;
         } else rect_y: {
             break :rect_y 0.0;
         };
 
-    const player_texture = world.sprites.getEntry(ecs.SpriteTag.player) orelse return;
-    const texture = player_texture.value_ptr.*;
-    const rl_rect = raylib.Rectangle.init(
-        rect_x,
-        rect_y,
-        dim.width,
-        dim.height,
+    sprite_renderer(
+        world,
+        ecs.SpriteTag.player,
+        x,
+        y,
+        dim,
+        pos,
     );
-    const rl_pos = raylib.Vector2.init(
-        pos.x,
-        pos.y,
-    );
-
-    raylib.drawTextureRec(texture, rl_rect, rl_pos, .white);
 }
 
 fn enemyRenderer(
@@ -78,21 +72,14 @@ fn enemyRenderer(
     world: *ecs.World,
 ) void {
     process_animation(anim, delta);
-
-    const enemy_texture = world.sprites.getEntry(ecs.SpriteTag.enemy) orelse return;
-    const texture = enemy_texture.value_ptr.*;
-    const rl_rect = raylib.Rectangle.init(
-        0.0 + (@as(f32, @floatFromInt(anim.frame_idx + 1)) * dim.width),
+    sprite_renderer(
+        world,
+        ecs.SpriteTag.enemy,
+        (@as(f32, @floatFromInt(anim.frame_idx + 1)) * dim.width),
         0.0,
-        dim.width,
-        dim.height,
+        dim,
+        pos,
     );
-    const rl_pos = raylib.Vector2.init(
-        pos.x,
-        pos.y,
-    );
-
-    raylib.drawTextureRec(texture, rl_rect, rl_pos, .white);
 }
 
 fn ringRenderer(
@@ -105,21 +92,14 @@ fn ringRenderer(
     world: *ecs.World,
 ) void {
     process_animation(anim, delta);
-
-    const ring_texture = world.sprites.getEntry(ecs.SpriteTag.ring) orelse return;
-    const texture = ring_texture.value_ptr.*;
-    const rl_rect = raylib.Rectangle.init(
-        0.0 + (@as(f32, @floatFromInt(anim.frame_idx + 1)) * dim.width),
+    sprite_renderer(
+        world,
+        ecs.SpriteTag.ring,
+        (@as(f32, @floatFromInt(anim.frame_idx + 1)) * dim.width),
         0.0,
-        dim.width,
-        dim.height,
+        dim,
+        pos,
     );
-    const rl_pos = raylib.Vector2.init(
-        pos.x,
-        pos.y,
-    );
-
-    raylib.drawTextureRec(texture, rl_rect, rl_pos, .white);
 }
 
 fn platformRenderer(
@@ -132,21 +112,14 @@ fn platformRenderer(
     world: *ecs.World,
 ) void {
     process_animation(anim, delta);
-
-    const platform_texture = world.sprites.getEntry(ecs.SpriteTag.platform) orelse return;
-    const texture = platform_texture.value_ptr.*;
-    const rl_rect = raylib.Rectangle.init(
-        0.0 + (@as(f32, @floatFromInt(anim.frame_idx + 1)) * dim.width),
+    sprite_renderer(
+        world,
+        ecs.SpriteTag.platform,
+        (@as(f32, @floatFromInt(anim.frame_idx + 1)) * dim.width),
         0.0,
-        dim.width,
-        dim.height,
+        dim,
+        pos,
     );
-    const rl_pos = raylib.Vector2.init(
-        pos.x,
-        pos.y,
-    );
-
-    raylib.drawTextureRec(texture, rl_rect, rl_pos, .white);
 }
 
 fn backgroundRenderer(
@@ -159,21 +132,14 @@ fn backgroundRenderer(
     world: *ecs.World,
 ) void {
     process_animation(anim, delta);
-
-    const background_texture = world.sprites.getEntry(ecs.SpriteTag.background) orelse return;
-    const texture = background_texture.value_ptr.*;
-    const rl_rect = raylib.Rectangle.init(
-        0.0 + (@as(f32, @floatFromInt(anim.frame_idx + 1)) * dim.width),
+    sprite_renderer(
+        world,
+        ecs.SpriteTag.background,
+        (@as(f32, @floatFromInt(anim.frame_idx + 1)) * dim.width),
         0.0,
-        dim.width,
-        dim.height,
+        dim,
+        pos,
     );
-    const rl_pos = raylib.Vector2.init(
-        pos.x,
-        pos.y,
-    );
-
-    raylib.drawTextureRec(texture, rl_rect, rl_pos, .white);
 }
 
 fn process_animation(anim: *ecs.Animation, delta: f32) void {
@@ -185,4 +151,28 @@ fn process_animation(anim: *ecs.Animation, delta: f32) void {
         anim.frame_idx += 1;
         if (anim.frame_idx + 1 > anim.frame_count) anim.frame_idx = 0;
     }
+}
+
+fn sprite_renderer(
+    world: *ecs.World,
+    sprite_tag: ecs.SpriteTag,
+    x: f32,
+    y: f32,
+    dim: *ecs.Dimension,
+    pos: *ecs.Position,
+) void {
+    const sprite_entry = world.sprites.getEntry(sprite_tag) orelse return;
+    const texture = sprite_entry.value_ptr.*;
+    const rl_rect = raylib.Rectangle.init(
+        x,
+        y,
+        dim.width,
+        dim.height,
+    );
+    const rl_pos = raylib.Vector2.init(
+        pos.x,
+        pos.y,
+    );
+
+    raylib.drawTextureRec(texture, rl_rect, rl_pos, .white);
 }
