@@ -33,6 +33,7 @@ pub const World = struct {
     needs_reset: std.AutoHashMap(ecs.Entity, void),
     jump_intents: std.AutoHashMap(ecs.Entity, ecs.JumpIntent),
     sound_intents: std.AutoHashMap(ecs.SoundTag, ecs.SoundParams),
+    scene_transition_intents: std.AutoHashMap(ecs.Scene, void),
 
     prng: std.Random.Xoshiro256,
 
@@ -60,10 +61,11 @@ pub const World = struct {
             .animations = std.AutoHashMap(ecs.Entity, ecs.Animation).init(allocator),
             .sounds = std.AutoHashMap(ecs.SoundTag, raylib.Sound).init(allocator),
             .sound_intents = std.AutoHashMap(ecs.SoundTag, ecs.SoundParams).init(allocator),
+            .scene_transition_intents = std.AutoHashMap(ecs.Scene, void).init(allocator),
             .prng = std.Random.DefaultPrng.init(std.testing.random_seed),
             .time = 0.0,
             .scroll_speed = ecs.BASE_SCROLL_SPEED,
-            .scene = Scene.game_play,
+            .scene = Scene.main_menu,
         };
     }
 
@@ -84,6 +86,21 @@ pub const World = struct {
         self.animations.deinit();
         self.sounds.deinit();
         self.sound_intents.deinit();
+        self.scene_transition_intents.deinit();
+    }
+
+    pub fn reset(self: *World) void {
+        self.positions.clearRetainingCapacity();
+        self.velocities.clearRetainingCapacity();
+        self.dimensions.clearRetainingCapacity();
+        self.players.clearRetainingCapacity();
+        self.enemies.clearRetainingCapacity();
+        self.rings.clearRetainingCapacity();
+        self.platforms.clearRetainingCapacity();
+        self.backgrounds.clearRetainingCapacity();
+        self.needs_reset.clearRetainingCapacity();
+        self.jump_intents.clearRetainingCapacity();
+        self.sound_intents.clearRetainingCapacity();
     }
 
     pub fn createEntity(self: *World) ecs.Entity {
@@ -113,4 +130,10 @@ pub const World = struct {
 
 pub fn groundY(world: *World) f32 {
     return @as(f32, @floatFromInt(world.screen_height)) / 2.0;
+}
+
+pub fn changeScene(scene: ecs.Scene, world: *ecs.World) !void {
+    world.scene_transition_intents.put(scene, {}) catch |err| {
+        std.debug.print("Add scene transition intent failed {}: {}\n", .{ scene, err });
+    };
 }

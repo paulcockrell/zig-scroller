@@ -6,9 +6,28 @@ const player = @import("../../entities/player.zig");
 const JUMP_FORCE: f32 = -250.0;
 
 pub fn system(world: *ecs.World) void {
-    if (!raylib.isKeyPressed(raylib.KeyboardKey.space)) return;
-
-    ecs.Query.players(world, {}, playerInput);
+    switch (world.scene) {
+        ecs.Scene.main_menu => {
+            if (raylib.isKeyPressed(raylib.KeyboardKey.space)) {
+                ecs.changeScene(ecs.Scene.game_play, world) catch |err| {
+                    std.debug.print("Failed to change to scene 'game_play' {}\n", .{err});
+                };
+            }
+        },
+        ecs.Scene.game_play => {
+            if (raylib.isKeyPressed(raylib.KeyboardKey.space)) {
+                ecs.Query.players(world, {}, playerInput);
+            }
+            if (raylib.isKeyPressed(raylib.KeyboardKey.q)) {
+                ecs.changeScene(ecs.Scene.main_menu, world) catch |err| {
+                    std.debug.print("Failed to change to scene 'main_menu' {}\n", .{err});
+                };
+            }
+        },
+        else => {
+            std.debug.print("[INPUT] Unknown scene\n", .{});
+        },
+    }
 }
 
 fn playerInput(

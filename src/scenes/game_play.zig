@@ -13,6 +13,25 @@ const entity_wrap = @import("../systems/rendering/entity_wrap.zig");
 const entity_reset = @import("../systems/gameplay/entity_reset.zig");
 const scenery_wrap = @import("../systems/rendering/scenery_wrap.zig");
 const sound_intent = @import("../systems/audio/sound_intent.zig");
+const player = @import("../entities/player.zig");
+const enemy = @import("../entities/enemy.zig");
+const ring = @import("../entities/ring.zig");
+const platform = @import("../entities/platform.zig");
+const background = @import("../entities/background.zig");
+
+pub fn enter(world: *ecs.World) !void {
+    try player.spawn(world);
+    try platform.spawn(world);
+    try background.spawn(world);
+    for (0..5) |_| {
+        try enemy.spawn(world);
+        try ring.spawn(world);
+    }
+}
+
+pub fn exit(world: *ecs.World) void {
+    world.reset();
+}
 
 pub fn update(world: *ecs.World, delta: f32) void {
     world.time += delta;
