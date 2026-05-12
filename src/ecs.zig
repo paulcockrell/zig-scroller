@@ -1,4 +1,5 @@
 pub const World = @import("ecs/world.zig").World;
+pub const Scene = @import("ecs/world.zig").Scene;
 pub const Query = @import("ecs/query.zig").Query;
 pub const Entity = @import("ecs/components.zig").Entity;
 pub const SoundTag = @import("ecs/components.zig").SoundTag;

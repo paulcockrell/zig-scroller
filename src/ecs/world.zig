@@ -4,6 +4,8 @@ const resource_audio = @import("../systems/resources/audio.zig");
 const resource_textures = @import("../systems/resources/textures.zig");
 const ecs = @import("../ecs.zig");
 
+pub const Scene = enum { main_menu, game_play, game_over, credits };
+
 pub const World = struct {
     allocator: std.mem.Allocator,
 
@@ -37,6 +39,8 @@ pub const World = struct {
     time: f32,
     scroll_speed: f32,
 
+    scene: Scene,
+
     pub fn init(allocator: std.mem.Allocator, screen_width: i32, screen_height: i32) World {
         return .{
             .screen_width = screen_width,
@@ -59,6 +63,7 @@ pub const World = struct {
             .prng = std.Random.DefaultPrng.init(std.testing.random_seed),
             .time = 0.0,
             .scroll_speed = ecs.BASE_SCROLL_SPEED,
+            .scene = Scene.game_play,
         };
     }
 
