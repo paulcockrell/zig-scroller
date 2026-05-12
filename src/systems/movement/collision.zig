@@ -84,7 +84,7 @@ fn checkEnemyCollision(
         enemy_dim.width,
         enemy_dim.height,
     )) {
-        _ = world.updateHealth(1);
+        const health = world.updateHealth(1);
 
         world.needs_reset.put(enemy, {}) catch |err| {
             std.debug.print("Entity reset failed {}\n", .{err});
@@ -93,6 +93,12 @@ fn checkEnemyCollision(
         world.sound_intents.put(ecs.SoundTag.hit, .{ .volume = 0.3 }) catch |err| {
             std.debug.print("Hit sound intent failed {}\n", .{err});
         };
+
+        if (health < 0) {
+            ecs.changeScene(ecs.Scene.game_over, world) catch |err| {
+                std.debug.print("Failed to change to scene 'game_over' {}\n", .{err});
+            };
+        }
     }
 }
 

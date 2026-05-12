@@ -10,7 +10,12 @@ pub fn system(world: *ecs.World) void {
         ecs.Scene.main_menu => {
             if (raylib.isKeyPressed(raylib.KeyboardKey.space)) {
                 ecs.changeScene(ecs.Scene.game_play, world) catch |err| {
-                    std.debug.print("Failed to change to scene 'game_play' {}\n", .{err});
+                    std.debug.print("Failed to change to scene 'main_menu' => 'game_play' {}\n", .{err});
+                };
+            }
+            if (raylib.isKeyPressed(raylib.KeyboardKey.c)) {
+                ecs.changeScene(ecs.Scene.credits, world) catch |err| {
+                    std.debug.print("Failed to change to scene 'main_menu' => 'credits' {}\n", .{err});
                 };
             }
         },
@@ -20,12 +25,23 @@ pub fn system(world: *ecs.World) void {
             }
             if (raylib.isKeyPressed(raylib.KeyboardKey.q)) {
                 ecs.changeScene(ecs.Scene.main_menu, world) catch |err| {
-                    std.debug.print("Failed to change to scene 'main_menu' {}\n", .{err});
+                    std.debug.print("Failed to change to scene 'game_play' => 'main_menu' {}\n", .{err});
                 };
             }
         },
-        else => {
-            std.debug.print("[INPUT] Unknown scene\n", .{});
+        ecs.Scene.game_over => {
+            if (raylib.isKeyPressed(raylib.KeyboardKey.space)) {
+                ecs.changeScene(ecs.Scene.main_menu, world) catch |err| {
+                    std.debug.print("Failed to change to scene 'game_over' => 'main_menu' {}\n", .{err});
+                };
+            }
+        },
+        ecs.Scene.credits => {
+            if (raylib.isKeyPressed(raylib.KeyboardKey.space)) {
+                ecs.changeScene(ecs.Scene.main_menu, world) catch |err| {
+                    std.debug.print("Failed to change to scene 'credits' => 'main_menu' {}\n", .{err});
+                };
+            }
         },
     }
 }
