@@ -34,6 +34,8 @@ pub const World = struct {
     jump_intents: std.AutoHashMap(ecs.Entity, ecs.JumpIntent),
     sound_intents: std.AutoHashMap(ecs.SoundTag, ecs.SoundParams),
     scene_transition_intents: std.AutoHashMap(ecs.Scene, void),
+    confirm_intent: bool,
+    quit_intent: bool,
 
     prng: std.Random.Xoshiro256,
 
@@ -62,6 +64,8 @@ pub const World = struct {
             .sounds = std.AutoHashMap(ecs.SoundTag, raylib.Sound).init(allocator),
             .sound_intents = std.AutoHashMap(ecs.SoundTag, ecs.SoundParams).init(allocator),
             .scene_transition_intents = std.AutoHashMap(ecs.Scene, void).init(allocator),
+            .confirm_intent = false,
+            .quit_intent = false,
             .prng = std.Random.DefaultPrng.init(std.testing.random_seed),
             .time = 0.0,
             .scroll_speed = ecs.BASE_SCROLL_SPEED,

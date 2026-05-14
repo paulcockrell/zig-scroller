@@ -1,6 +1,6 @@
+const std = @import("std");
 const raylib = @import("raylib");
 const ecs = @import("../ecs.zig");
-const input = @import("../systems/input/keyboard.zig");
 const main_menu = @import("../systems/rendering/main_menu.zig");
 const movement = @import("../systems/movement/movement.zig");
 const scroll = @import("../systems/rendering/scroll.zig");
@@ -16,7 +16,12 @@ pub fn exit(world: *ecs.World) void {
 }
 
 pub fn update(world: *ecs.World, delta: f32) void {
-    input.system(world);
+    if (world.confirm_intent) {
+        ecs.changeScene(ecs.Scene.game_play, world) catch |err| {
+            std.debug.print("Failed to change scene: Main Menu -> Game Play: {}\n", .{err});
+        };
+    }
+
     movement.system(world, delta);
     scroll.system(world, delta);
 }

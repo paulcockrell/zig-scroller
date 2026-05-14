@@ -1,6 +1,6 @@
+const std = @import("std");
 const raylib = @import("raylib");
 const ecs = @import("../ecs.zig");
-const input = @import("../systems/input/keyboard.zig");
 const gravity = @import("../systems/physics/gravity.zig");
 const movement = @import("../systems/movement/movement.zig");
 const collision = @import("../systems/movement/collision.zig");
@@ -19,6 +19,8 @@ const ring = @import("../entities/ring.zig");
 const platform = @import("../entities/platform.zig");
 const background = @import("../entities/background.zig");
 
+const JUMP_FORCE: f32 = -250.0;
+
 pub fn enter(world: *ecs.World) !void {
     try player.spawn(world);
     try platform.spawn(world);
@@ -36,7 +38,10 @@ pub fn exit(world: *ecs.World) void {
 pub fn update(world: *ecs.World, delta: f32) void {
     world.time += delta;
 
-    input.system(world);
+    if (world.confirm_intent) {
+        ecs.Query.players(world, {}, jump);
+    }
+
     collision.system(world);
     jump_intent.system(world);
     gravity.system(world, delta);
@@ -53,4 +58,24 @@ pub fn render(world: *ecs.World, delta: f32) void {
     raylib.clearBackground(raylib.Color.black);
     sprite.system(world, delta);
     hud.system(world);
+}
+
+fn jump(
+    _: void,
+    ent: ecs.Entity,
+    _: *ecs.Animation,
+    _: *ecs.Position,
+    _: *ecs.Velocity,
+    _: *ecs.Dimension,
+    world: *ecs.World,
+) void {
+    if (player.isJumping(world, ent)) return;
+
+    world.jump_intents.put(ent, .{ .force = JUMP_FORCE }) catch |err| {
+        std.debug.print("Entity jump intent failed {}\n", .{err});
+    };
+
+    world.sound_intents.put(ecs.SoundTag.jump, .{ .volume = 0.3 }) catch |err| {
+        std.debug.print("Jump sound intent failed {}\n", .{err});
+    };
 }

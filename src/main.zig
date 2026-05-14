@@ -5,15 +5,10 @@ const ecs = @import("ecs.zig");
 
 const resource_audio = @import("systems/resources/audio.zig");
 const resource_textures = @import("systems/resources/textures.zig");
+const input = @import("systems/input/keyboard.zig");
 const scenesChange = @import("systems/scenes/change.zig");
 const scenesUpdate = @import("systems/scenes/update.zig");
 const scenesRender = @import("systems/scenes/render.zig");
-
-const player = @import("entities/player.zig");
-const enemy = @import("entities/enemy.zig");
-const ring = @import("entities/ring.zig");
-const platform = @import("entities/platform.zig");
-const background = @import("entities/background.zig");
 
 const SCREEN_WIDTH: i32 = 800;
 const SCREEN_HEIGHT: i32 = 600;
@@ -38,9 +33,13 @@ pub fn main(init: std.process.Init) !void {
 
         const delta = raylib.getFrameTime();
 
+        input.system(&world);
+
         scenesChange.system(&world);
         scenesUpdate.system(&world, delta);
         scenesRender.system(&world, delta);
+
+        input.resetInput(&world);
 
         raylib.endDrawing();
     }
