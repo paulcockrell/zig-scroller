@@ -6,8 +6,8 @@ const HEIGHT: f32 = 66.0;
 const FRAME_COUNT: i32 = 1;
 
 pub fn spawn(world: *ecs.World) !void {
-    try spawnPlatform(world, 0, ecs.groundY(world));
-    try spawnPlatform(world, WIDTH, ecs.groundY(world));
+    try spawnPlatform(world, 0, world.groundY());
+    try spawnPlatform(world, WIDTH, world.groundY());
 }
 
 fn spawnPlatform(world: *ecs.World, x: f32, y: f32) !void {

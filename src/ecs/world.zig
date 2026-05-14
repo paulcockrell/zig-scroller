@@ -124,20 +124,20 @@ pub const World = struct {
         return self.score;
     }
 
-    pub fn rng(world: *World, floor: u16, ceil: u16) u16 {
-        const rand = world.prng.random();
+    pub fn rng(self: *World, floor: u16, ceil: u16) u16 {
+        const rand = self.prng.random();
         const offset = rand.intRangeAtMost(u16, floor, ceil);
 
         return offset;
     }
+
+    pub fn groundY(self: *World) f32 {
+        return @as(f32, @floatFromInt(self.screen_height)) / 2.0;
+    }
+
+    pub fn changeScene(self: *World, scene: ecs.Scene) !void {
+        self.scene_transition_intents.put(scene, {}) catch |err| {
+            std.debug.print("Add scene transition intent failed {}: {}\n", .{ scene, err });
+        };
+    }
 };
-
-pub fn groundY(world: *World) f32 {
-    return @as(f32, @floatFromInt(world.screen_height)) / 2.0;
-}
-
-pub fn changeScene(scene: ecs.Scene, world: *ecs.World) !void {
-    world.scene_transition_intents.put(scene, {}) catch |err| {
-        std.debug.print("Add scene transition intent failed {}: {}\n", .{ scene, err });
-    };
-}

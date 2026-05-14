@@ -17,5 +17,4 @@ pub const SCROLL_SPEED_FACTOR = @import("ecs/components.zig").SCROLL_SPEED_FACTO
 pub const MAX_SCROLL_SPEED = @import("ecs/components.zig").MAX_SCROLL_SPEED;
 pub const FPS = @import("ecs/components.zig").FPS;
 
-pub const groundY = @import("ecs/world.zig").groundY;
 pub const changeScene = @import("ecs/world.zig").changeScene;

@@ -44,8 +44,8 @@ fn playerMovement(
     pos.y += vel.dy * dt;
 
     if (vel.dy > 0.0) { // falling
-        if (pos.y > ecs.groundY(world) - dim.height) { // below ground
-            pos.y = ecs.groundY(world) - dim.height;
+        if (pos.y > world.groundY() - dim.height) { // below ground
+            pos.y = world.groundY() - dim.height;
             vel.dy = 0;
         }
     }
@@ -67,5 +67,5 @@ fn updateBackgroundY(
     _: *ecs.Dimension,
     world: *ecs.World,
 ) void {
-    pos.y = background.DEFAULT_Y - ((ctx.y + player.HEIGHT - ecs.groundY(world)) / 2.5);
+    pos.y = background.DEFAULT_Y - ((ctx.y + player.HEIGHT - world.groundY()) / 2.5);
 }

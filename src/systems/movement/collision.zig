@@ -95,7 +95,7 @@ fn checkEnemyCollision(
         };
 
         if (health < 0) {
-            ecs.changeScene(ecs.Scene.game_over, world) catch |err| {
+            world.changeScene(ecs.Scene.game_over) catch |err| {
                 std.debug.print("Failed to change to scene 'game_over' {}\n", .{err});
             };
         }

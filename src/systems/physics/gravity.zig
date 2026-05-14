@@ -17,7 +17,7 @@ fn applyPlayerGravity(
     dim: *ecs.Dimension,
     world: *ecs.World,
 ) void {
-    const is_grounded = pos.y + dim.height >= ecs.groundY(world) and vel.dy == 0;
+    const is_grounded = pos.y + dim.height >= world.groundY() and vel.dy == 0;
 
     if (is_grounded) {
         vel.dy = 0;

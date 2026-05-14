@@ -8,7 +8,7 @@ const FRAME_COUNT: i32 = 5;
 pub fn spawn(world: *ecs.World) !void {
     const ent = world.createEntity();
     const x = @as(f32, @floatFromInt(world.screen_width + world.rng(0, 1000)));
-    const y = ecs.groundY(world) - HEIGHT;
+    const y = world.groundY() - HEIGHT;
     const frame_duration: f32 = 1.0 / 6.0;
 
     try world.enemies.put(
