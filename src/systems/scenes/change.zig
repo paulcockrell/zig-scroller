@@ -22,7 +22,6 @@ pub fn system(world: *ecs.World) void {
 }
 
 fn exitCurrentScene(scene: ecs.Scene, world: *ecs.World) void {
-    std.debug.print("Exit scene {}\n", .{scene});
     switch (scene) {
         ecs.Scene.game_play => {
             game_play.exit(world);
@@ -40,7 +39,6 @@ fn exitCurrentScene(scene: ecs.Scene, world: *ecs.World) void {
 }
 
 fn enterScene(scene: ecs.Scene, world: *ecs.World) !void {
-    std.debug.print("Enter scene {}\n", .{scene});
     switch (scene) {
         ecs.Scene.game_play => {
             try game_play.enter(world);

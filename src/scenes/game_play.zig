@@ -42,6 +42,12 @@ pub fn update(world: *ecs.World, delta: f32) void {
         ecs.Query.players(world, {}, jump);
     }
 
+    if (world.quit_intent) {
+        world.changeScene(ecs.Scene.main_menu) catch |err| {
+            std.debug.print("Failed to change scene: Game Play -> Main Menu: {}\n", .{err});
+        };
+    }
+
     collision.system(world);
     jump_intent.system(world);
     gravity.system(world, delta);

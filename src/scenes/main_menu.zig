@@ -22,6 +22,12 @@ pub fn update(world: *ecs.World, delta: f32) void {
         };
     }
 
+    if (world.credits_intent) {
+        world.changeScene(ecs.Scene.credits) catch |err| {
+            std.debug.print("Failed to change scene: Main Menu -> Credits: {}\n", .{err});
+        };
+    }
+
     movement.system(world, delta);
     scroll.system(world, delta);
 }

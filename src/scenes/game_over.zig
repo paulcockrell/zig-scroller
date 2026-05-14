@@ -1,3 +1,4 @@
+const std = @import("std");
 const raylib = @import("raylib");
 const ecs = @import("../ecs.zig");
 const input = @import("../systems/input/keyboard.zig");
@@ -13,7 +14,12 @@ pub fn exit(world: *ecs.World) void {
 
 pub fn update(world: *ecs.World, delta: f32) void {
     _ = delta;
-    input.system(world);
+
+    if (world.quit_intent) {
+        world.changeScene(ecs.Scene.main_menu) catch |err| {
+            std.debug.print("Failed to change scene: Game Over -> Main Menu: {}\n", .{err});
+        };
+    }
 }
 
 pub fn render(world: *ecs.World, delta: f32) void {

@@ -36,6 +36,7 @@ pub const World = struct {
     scene_transition_intents: std.AutoHashMap(ecs.Scene, void),
     confirm_intent: bool,
     quit_intent: bool,
+    credits_intent: bool,
 
     prng: std.Random.Xoshiro256,
 
@@ -66,6 +67,7 @@ pub const World = struct {
             .scene_transition_intents = std.AutoHashMap(ecs.Scene, void).init(allocator),
             .confirm_intent = false,
             .quit_intent = false,
+            .credits_intent = false,
             .prng = std.Random.DefaultPrng.init(std.testing.random_seed),
             .time = 0.0,
             .scroll_speed = ecs.BASE_SCROLL_SPEED,
