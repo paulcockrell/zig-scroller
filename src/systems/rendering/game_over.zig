@@ -1,6 +1,7 @@
 const std = @import("std");
 const raylib = @import("raylib");
 const ecs = @import("../../ecs.zig");
+const ui = @import("ui.zig");
 
 pub fn system(world: *ecs.World, delta: f32) void {
     _ = delta;
@@ -9,25 +10,43 @@ pub fn system(world: *ecs.World, delta: f32) void {
 }
 
 fn drawText(world: *ecs.World) void {
-    raylib.drawText(
-        raylib.textFormat("GAME OVER", .{}),
-        @divFloor(world.screen_width, 2) - 80,
-        @divFloor(world.screen_height, 2) - 20,
-        20,
-        raylib.Color.lime,
+    var text = raylib.textFormat("Game Over", .{});
+    var y = @divFloor(world.screen_height, 2) - 48;
+    ui.drawCenteredText(
+        world,
+        text,
+        48,
+        y,
+        raylib.Color.red,
     );
-    raylib.drawText(
-        raylib.textFormat("Score:", .{world.score}),
-        @divFloor(world.screen_width, 2) - 80,
-        @divFloor(world.screen_height, 2) - 0,
-        16,
+
+    text = raylib.textFormat("score: %d", .{world.score});
+    y = @divFloor(world.screen_height, 2) + 24;
+    ui.drawCenteredText(
+        world,
+        text,
+        18,
+        y,
         raylib.Color.white,
     );
-    raylib.drawText(
-        raylib.textFormat("time:", .{world.time}),
-        @divFloor(world.screen_width, 2) - 80,
-        @divFloor(world.screen_height, 2) + 20,
-        16,
+
+    text = raylib.textFormat("time: %.1fs", .{world.time});
+    y = @divFloor(world.screen_height, 2) + 48;
+    ui.drawCenteredText(
+        world,
+        text,
+        18,
+        y,
         raylib.Color.white,
+    );
+
+    text = raylib.textFormat("press 'q' to return to main menu", .{});
+    y = @divFloor(world.screen_height, 2) + 96;
+    ui.drawCenteredText(
+        world,
+        text,
+        18,
+        y,
+        raylib.Color.yellow,
     );
 }

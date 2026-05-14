@@ -24,7 +24,7 @@ pub fn main(init: std.process.Init) !void {
 
     init_raylib(&world);
 
-    const bg_music = try raylib.loadMusicStream("resources/audio/monume-drum-amp-bass-dnb-music-dampb-drum-and-bass-519203.mp3");
+    const bg_music = try raylib.loadMusicStream("resources/audio/city.mp3");
     raylib.playMusicStream(bg_music);
 
     while (!raylib.windowShouldClose()) {
