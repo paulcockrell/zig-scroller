@@ -22,32 +22,31 @@ fn drawText(world: *ecs.World) void {
         raylib.Color.red,
     );
 
-    text = raylib.textFormat("SCORE: %d", .{world.score});
-    ui.drawCenteredText(
-        world,
-        text,
-        font_size,
-        y_center - 120,
-        raylib.Color.yellow,
-    );
-
-    text = raylib.textFormat("Time: %.1fs", .{world.time});
-    ui.drawCenteredText(
-        world,
-        text,
-        font_size,
-        y_center - 60,
-        raylib.Color.yellow,
-    );
-
-    text = raylib.textFormat("Press 'space' to return to main menu", .{});
+    text = raylib.textFormat("SCORE: %03i", .{world.score});
     font_size = 20;
-
     ui.drawCenteredText(
         world,
         text,
         font_size,
-        y_center,
+        y_center - 140,
+        raylib.Color.white,
+    );
+
+    text = raylib.textFormat("TIME: %.1fs", .{world.time});
+    ui.drawCenteredText(
+        world,
+        text,
+        font_size,
+        y_center - 116,
+        raylib.Color.white,
+    );
+
+    text = raylib.textFormat("Press 'space' to restart", .{});
+    ui.drawCenteredText(
+        world,
+        text,
+        font_size,
+        y_center - 79,
         raylib.Color.white,
     );
 }

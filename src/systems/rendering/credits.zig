@@ -12,41 +12,50 @@ pub fn system(world: *ecs.World, delta: f32) void {
 fn drawText(world: *ecs.World) void {
     const y_center = @divFloor(world.screen_height, 2);
 
-    var text = raylib.textFormat("Credits", .{});
+    var text = raylib.textFormat("CREDITS", .{});
     var font_size: i32 = 48;
     ui.drawCenteredText(
         world,
         text,
-        48,
-        100,
-        raylib.Color.yellow,
+        font_size,
+        y_center - 200,
+        raylib.Color.white,
     );
 
-    text = raylib.textFormat("Code: Paul Cockrell", .{});
+    text = raylib.textFormat("PROGRAMMING: Paul Cockrell", .{});
     font_size = 20;
     ui.drawCenteredText(
         world,
         text,
         font_size,
-        y_center - 40,
+        y_center - 140,
         raylib.Color.white,
     );
 
-    text = raylib.textFormat("Graphics: Paul Cockrell", .{});
+    text = raylib.textFormat("GRAPHICS: Paul Cockrell", .{world.time});
     ui.drawCenteredText(
         world,
         text,
         font_size,
-        y_center - 20,
+        y_center - 116,
         raylib.Color.white,
     );
 
-    text = raylib.textFormat("press 'space' to return to main menu", .{});
+    text = raylib.textFormat("INSPIRATION: jslegenddev.substack.com", .{world.time});
     ui.drawCenteredText(
         world,
         text,
         font_size,
-        y_center,
+        y_center - 92,
+        raylib.Color.white,
+    );
+
+    text = raylib.textFormat("Press 'space' to restart", .{});
+    ui.drawCenteredText(
+        world,
+        text,
+        font_size,
+        y_center - 55,
         raylib.Color.white,
     );
 }

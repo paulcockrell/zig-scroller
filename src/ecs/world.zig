@@ -106,6 +106,7 @@ pub const World = struct {
         self.jump_intents.clearRetainingCapacity();
         self.sound_intents.clearRetainingCapacity();
         self.score = 0;
+        self.time = 0;
         self.health = ecs.MAX_HEALTH;
         self.scroll_speed = ecs.BASE_SCROLL_SPEED;
     }

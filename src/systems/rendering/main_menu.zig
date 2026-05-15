@@ -18,8 +18,8 @@ fn drawText(world: *ecs.World) void {
         world,
         text,
         font_size,
-        100,
-        raylib.Color.green,
+        y_center - 200,
+        raylib.Color.white,
     );
 
     text = raylib.textFormat("press 'space' to play", .{});
@@ -28,7 +28,7 @@ fn drawText(world: *ecs.World) void {
         world,
         text,
         font_size,
-        y_center - 40,
+        y_center - 140,
         raylib.Color.white,
     );
 
@@ -37,8 +37,8 @@ fn drawText(world: *ecs.World) void {
         world,
         text,
         font_size,
-        y_center - 20,
-        raylib.Color.yellow,
+        y_center - 116,
+        raylib.Color.white,
     );
 
     text = raylib.textFormat("press 'esc' to exit", .{});
@@ -46,7 +46,7 @@ fn drawText(world: *ecs.World) void {
         world,
         text,
         font_size,
-        y_center,
-        raylib.Color.red,
+        y_center - 79,
+        raylib.Color.white,
     );
 }
