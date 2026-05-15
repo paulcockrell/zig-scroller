@@ -15,6 +15,7 @@ pub const NeedsReset = @import("ecs/components.zig").NeedsReset;
 pub const BASE_SCROLL_SPEED = @import("ecs/components.zig").BASE_SCROLL_SPEED;
 pub const SCROLL_SPEED_FACTOR = @import("ecs/components.zig").SCROLL_SPEED_FACTOR;
 pub const MAX_SCROLL_SPEED = @import("ecs/components.zig").MAX_SCROLL_SPEED;
+pub const MAX_HEALTH = @import("ecs/components.zig").MAX_HEALTH;
 pub const FPS = @import("ecs/components.zig").FPS;
 
 pub const changeScene = @import("ecs/world.zig").changeScene;

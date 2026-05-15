@@ -1,6 +1,7 @@
 pub const BASE_SCROLL_SPEED: f32 = 0.0;
 pub const SCROLL_SPEED_FACTOR: f32 = 5.0;
 pub const MAX_SCROLL_SPEED: f32 = 300.0;
+pub const MAX_HEALTH: i32 = 10;
 pub const FPS: i32 = 60;
 
 pub const Entity = u32;

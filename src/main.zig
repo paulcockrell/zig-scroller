@@ -27,6 +27,8 @@ pub fn main(init: std.process.Init) !void {
     const bg_music = try raylib.loadMusicStream("resources/audio/city.mp3");
     raylib.playMusicStream(bg_music);
 
+    try world.changeScene(ecs.Scene.main_menu);
+
     while (!raylib.windowShouldClose()) {
         raylib.updateMusicStream(bg_music);
         raylib.beginDrawing();

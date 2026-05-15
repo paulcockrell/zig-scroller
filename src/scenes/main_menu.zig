@@ -5,10 +5,15 @@ const main_menu = @import("../systems/rendering/main_menu.zig");
 const movement = @import("../systems/movement/movement.zig");
 const scroll = @import("../systems/rendering/scroll.zig");
 const sprite = @import("../systems/rendering/sprite.zig");
+const scenery_wrap = @import("../systems/rendering/scenery_wrap.zig");
 const player = @import("../entities/player.zig");
+const platform = @import("../entities/platform.zig");
+const background = @import("../entities/background.zig");
 
 pub fn enter(world: *ecs.World) !void {
     try player.spawn(world);
+    try platform.spawn(world);
+    try background.spawn(world);
 }
 
 pub fn exit(world: *ecs.World) void {
@@ -30,6 +35,7 @@ pub fn update(world: *ecs.World, delta: f32) void {
 
     movement.system(world, delta);
     scroll.system(world, delta);
+    scenery_wrap.system(world, delta);
 }
 
 pub fn render(world: *ecs.World, delta: f32) void {

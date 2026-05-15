@@ -14,7 +14,7 @@ pub const World = struct {
     screen_width: i32 = 0,
     screen_height: i32 = 0,
 
-    health: i32 = 10,
+    health: i32 = ecs.MAX_HEALTH,
     score: i32 = 0,
 
     positions: std.AutoHashMap(ecs.Entity, ecs.Position),
@@ -35,7 +35,6 @@ pub const World = struct {
     sound_intents: std.AutoHashMap(ecs.SoundTag, ecs.SoundParams),
     scene_transition_intents: std.AutoHashMap(ecs.Scene, void),
     confirm_intent: bool,
-    quit_intent: bool,
     credits_intent: bool,
 
     prng: std.Random.Xoshiro256,
@@ -66,7 +65,6 @@ pub const World = struct {
             .sound_intents = std.AutoHashMap(ecs.SoundTag, ecs.SoundParams).init(allocator),
             .scene_transition_intents = std.AutoHashMap(ecs.Scene, void).init(allocator),
             .confirm_intent = false,
-            .quit_intent = false,
             .credits_intent = false,
             .prng = std.Random.DefaultPrng.init(std.testing.random_seed),
             .time = 0.0,
@@ -107,6 +105,9 @@ pub const World = struct {
         self.needs_reset.clearRetainingCapacity();
         self.jump_intents.clearRetainingCapacity();
         self.sound_intents.clearRetainingCapacity();
+        self.score = 0;
+        self.health = ecs.MAX_HEALTH;
+        self.scroll_speed = ecs.BASE_SCROLL_SPEED;
     }
 
     pub fn createEntity(self: *World) ecs.Entity {

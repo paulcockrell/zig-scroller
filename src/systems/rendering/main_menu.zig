@@ -10,43 +10,43 @@ pub fn system(world: *ecs.World, delta: f32) void {
 }
 
 fn drawText(world: *ecs.World) void {
-    var text = raylib.textFormat("Zig Scroller", .{});
-    var y = @divFloor(world.screen_height, 2) - 48;
+    const y_center = @divFloor(world.screen_height, 2);
+
+    var text = raylib.textFormat("Zero Dash", .{});
+    var font_size: i32 = 48;
     ui.drawCenteredText(
         world,
         text,
-        48,
-        y,
+        font_size,
+        100,
         raylib.Color.green,
     );
 
-    text = raylib.textFormat("press space to start", .{});
-    y = @divFloor(world.screen_height, 2) + 24;
+    text = raylib.textFormat("press 'space' to play", .{});
+    font_size = 20;
     ui.drawCenteredText(
         world,
         text,
-        18,
-        y,
+        font_size,
+        y_center - 40,
         raylib.Color.white,
     );
 
-    text = raylib.textFormat("press c for credits", .{});
-    y = @divFloor(world.screen_height, 2) + 48;
+    text = raylib.textFormat("press 'c' for credits", .{});
     ui.drawCenteredText(
         world,
         text,
-        18,
-        y,
+        font_size,
+        y_center - 20,
         raylib.Color.yellow,
     );
 
-    text = raylib.textFormat("press esc to exit", .{});
-    y = @divFloor(world.screen_height, 2) + 96;
+    text = raylib.textFormat("press 'esc' to exit", .{});
     ui.drawCenteredText(
         world,
         text,
-        18,
-        y,
+        font_size,
+        y_center,
         raylib.Color.red,
     );
 }

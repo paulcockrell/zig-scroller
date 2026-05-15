@@ -15,7 +15,7 @@ pub fn exit(world: *ecs.World) void {
 pub fn update(world: *ecs.World, delta: f32) void {
     _ = delta;
 
-    if (world.quit_intent) {
+    if (world.confirm_intent) {
         world.changeScene(ecs.Scene.main_menu) catch |err| {
             std.debug.print("Failed to change scene: Game Over -> Main Menu: {}\n", .{err});
         };

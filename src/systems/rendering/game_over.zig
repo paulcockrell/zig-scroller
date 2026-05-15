@@ -10,43 +10,44 @@ pub fn system(world: *ecs.World, delta: f32) void {
 }
 
 fn drawText(world: *ecs.World) void {
-    var text = raylib.textFormat("Game Over", .{});
-    var y = @divFloor(world.screen_height, 2) - 48;
+    const y_center = @divFloor(world.screen_height, 2);
+
+    var text = raylib.textFormat("GAME OVER", .{});
+    var font_size: i32 = 48;
     ui.drawCenteredText(
         world,
         text,
-        48,
-        y,
+        font_size,
+        y_center - 200,
         raylib.Color.red,
     );
 
-    text = raylib.textFormat("score: %d", .{world.score});
-    y = @divFloor(world.screen_height, 2) + 24;
+    text = raylib.textFormat("SCORE: %d", .{world.score});
     ui.drawCenteredText(
         world,
         text,
-        18,
-        y,
-        raylib.Color.white,
-    );
-
-    text = raylib.textFormat("time: %.1fs", .{world.time});
-    y = @divFloor(world.screen_height, 2) + 48;
-    ui.drawCenteredText(
-        world,
-        text,
-        18,
-        y,
-        raylib.Color.white,
-    );
-
-    text = raylib.textFormat("press 'q' to return to main menu", .{});
-    y = @divFloor(world.screen_height, 2) + 96;
-    ui.drawCenteredText(
-        world,
-        text,
-        18,
-        y,
+        font_size,
+        y_center - 120,
         raylib.Color.yellow,
+    );
+
+    text = raylib.textFormat("Time: %.1fs", .{world.time});
+    ui.drawCenteredText(
+        world,
+        text,
+        font_size,
+        y_center - 60,
+        raylib.Color.yellow,
+    );
+
+    text = raylib.textFormat("Press 'space' to return to main menu", .{});
+    font_size = 20;
+
+    ui.drawCenteredText(
+        world,
+        text,
+        font_size,
+        y_center,
+        raylib.Color.white,
     );
 }

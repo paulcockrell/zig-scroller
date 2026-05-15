@@ -59,6 +59,8 @@ fn checkEnemyCollision(
         enemy_dim.width,
         enemy_dim.height,
     )) {
+        world.score += 10;
+
         world.jump_intents.put(player_ctx.ent, .{ .force = JUMP_FORCE }) catch |err| {
             std.debug.print("Entity jump intent failed {}\n", .{err});
         };
@@ -94,7 +96,7 @@ fn checkEnemyCollision(
             std.debug.print("Hit sound intent failed {}\n", .{err});
         };
 
-        if (health < 0) {
+        if (health <= 0) {
             world.changeScene(ecs.Scene.game_over) catch |err| {
                 std.debug.print("Failed to change to scene 'game_over' {}\n", .{err});
             };
