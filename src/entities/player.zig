@@ -1,12 +1,12 @@
 const ecs = @import("../ecs.zig");
 
-pub const START_POS: f32 = 250.0;
 pub const WIDTH: f32 = 32.0;
 pub const HEIGHT: f32 = 44.0;
 pub const FRAME_COUNT: i32 = 8;
 
 pub fn spawn(world: *ecs.World) !void {
     const ent = world.createEntity();
+    const x = (@as(f32, @floatFromInt(world.screen_width)) / 2.0) - (WIDTH / 2.0);
     const y = world.groundY() - HEIGHT;
     const frame_duration: f32 = 1.0 / 24.0;
 
@@ -26,7 +26,7 @@ pub fn spawn(world: *ecs.World) !void {
     );
     try world.positions.put(
         ent,
-        .{ .x = START_POS, .y = y },
+        .{ .x = x, .y = y },
     );
     try world.velocities.put(
         ent,

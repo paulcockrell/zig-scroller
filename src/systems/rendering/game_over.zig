@@ -13,22 +13,22 @@ fn drawText(world: *ecs.World) void {
     const y_center = @divFloor(world.screen_height, 2);
 
     var text = raylib.textFormat("GAME OVER", .{});
-    var font_size: i32 = 48;
+    var font_size: i32 = 24;
     ui.drawCenteredText(
         world,
         text,
         font_size,
-        y_center - 200,
+        y_center - 96,
         raylib.Color.red,
     );
 
     text = raylib.textFormat("SCORE: %03i", .{world.score});
-    font_size = 20;
+    font_size = 16;
     ui.drawCenteredText(
         world,
         text,
         font_size,
-        y_center - 140,
+        y_center - 48,
         raylib.Color.white,
     );
 
@@ -37,16 +37,16 @@ fn drawText(world: *ecs.World) void {
         world,
         text,
         font_size,
-        y_center - 116,
+        y_center - 24,
         raylib.Color.white,
     );
 
-    text = raylib.textFormat("Press 'space' to restart", .{});
+    text = raylib.textFormat("Press 'c' to continue", .{});
     ui.drawCenteredText(
         world,
         text,
         font_size,
-        y_center - 79,
+        y_center,
         raylib.Color.white,
     );
 }

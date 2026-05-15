@@ -1,8 +1,8 @@
 const std = @import("std");
 const ecs = @import("../ecs.zig");
 
-const WIDTH: f32 = 1280.0;
-const HEIGHT: f32 = 66.0;
+pub const WIDTH: f32 = 1280.0;
+pub const HEIGHT: f32 = 66.0;
 const FRAME_COUNT: i32 = 1;
 
 pub fn spawn(world: *ecs.World) !void {

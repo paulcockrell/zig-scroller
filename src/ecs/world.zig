@@ -3,6 +3,7 @@ const raylib = @import("raylib");
 const resource_audio = @import("../systems/resources/audio.zig");
 const resource_textures = @import("../systems/resources/textures.zig");
 const ecs = @import("../ecs.zig");
+const platform = @import("../entities/platform.zig");
 
 pub const Scene = enum { main_menu, game_play, game_over, credits };
 
@@ -136,7 +137,7 @@ pub const World = struct {
     }
 
     pub fn groundY(self: *World) f32 {
-        return @as(f32, @floatFromInt(self.screen_height)) / 2.0;
+        return @as(f32, @floatFromInt(self.screen_height)) - platform.HEIGHT;
     }
 
     pub fn changeScene(self: *World, scene: ecs.Scene) !void {

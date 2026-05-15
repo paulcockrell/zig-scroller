@@ -14,7 +14,7 @@ fn drawScore(world: *ecs.World) void {
         raylib.textFormat("SCORE: %03i", .{world.score}),
         10,
         10,
-        20,
+        16,
         raylib.Color.white,
     );
 }
@@ -26,7 +26,7 @@ fn drawSpeed(world: *ecs.World) void {
         raylib.textFormat("SPEED: %03i", .{scroll_speed}),
         10,
         30,
-        20,
+        16,
         raylib.Color.white,
     );
 }
@@ -36,7 +36,7 @@ fn drawTime(world: *ecs.World) void {
         raylib.textFormat("TIME: %.1fs", .{world.time}),
         10,
         50,
-        20,
+        16,
         raylib.Color.white,
     );
 }
@@ -53,7 +53,7 @@ fn drawHealth(world: *ecs.World) void {
         raylib.textFormat("HEALTH: %03i", .{world.health}),
         10,
         70,
-        20,
+        16,
         text_color,
     );
 }
