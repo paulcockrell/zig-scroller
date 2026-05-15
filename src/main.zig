@@ -10,6 +10,8 @@ const scenesChange = @import("systems/scenes/change.zig");
 const scenesUpdate = @import("systems/scenes/update.zig");
 const scenesRender = @import("systems/scenes/render.zig");
 
+const VIRTUAL_SCREEN_WIDTH: i32 = 400;
+const VIRTUAL_SCREEN_HEIGHT: i32 = 300;
 const SCREEN_WIDTH: i32 = 800;
 const SCREEN_HEIGHT: i32 = 600;
 
@@ -18,11 +20,17 @@ pub fn main(init: std.process.Init) !void {
 
     var world = ecs.World.init(
         allocator,
-        SCREEN_WIDTH,
-        SCREEN_HEIGHT,
+        VIRTUAL_SCREEN_WIDTH,
+        VIRTUAL_SCREEN_HEIGHT,
     );
 
     init_raylib(&world);
+
+    // Define a render texture to render
+    const target: raylib.RenderTexture2D = try raylib.loadRenderTexture(
+        VIRTUAL_SCREEN_WIDTH,
+        VIRTUAL_SCREEN_HEIGHT,
+    );
 
     const bg_music = try raylib.loadMusicStream("resources/audio/city.mp3");
     raylib.playMusicStream(bg_music);
@@ -31,7 +39,6 @@ pub fn main(init: std.process.Init) !void {
 
     while (!raylib.windowShouldClose()) {
         raylib.updateMusicStream(bg_music);
-        raylib.beginDrawing();
 
         const delta = raylib.getFrameTime();
 
@@ -39,10 +46,36 @@ pub fn main(init: std.process.Init) !void {
 
         scenesChange.system(&world);
         scenesUpdate.system(&world, delta);
-        scenesRender.system(&world, delta);
 
         input.resetInput(&world);
 
+        // Draw our scene to the render texture
+        raylib.beginTextureMode(target);
+        scenesRender.system(&world, delta);
+        raylib.endTextureMode();
+
+        raylib.beginDrawing();
+        raylib.drawTexturePro(
+            target.texture,
+            .{
+                .x = 0.0,
+                .y = 0.0,
+                .width = @as(f32, @floatFromInt(target.texture.width)),
+                .height = @as(f32, @floatFromInt(target.texture.height)) * -1.0,
+            },
+            .{
+                .x = 0.0,
+                .y = 0.0,
+                .width = @as(f32, @floatFromInt(800)),
+                .height = @as(f32, @floatFromInt(600)),
+            },
+            .{
+                .x = 0.0,
+                .y = 0.0,
+            },
+            0,
+            raylib.Color.white,
+        );
         raylib.endDrawing();
     }
 
