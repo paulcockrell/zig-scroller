@@ -17,7 +17,7 @@ pub fn enter(world: *ecs.World) !void {
 }
 
 pub fn exit(world: *ecs.World) void {
-    _ = world;
+    world.reset();
 }
 
 pub fn update(world: *ecs.World, delta: f32) void {

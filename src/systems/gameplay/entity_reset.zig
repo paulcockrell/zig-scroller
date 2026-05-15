@@ -11,6 +11,7 @@ pub fn system(world: *ecs.World) void {
 pub fn entityReset(ent: ecs.Entity, world: *ecs.World) void {
     if (world.enemies.contains(ent)) {
         resetPos(world, ent);
+        return;
     }
 
     if (world.rings.contains(ent)) {
