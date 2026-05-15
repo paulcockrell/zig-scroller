@@ -10,10 +10,10 @@ const scenesChange = @import("systems/scenes/change.zig");
 const scenesUpdate = @import("systems/scenes/update.zig");
 const scenesRender = @import("systems/scenes/render.zig");
 
-const VIRTUAL_SCREEN_WIDTH: i32 = 400;
-const VIRTUAL_SCREEN_HEIGHT: i32 = 300;
-const SCREEN_WIDTH: i32 = 800;
-const SCREEN_HEIGHT: i32 = 600;
+const VIRTUAL_SCREEN_WIDTH: i32 = 480;
+const VIRTUAL_SCREEN_HEIGHT: i32 = 270;
+const SCREEN_WIDTH: i32 = 1280;
+const SCREEN_HEIGHT: i32 = 720;
 
 pub fn main(init: std.process.Init) !void {
     const allocator = init.gpa;
@@ -40,6 +40,18 @@ pub fn main(init: std.process.Init) !void {
     while (!raylib.windowShouldClose()) {
         raylib.updateMusicStream(bg_music);
 
+        const window_width = raylib.getScreenWidth();
+        const window_height = raylib.getScreenHeight();
+
+        const scale: f32 = @min(
+            @as(f32, @floatFromInt(window_width)) / @as(f32, @floatFromInt(VIRTUAL_SCREEN_WIDTH)),
+            @as(f32, @floatFromInt(window_height)) / @as(f32, @floatFromInt(VIRTUAL_SCREEN_HEIGHT)),
+        );
+        const scaled_width = @as(f32, @floatFromInt(VIRTUAL_SCREEN_WIDTH)) * scale;
+        const scaled_height = @as(f32, @floatFromInt(VIRTUAL_SCREEN_HEIGHT)) * scale;
+        const center_x = (@as(f32, @floatFromInt(window_width)) - scaled_width) / 2;
+        const center_y = (@as(f32, @floatFromInt(window_height)) - scaled_height) / 2;
+
         const delta = raylib.getFrameTime();
 
         input.system(&world);
@@ -55,6 +67,7 @@ pub fn main(init: std.process.Init) !void {
         raylib.endTextureMode();
 
         raylib.beginDrawing();
+        raylib.clearBackground(raylib.Color.black);
         raylib.drawTexturePro(
             target.texture,
             .{
@@ -64,10 +77,10 @@ pub fn main(init: std.process.Init) !void {
                 .height = @as(f32, @floatFromInt(target.texture.height)) * -1.0,
             },
             .{
-                .x = 0.0,
-                .y = 0.0,
-                .width = @as(f32, @floatFromInt(800)),
-                .height = @as(f32, @floatFromInt(600)),
+                .x = center_x,
+                .y = center_y,
+                .width = scaled_width,
+                .height = scaled_height,
             },
             .{
                 .x = 0.0,
