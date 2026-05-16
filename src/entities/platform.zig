@@ -1,7 +1,7 @@
 const std = @import("std");
 const ecs = @import("../ecs.zig");
 
-pub const WIDTH: f32 = 1280.0;
+pub const WIDTH: f32 = 504.0;
 const FRAME_COUNT: i32 = 1;
 
 pub fn spawn(world: *ecs.World) !void {
@@ -32,7 +32,7 @@ fn spawnPlatform(world: *ecs.World, x: f32, y: f32) !void {
     );
     try world.velocities.put(
         ent,
-        .{ .dx = 250.0, .dy = 0.0 },
+        .{ .dx = 2.0, .dy = 0.0 },
     );
     try world.dimensions.put(
         ent,

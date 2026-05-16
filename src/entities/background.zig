@@ -1,15 +1,23 @@
 const std = @import("std");
 const ecs = @import("../ecs.zig");
 
-pub const DEFAULT_X: f32 = 0.0;
-pub const DEFAULT_Y: f32 = -100.0;
-const WIDTH: f32 = 1920.0;
-const HEIGHT: f32 = 1080.0;
+const WIDTH: f32 = 578.0;
+const HEIGHT: f32 = 320.0;
 const FRAME_COUNT: i32 = 1;
 
 pub fn spawn(world: *ecs.World) !void {
-    try spawnBackground(world, DEFAULT_X, DEFAULT_Y);
-    try spawnBackground(world, DEFAULT_X + WIDTH + 1.0, DEFAULT_Y);
+    const y = (@as(f32, @floatFromInt(world.screen_height)) - HEIGHT) / 2.0;
+
+    try spawnBackground(
+        world,
+        0.0,
+        y,
+    );
+    try spawnBackground(
+        world,
+        WIDTH,
+        y,
+    );
 }
 
 fn spawnBackground(world: *ecs.World, x: f32, y: f32) !void {
@@ -35,7 +43,7 @@ fn spawnBackground(world: *ecs.World, x: f32, y: f32) !void {
     );
     try world.velocities.put(
         ent,
-        .{ .dx = (world.scroll_speed * -1) + 10.0, .dy = 0.0 },
+        .{ .dx = 0.2, .dy = 0.0 },
     );
     try world.dimensions.put(
         ent,

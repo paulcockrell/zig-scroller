@@ -67,5 +67,5 @@ fn updateBackgroundY(
     _: *ecs.Dimension,
     world: *ecs.World,
 ) void {
-    pos.y = background.DEFAULT_Y - ((ctx.y + player.HEIGHT - world.groundY()) / 2.5);
+    pos.y = (ctx.y + player.HEIGHT - world.groundY()) / 2.5;
 }

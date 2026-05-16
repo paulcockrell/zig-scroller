@@ -1,9 +1,9 @@
-pub const BASE_SCROLL_SPEED: f32 = 0.0;
-pub const SCROLL_SPEED_FACTOR: f32 = 10.0;
-pub const MAX_SCROLL_SPEED: f32 = 300.0;
+pub const BASE_SCROLL_SPEED: f32 = 50.0;
+pub const SCROLL_SPEED_FACTOR: f32 = 5.0;
+pub const MAX_SCROLL_SPEED: f32 = 250.0;
 pub const MAX_HEALTH: i32 = 10;
 pub const FPS: i32 = 60;
-pub const PLATFORM_HEIGHT: f32 = 66.0;
+pub const PLATFORM_HEIGHT: f32 = 57.0;
 pub const PLAYER_HUD_TIMER_MAX: f32 = 1.0;
 
 pub const Entity = u32;

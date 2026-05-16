@@ -30,7 +30,7 @@ pub fn spawn(world: *ecs.World) !void {
     );
     try world.velocities.put(
         ent,
-        .{ .dx = 250.0, .dy = 0.0 },
+        .{ .dx = 2.0, .dy = 0.0 },
     );
     try world.dimensions.put(
         ent,
