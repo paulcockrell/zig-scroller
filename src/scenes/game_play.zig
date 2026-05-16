@@ -18,6 +18,7 @@ const enemy = @import("../entities/enemy.zig");
 const ring = @import("../entities/ring.zig");
 const platform = @import("../entities/platform.zig");
 const background = @import("../entities/background.zig");
+const player_hud = @import("../systems/rendering/player_hud.zig");
 
 const JUMP_FORCE: f32 = -250.0;
 
@@ -25,8 +26,10 @@ pub fn enter(world: *ecs.World) !void {
     try player.spawn(world);
     try platform.spawn(world);
     try background.spawn(world);
-    for (0..5) |_| {
+    for (0..3) |_| {
         try enemy.spawn(world);
+    }
+    for (0..2) |_| {
         try ring.spawn(world);
     }
 }
@@ -58,6 +61,7 @@ pub fn render(world: *ecs.World, delta: f32) void {
     raylib.clearBackground(raylib.Color.black);
     sprite.system(world, delta);
     hud.system(world);
+    player_hud.system(world, delta);
 }
 
 fn jump(

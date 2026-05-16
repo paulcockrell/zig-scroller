@@ -2,6 +2,8 @@ const std = @import("std");
 const ecs = @import("../../ecs.zig");
 
 const JUMP_FORCE: f32 = -250.0;
+const RING_SCORE: i32 = 1;
+const ENEMY_STOMP: i32 = 10;
 
 pub fn system(world: *ecs.World) void {
     ecs.Query.players(world, {}, checkEntityCollision);
@@ -59,7 +61,8 @@ fn checkEnemyCollision(
         enemy_dim.width,
         enemy_dim.height,
     )) {
-        world.score += 10;
+        world.score += ENEMY_STOMP;
+        world.updatePlayerHud(ENEMY_STOMP);
 
         world.jump_intents.put(player_ctx.ent, .{ .force = JUMP_FORCE }) catch |err| {
             std.debug.print("Entity jump intent failed {}\n", .{err});
@@ -123,7 +126,8 @@ fn checkRingCollision(
         ring_dim.width,
         ring_dim.height,
     )) {
-        _ = world.updateScore(1);
+        _ = world.updateScore(RING_SCORE);
+        world.updatePlayerHud(RING_SCORE);
 
         world.needs_reset.put(ring, {}) catch |err| {
             std.debug.print("Entity reset failed {}\n", .{err});

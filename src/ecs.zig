@@ -17,5 +17,7 @@ pub const SCROLL_SPEED_FACTOR = @import("ecs/components.zig").SCROLL_SPEED_FACTO
 pub const MAX_SCROLL_SPEED = @import("ecs/components.zig").MAX_SCROLL_SPEED;
 pub const MAX_HEALTH = @import("ecs/components.zig").MAX_HEALTH;
 pub const FPS = @import("ecs/components.zig").FPS;
+pub const PLATFORM_HEIGHT = @import("ecs/components.zig").PLATFORM_HEIGHT;
+pub const PLAYER_HUD_TIMER_MAX = @import("ecs/components.zig").PLAYER_HUD_TIMER_MAX;
 
 pub const changeScene = @import("ecs/world.zig").changeScene;

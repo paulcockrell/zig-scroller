@@ -2,7 +2,6 @@ const std = @import("std");
 const ecs = @import("../ecs.zig");
 
 pub const WIDTH: f32 = 1280.0;
-pub const HEIGHT: f32 = 66.0;
 const FRAME_COUNT: i32 = 1;
 
 pub fn spawn(world: *ecs.World) !void {
@@ -37,6 +36,6 @@ fn spawnPlatform(world: *ecs.World, x: f32, y: f32) !void {
     );
     try world.dimensions.put(
         ent,
-        .{ .width = WIDTH, .height = HEIGHT },
+        .{ .width = WIDTH, .height = ecs.PLATFORM_HEIGHT },
     );
 }

@@ -3,7 +3,6 @@ const raylib = @import("raylib");
 const resource_audio = @import("../systems/resources/audio.zig");
 const resource_textures = @import("../systems/resources/textures.zig");
 const ecs = @import("../ecs.zig");
-const platform = @import("../entities/platform.zig");
 
 pub const Scene = enum { main_menu, game_play, game_over, credits };
 
@@ -37,6 +36,8 @@ pub const World = struct {
     scene_transition_intents: std.AutoHashMap(ecs.Scene, void),
     confirm_intent: bool,
     credits_intent: bool,
+    player_hud_score: i32,
+    player_hud_timer: f32,
 
     prng: std.Random.Xoshiro256,
 
@@ -67,6 +68,8 @@ pub const World = struct {
             .scene_transition_intents = std.AutoHashMap(ecs.Scene, void).init(allocator),
             .confirm_intent = false,
             .credits_intent = false,
+            .player_hud_timer = 0.0,
+            .player_hud_score = 0,
             .prng = std.Random.DefaultPrng.init(std.testing.random_seed),
             .time = 0.0,
             .scroll_speed = ecs.BASE_SCROLL_SPEED,
@@ -108,6 +111,10 @@ pub const World = struct {
         self.sound_intents.clearRetainingCapacity();
         self.score = 0;
         self.time = 0;
+        self.confirm_intent = false;
+        self.credits_intent = false;
+        self.player_hud_timer = 0.0;
+        self.player_hud_score = 0;
         self.health = ecs.MAX_HEALTH;
         self.scroll_speed = ecs.BASE_SCROLL_SPEED;
     }
@@ -137,12 +144,17 @@ pub const World = struct {
     }
 
     pub fn groundY(self: *World) f32 {
-        return @as(f32, @floatFromInt(self.screen_height)) - platform.HEIGHT;
+        return @as(f32, @floatFromInt(self.screen_height)) - ecs.PLATFORM_HEIGHT;
     }
 
     pub fn changeScene(self: *World, scene: ecs.Scene) !void {
         self.scene_transition_intents.put(scene, {}) catch |err| {
             std.debug.print("Add scene transition intent failed {}: {}\n", .{ scene, err });
         };
+    }
+
+    pub fn updatePlayerHud(self: *World, score: i32) void {
+        self.player_hud_score = score;
+        self.player_hud_timer = ecs.PLAYER_HUD_TIMER_MAX;
     }
 };
