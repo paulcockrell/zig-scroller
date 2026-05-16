@@ -41,7 +41,7 @@ pub fn exit(world: *ecs.World) void {
 pub fn update(world: *ecs.World, delta: f32) void {
     world.time += delta;
 
-    if (world.confirm_intent) {
+    if (world.jump_intent) {
         ecs.Query.players(world, {}, jump);
     }
 

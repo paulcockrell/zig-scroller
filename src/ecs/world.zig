@@ -34,8 +34,8 @@ pub const World = struct {
     jump_intents: std.AutoHashMap(ecs.Entity, ecs.JumpIntent),
     sound_intents: std.AutoHashMap(ecs.SoundTag, ecs.SoundParams),
     scene_transition_intents: std.AutoHashMap(ecs.Scene, void),
+    jump_intent: bool,
     confirm_intent: bool,
-    credits_intent: bool,
     player_hud_score: i32,
     player_hud_timer: f32,
 
@@ -66,8 +66,8 @@ pub const World = struct {
             .sounds = std.AutoHashMap(ecs.SoundTag, raylib.Sound).init(allocator),
             .sound_intents = std.AutoHashMap(ecs.SoundTag, ecs.SoundParams).init(allocator),
             .scene_transition_intents = std.AutoHashMap(ecs.Scene, void).init(allocator),
+            .jump_intent = false,
             .confirm_intent = false,
-            .credits_intent = false,
             .player_hud_timer = 0.0,
             .player_hud_score = 0,
             .prng = std.Random.DefaultPrng.init(std.testing.random_seed),
@@ -111,8 +111,8 @@ pub const World = struct {
         self.sound_intents.clearRetainingCapacity();
         self.score = 0;
         self.time = 0;
+        self.jump_intent = false;
         self.confirm_intent = false;
-        self.credits_intent = false;
         self.player_hud_timer = 0.0;
         self.player_hud_score = 0;
         self.health = ecs.MAX_HEALTH;

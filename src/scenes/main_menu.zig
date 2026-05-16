@@ -21,13 +21,13 @@ pub fn exit(world: *ecs.World) void {
 }
 
 pub fn update(world: *ecs.World, delta: f32) void {
-    if (world.confirm_intent) {
+    if (world.jump_intent) {
         world.changeScene(ecs.Scene.game_play) catch |err| {
             std.debug.print("Failed to change scene: Main Menu -> Game Play: {}\n", .{err});
         };
     }
 
-    if (world.credits_intent) {
+    if (world.confirm_intent) {
         world.changeScene(ecs.Scene.credits) catch |err| {
             std.debug.print("Failed to change scene: Main Menu -> Credits: {}\n", .{err});
         };

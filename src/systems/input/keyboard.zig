@@ -5,15 +5,15 @@ const player = @import("../../entities/player.zig");
 
 pub fn system(world: *ecs.World) void {
     if (raylib.isKeyPressed(raylib.KeyboardKey.space)) {
-        world.confirm_intent = true;
+        world.jump_intent = true;
     }
 
     if (raylib.isKeyPressed(raylib.KeyboardKey.c)) {
-        world.credits_intent = true;
+        world.confirm_intent = true;
     }
 }
 
 pub fn resetInput(world: *ecs.World) void {
+    world.jump_intent = false;
     world.confirm_intent = false;
-    world.credits_intent = false;
 }

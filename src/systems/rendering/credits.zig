@@ -50,7 +50,7 @@ fn drawText(world: *ecs.World) void {
         raylib.Color.white,
     );
 
-    text = raylib.textFormat("Press 'space' to restart", .{});
+    text = raylib.textFormat("Press 'c' to continue", .{});
     ui.drawCenteredText(
         world,
         text,
