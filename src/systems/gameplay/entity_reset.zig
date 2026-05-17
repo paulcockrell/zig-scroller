@@ -4,7 +4,7 @@ const background = @import("../../entities/background.zig");
 const platform = @import("../../entities/background.zig");
 
 pub fn system(world: *ecs.World) void {
-    ecs.Query.needs_reset(world, entityReset);
+    ecs.Query.needsReset(world, entityReset);
     world.needs_reset.clearRetainingCapacity();
 }
 

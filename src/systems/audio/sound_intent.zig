@@ -3,7 +3,7 @@ const raylib = @import("raylib");
 const ecs = @import("../../ecs.zig");
 
 pub fn system(world: *ecs.World) void {
-    ecs.Query.sound_intents(world, play_sound);
+    ecs.Query.soundIntents(world, play_sound);
     world.sound_intents.clearRetainingCapacity();
 }
 

@@ -2,7 +2,7 @@ const std = @import("std");
 const ecs = @import("../../ecs.zig");
 
 pub fn system(world: *ecs.World) void {
-    ecs.Query.jump_intent(world, jump);
+    ecs.Query.jumpIntents(world, jump);
     world.jump_intents.clearRetainingCapacity();
 }
 

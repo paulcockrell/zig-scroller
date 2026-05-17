@@ -32,13 +32,13 @@ pub fn main(init: std.process.Init) !void {
         VIRTUAL_SCREEN_HEIGHT,
     );
 
-    const bg_music = try raylib.loadMusicStream("resources/audio/djartmusic-best-game-console-301284.mp3");
-    raylib.playMusicStream(bg_music);
+    //const bg_music = try raylib.loadMusicStream("resources/audio/djartmusic-best-game-console-301284.mp3");
+    //raylib.playMusicStream(bg_music);
 
     try world.changeScene(ecs.Scene.main_menu);
 
     while (!raylib.windowShouldClose()) {
-        raylib.updateMusicStream(bg_music);
+        //raylib.updateMusicStream(bg_music);
 
         const window_width = raylib.getScreenWidth();
         const window_height = raylib.getScreenHeight();

@@ -177,7 +177,7 @@ pub const Query = struct {
         }
     }
 
-    pub fn needs_reset(
+    pub fn needsReset(
         world: *ecs.World,
         func: fn (
             ent: ecs.Entity,
@@ -196,7 +196,7 @@ pub const Query = struct {
         }
     }
 
-    pub fn jump_intent(
+    pub fn jumpIntents(
         world: *ecs.World,
         func: fn (
             vel: *ecs.Velocity,
@@ -219,7 +219,7 @@ pub const Query = struct {
         }
     }
 
-    pub fn sound_intents(
+    pub fn soundIntents(
         world: *ecs.World,
         func: fn (
             sound_tag: ecs.SoundTag,
