@@ -3,11 +3,11 @@ const raylib = @import("raylib");
 const ecs = @import("../../ecs.zig");
 
 pub fn system(world: *ecs.World) void {
-    ecs.Query.soundIntents(world, play_sound);
+    ecs.Query.soundIntents(world, playSound);
     world.sound_intents.clearRetainingCapacity();
 }
 
-fn play_sound(
+fn playSound(
     sound_tag: ecs.SoundTag,
     sound_params: *ecs.SoundParams,
     world: *ecs.World,

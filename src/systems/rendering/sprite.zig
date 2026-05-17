@@ -40,7 +40,7 @@ fn playerRenderer(
     dim: *ecs.Dimension,
     world: *ecs.World,
 ) void {
-    process_animation(anim, delta);
+    processAnimation(anim, delta);
 
     const x =
         0.0 + (@as(f32, @floatFromInt(anim.frame_idx)) * dim.width);
@@ -52,7 +52,7 @@ fn playerRenderer(
             break :rect_y 0.0;
         };
 
-    sprite_renderer(
+    spriteRenderer(
         world,
         ecs.SpriteTag.player,
         x,
@@ -71,8 +71,8 @@ fn enemyRenderer(
     dim: *ecs.Dimension,
     world: *ecs.World,
 ) void {
-    process_animation(anim, delta);
-    sprite_renderer(
+    processAnimation(anim, delta);
+    spriteRenderer(
         world,
         ecs.SpriteTag.enemy,
         (@as(f32, @floatFromInt(anim.frame_idx + 1)) * dim.width),
@@ -91,8 +91,8 @@ fn ringRenderer(
     dim: *ecs.Dimension,
     world: *ecs.World,
 ) void {
-    process_animation(anim, delta);
-    sprite_renderer(
+    processAnimation(anim, delta);
+    spriteRenderer(
         world,
         ecs.SpriteTag.ring,
         (@as(f32, @floatFromInt(anim.frame_idx + 1)) * dim.width),
@@ -111,8 +111,8 @@ fn platformRenderer(
     dim: *ecs.Dimension,
     world: *ecs.World,
 ) void {
-    process_animation(anim, delta);
-    sprite_renderer(
+    processAnimation(anim, delta);
+    spriteRenderer(
         world,
         ecs.SpriteTag.platform,
         (@as(f32, @floatFromInt(anim.frame_idx + 1)) * dim.width),
@@ -131,8 +131,8 @@ fn backgroundRenderer(
     dim: *ecs.Dimension,
     world: *ecs.World,
 ) void {
-    process_animation(anim, delta);
-    sprite_renderer(
+    processAnimation(anim, delta);
+    spriteRenderer(
         world,
         ecs.SpriteTag.background,
         (@as(f32, @floatFromInt(anim.frame_idx + 1)) * dim.width),
@@ -142,7 +142,7 @@ fn backgroundRenderer(
     );
 }
 
-fn process_animation(anim: *ecs.Animation, delta: f32) void {
+fn processAnimation(anim: *ecs.Animation, delta: f32) void {
     if (anim.frame_count <= 1) return;
 
     anim.animation_timer += delta;
@@ -153,7 +153,7 @@ fn process_animation(anim: *ecs.Animation, delta: f32) void {
     }
 }
 
-fn sprite_renderer(
+fn spriteRenderer(
     world: *ecs.World,
     sprite_tag: ecs.SpriteTag,
     x: f32,

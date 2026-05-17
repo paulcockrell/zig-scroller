@@ -3,54 +3,54 @@ const raylib = @import("raylib");
 const ecs = @import("../../ecs.zig");
 
 pub fn system(world: *ecs.World) !void {
-    try load_player_sprite(world);
-    try load_enemy_sprite(world);
-    try load_ring_sprite(world);
-    try load_background_sprite(world);
-    try load_platform_sprite(world);
+    try loadPlayerSprite(world);
+    try loadEnemySprite(world);
+    try loadRingSprite(world);
+    try loadBackgroundSprite(world);
+    try loadPlatformSprite(world);
 }
 
-fn load_player_sprite(world: *ecs.World) !void {
-    try load_sprite(
+fn loadPlayerSprite(world: *ecs.World) !void {
+    try loadSprite(
         world,
         "resources/graphics/player.png",
         ecs.SpriteTag.player,
     );
 }
 
-fn load_enemy_sprite(world: *ecs.World) !void {
-    try load_sprite(
+fn loadEnemySprite(world: *ecs.World) !void {
+    try loadSprite(
         world,
         "resources/graphics/enemy.png",
         ecs.SpriteTag.enemy,
     );
 }
 
-fn load_ring_sprite(world: *ecs.World) !void {
-    try load_sprite(
+fn loadRingSprite(world: *ecs.World) !void {
+    try loadSprite(
         world,
         "resources/graphics/ring.png",
         ecs.SpriteTag.ring,
     );
 }
 
-fn load_background_sprite(world: *ecs.World) !void {
-    try load_sprite(
+fn loadBackgroundSprite(world: *ecs.World) !void {
+    try loadSprite(
         world,
         "resources/graphics/background.png",
         ecs.SpriteTag.background,
     );
 }
 
-fn load_platform_sprite(world: *ecs.World) !void {
-    try load_sprite(
+fn loadPlatformSprite(world: *ecs.World) !void {
+    try loadSprite(
         world,
         "resources/graphics/platform.png",
         ecs.SpriteTag.platform,
     );
 }
 
-fn load_sprite(world: *ecs.World, img_path: [:0]const u8, sprite_tag: ecs.SpriteTag) !void {
+fn loadSprite(world: *ecs.World, img_path: [:0]const u8, sprite_tag: ecs.SpriteTag) !void {
     const image = try raylib.loadImage(img_path);
     const texture = try raylib.loadTextureFromImage(image);
     raylib.unloadImage(image);

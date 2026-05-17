@@ -6,9 +6,9 @@ const ecs = @import("ecs.zig");
 const resource_audio = @import("systems/resources/audio.zig");
 const resource_textures = @import("systems/resources/textures.zig");
 const input = @import("systems/input/keyboard.zig");
-const scenesChange = @import("systems/scenes/change.zig");
-const scenesUpdate = @import("systems/scenes/update.zig");
-const scenesRender = @import("systems/scenes/render.zig");
+const scenes_change = @import("systems/scenes/change.zig");
+const scenes_update = @import("systems/scenes/update.zig");
+const scenes_render = @import("systems/scenes/render.zig");
 
 const VIRTUAL_SCREEN_WIDTH: i32 = 480;
 const VIRTUAL_SCREEN_HEIGHT: i32 = 270;
@@ -24,7 +24,7 @@ pub fn main(init: std.process.Init) !void {
         VIRTUAL_SCREEN_HEIGHT,
     );
 
-    init_raylib(&world);
+    initRaylib(&world);
 
     // Define a render texture to render
     const target: raylib.RenderTexture2D = try raylib.loadRenderTexture(
@@ -56,14 +56,14 @@ pub fn main(init: std.process.Init) !void {
 
         input.system(&world);
 
-        scenesChange.system(&world);
-        scenesUpdate.system(&world, delta);
+        scenes_change.system(&world);
+        scenes_update.system(&world, delta);
 
         input.resetInput(&world);
 
         // Draw our scene to the render texture
         raylib.beginTextureMode(target);
-        scenesRender.system(&world, delta);
+        scenes_render.system(&world, delta);
         raylib.endTextureMode();
 
         raylib.beginDrawing();
@@ -97,7 +97,7 @@ pub fn main(init: std.process.Init) !void {
     raylib.closeWindow();
 }
 
-fn init_raylib(world: *ecs.World) void {
+fn initRaylib(world: *ecs.World) void {
     raylib.initWindow(
         SCREEN_WIDTH,
         SCREEN_HEIGHT,
