@@ -4,19 +4,21 @@ const background = @import("../../entities/background.zig");
 const platform = @import("../../entities/background.zig");
 
 pub fn system(world: *ecs.World) void {
-    ecs.Query.needsReset(world, entityReset);
+    var it = world.needs_reset.iterator();
+
+    while (it.next()) |entry| {
+        const ent = entry.key_ptr.*;
+
+        if (world.enemies.contains(ent)) {
+            resetPos(world, ent);
+        }
+
+        if (world.rings.contains(ent)) {
+            resetPos(world, ent);
+        }
+    }
+
     world.needs_reset.clearRetainingCapacity();
-}
-
-pub fn entityReset(ent: ecs.Entity, world: *ecs.World) void {
-    if (world.enemies.contains(ent)) {
-        resetPos(world, ent);
-        return;
-    }
-
-    if (world.rings.contains(ent)) {
-        resetPos(world, ent);
-    }
 }
 
 fn resetPos(world: *ecs.World, ent: ecs.Entity) void {

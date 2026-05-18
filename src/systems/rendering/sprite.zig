@@ -2,143 +2,144 @@ const std = @import("std");
 const raylib = @import("raylib");
 const ecs = @import("../../ecs.zig");
 const player = @import("../../entities/player.zig");
+const texture_tags = @import("../../systems/resources/texture_tags.zig");
+const resource_system = @import("../../systems/resources/resources.zig");
 
-pub fn system(world: *ecs.World, delta: f32) void {
-    ecs.Query.backgrounds(
-        world,
-        delta,
-        backgroundRenderer,
-    );
-    ecs.Query.platforms(
-        world,
-        delta,
-        platformRenderer,
-    );
-    ecs.Query.players(
-        world,
-        delta,
-        playerRenderer,
-    );
-    ecs.Query.enemies(
-        world,
-        delta,
-        enemyRenderer,
-    );
-    ecs.Query.rings(
-        world,
-        delta,
-        ringRenderer,
-    );
+const Resources = resource_system.Resources;
+const TextureTag = texture_tags.TextureTag;
+
+pub fn system(world: *ecs.World, resources: *Resources, delta: f32) void {
+    renderBackgrounds(world, resources, delta);
+    renderPlatforms(world, resources, delta);
+    renderPlayers(world, resources, delta);
+    renderEnemies(world, resources, delta);
+    renderRings(world, resources, delta);
 }
 
-fn playerRenderer(
-    delta: f32,
+fn renderBackgrounds(world: *ecs.World, resources: *Resources, delta: f32) void {
+    var it = world.backgrounds.iterator();
+    while (it.next()) |entry| {
+        const ent = entry.key_ptr.*;
+
+        render(
+            world,
+            resources,
+            ent,
+            TextureTag.background,
+            delta,
+        );
+    }
+}
+
+fn renderPlatforms(world: *ecs.World, resources: *Resources, delta: f32) void {
+    var it = world.platforms.iterator();
+    while (it.next()) |entry| {
+        const ent = entry.key_ptr.*;
+
+        render(
+            world,
+            resources,
+            ent,
+            TextureTag.platform,
+            delta,
+        );
+    }
+}
+
+fn renderEnemies(world: *ecs.World, resources: *Resources, delta: f32) void {
+    var it = world.enemies.iterator();
+    while (it.next()) |entry| {
+        const ent = entry.key_ptr.*;
+
+        render(
+            world,
+            resources,
+            ent,
+            TextureTag.enemy,
+            delta,
+        );
+    }
+}
+
+fn renderRings(world: *ecs.World, resources: *Resources, delta: f32) void {
+    var it = world.rings.iterator();
+    while (it.next()) |entry| {
+        const ent = entry.key_ptr.*;
+
+        render(
+            world,
+            resources,
+            ent,
+            TextureTag.ring,
+            delta,
+        );
+    }
+}
+
+fn renderPlayers(world: *ecs.World, resources: *Resources, delta: f32) void {
+    var it = world.players.iterator();
+    while (it.next()) |entry| {
+        const ent = entry.key_ptr.*;
+
+        renderPlayer(
+            world,
+            resources,
+            ent,
+            delta,
+        );
+    }
+}
+
+fn renderPlayer(
+    world: *ecs.World,
+    resources: *Resources,
     ent: ecs.Entity,
-    anim: *ecs.Animation,
-    pos: *ecs.Position,
-    _: *ecs.Velocity,
-    dim: *ecs.Dimension,
-    world: *ecs.World,
+    delta: f32,
 ) void {
+    const anim = world.animations.getPtr(ent) orelse return;
+    const pos = world.positions.getPtr(ent) orelse return;
+    const dim = world.dimensions.getPtr(ent) orelse return;
+    const texture = resources.textures.get(TextureTag.player) orelse return;
+    const src_x = @as(f32, @floatFromInt(anim.frame_idx)) * dim.width;
+    const src_y =
+        if (player.isJumping(world, ent))
+            dim.height
+        else
+            0.0;
+
     processAnimation(anim, delta);
 
-    const x =
-        0.0 + (@as(f32, @floatFromInt(anim.frame_idx)) * dim.width);
-
-    const y =
-        if (player.isJumping(world, ent)) rect_y: {
-            break :rect_y dim.height;
-        } else rect_y: {
-            break :rect_y 0.0;
-        };
-
     spriteRenderer(
-        world,
-        ecs.SpriteTag.player,
-        x,
-        y,
+        src_x,
+        src_y,
         dim,
         pos,
+        texture,
     );
 }
 
-fn enemyRenderer(
-    delta: f32,
-    _: ecs.Entity,
-    anim: *ecs.Animation,
-    pos: *ecs.Position,
-    _: *ecs.Velocity,
-    dim: *ecs.Dimension,
+fn render(
     world: *ecs.World,
+    resources: *Resources,
+    ent: ecs.Entity,
+    texture_tag: TextureTag,
+    delta: f32,
 ) void {
-    processAnimation(anim, delta);
-    spriteRenderer(
-        world,
-        ecs.SpriteTag.enemy,
-        (@as(f32, @floatFromInt(anim.frame_idx + 1)) * dim.width),
-        0.0,
-        dim,
-        pos,
-    );
-}
+    const texture = resources.textures.get(texture_tag) orelse return;
+    const anim = world.animations.getPtr(ent) orelse return;
+    const pos = world.positions.getPtr(ent) orelse return;
+    const dim = world.dimensions.getPtr(ent) orelse return;
+    const src_x = @as(f32, @floatFromInt(anim.frame_idx)) * dim.width;
+    const src_y: f32 = 0.0;
 
-fn ringRenderer(
-    delta: f32,
-    _: ecs.Entity,
-    anim: *ecs.Animation,
-    pos: *ecs.Position,
-    _: *ecs.Velocity,
-    dim: *ecs.Dimension,
-    world: *ecs.World,
-) void {
     processAnimation(anim, delta);
-    spriteRenderer(
-        world,
-        ecs.SpriteTag.ring,
-        (@as(f32, @floatFromInt(anim.frame_idx + 1)) * dim.width),
-        0.0,
-        dim,
-        pos,
-    );
-}
 
-fn platformRenderer(
-    delta: f32,
-    _: ecs.Entity,
-    anim: *ecs.Animation,
-    pos: *ecs.Position,
-    _: *ecs.Velocity,
-    dim: *ecs.Dimension,
-    world: *ecs.World,
-) void {
-    processAnimation(anim, delta);
     spriteRenderer(
-        world,
-        ecs.SpriteTag.platform,
-        (@as(f32, @floatFromInt(anim.frame_idx + 1)) * dim.width),
-        0.0,
+        src_x,
+        src_y,
         dim,
         pos,
-    );
-}
-
-fn backgroundRenderer(
-    delta: f32,
-    _: ecs.Entity,
-    anim: *ecs.Animation,
-    pos: *ecs.Position,
-    _: *ecs.Velocity,
-    dim: *ecs.Dimension,
-    world: *ecs.World,
-) void {
-    processAnimation(anim, delta);
-    spriteRenderer(
-        world,
-        ecs.SpriteTag.background,
-        (@as(f32, @floatFromInt(anim.frame_idx + 1)) * dim.width),
-        0.0,
-        dim,
-        pos,
+        texture,
     );
 }
 
@@ -149,23 +150,20 @@ fn processAnimation(anim: *ecs.Animation, delta: f32) void {
     if (anim.animation_timer >= anim.frame_duration) {
         anim.animation_timer -= anim.frame_duration;
         anim.frame_idx += 1;
-        if (anim.frame_idx + 1 > anim.frame_count) anim.frame_idx = 0;
+        if (anim.frame_idx >= anim.frame_count) anim.frame_idx = 0;
     }
 }
 
 fn spriteRenderer(
-    world: *ecs.World,
-    sprite_tag: ecs.SpriteTag,
-    x: f32,
-    y: f32,
+    src_x: f32,
+    src_y: f32,
     dim: *ecs.Dimension,
     pos: *ecs.Position,
+    texture: *raylib.Texture,
 ) void {
-    const sprite_entry = world.sprites.getEntry(sprite_tag) orelse return;
-    const texture = sprite_entry.value_ptr.*;
     const rl_rect = raylib.Rectangle.init(
-        x,
-        y,
+        src_x,
+        src_y,
         dim.width,
         dim.height,
     );
@@ -174,5 +172,5 @@ fn spriteRenderer(
         pos.y,
     );
 
-    raylib.drawTextureRec(texture, rl_rect, rl_pos, .white);
+    raylib.drawTextureRec(texture.*, rl_rect, rl_pos, .white);
 }

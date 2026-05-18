@@ -3,12 +3,15 @@ const raylib = @import("raylib");
 const ecs = @import("../ecs.zig");
 const main_menu = @import("../systems/rendering/main_menu.zig");
 const movement = @import("../systems/movement/movement.zig");
-const scroll = @import("../systems/rendering/scroll.zig");
+const scroll = @import("../systems/movement/scroll.zig");
 const sprite = @import("../systems/rendering/sprite.zig");
-const scenery_wrap = @import("../systems/rendering/scenery_wrap.zig");
+const scenery_wrap = @import("../systems/movement/scenery_wrap.zig");
 const player = @import("../entities/player.zig");
 const platform = @import("../entities/platform.zig");
 const background = @import("../entities/background.zig");
+const resource_system = @import("../systems/resources/resources.zig");
+
+const Resources = resource_system.Resources;
 
 pub fn enter(world: *ecs.World) !void {
     try player.spawn(world);
@@ -35,11 +38,11 @@ pub fn update(world: *ecs.World, delta: f32) void {
 
     movement.system(world, delta);
     scroll.system(world, delta);
-    scenery_wrap.system(world, delta);
+    scenery_wrap.system(world);
 }
 
-pub fn render(world: *ecs.World, delta: f32) void {
+pub fn render(world: *ecs.World, resources: *Resources, delta: f32) void {
     raylib.clearBackground(raylib.Color.black);
-    sprite.system(world, delta);
-    main_menu.system(world, delta);
+    sprite.system(world, resources, delta);
+    main_menu.system(world, resources);
 }

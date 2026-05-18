@@ -1,22 +1,28 @@
 const std = @import("std");
 const raylib = @import("raylib");
 const ecs = @import("../../ecs.zig");
+const resource_system = @import("../resources/resources.zig");
+const sound_tags = @import("../resources/audio_tags.zig");
 
-pub fn system(world: *ecs.World) void {
-    ecs.Query.soundIntents(world, playSound);
-    world.sound_intents.clearRetainingCapacity();
-}
+const Resources = resource_system.Resources;
+const SoundTag = sound_tags.SoundTag;
+const SoundParams = sound_tags.SoundParams;
 
-fn playSound(
-    sound_tag: ecs.SoundTag,
-    sound_params: *ecs.SoundParams,
-    world: *ecs.World,
-) void {
-    const sound = world.sounds.get(sound_tag);
-    if (sound) |s| {
-        raylib.setSoundVolume(s, sound_params.volume);
-        raylib.playSound(s);
-    } else {
-        std.debug.print("Couldn't find sound with tag {}\n", .{sound_tag});
+pub fn system(world: *ecs.World, resources: *Resources) void {
+    var it = world.sound_intents.iterator();
+
+    while (it.next()) |entry| {
+        const audio_tag = entry.key_ptr.*;
+        const audio_params = entry.value_ptr;
+        const sound = resources.audio.sounds.get(audio_tag);
+
+        if (sound) |s| {
+            raylib.setSoundVolume(s, audio_params.volume);
+            raylib.playSound(s);
+        } else {
+            std.debug.print("Couldn't find sound with audio tag {}\n", .{audio_tag});
+        }
     }
+
+    world.sound_intents.clearRetainingCapacity();
 }

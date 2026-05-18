@@ -1,8 +1,12 @@
 const std = @import("std");
 const raylib = @import("raylib");
-const resource_audio = @import("../systems/resources/audio.zig");
-const resource_textures = @import("../systems/resources/textures.zig");
 const ecs = @import("../ecs.zig");
+const audio_tags = @import("../systems/resources/audio_tags.zig");
+const texture_tags = @import("../systems/resources/texture_tags.zig");
+
+const AudioTag = audio_tags.AudioTag;
+const AudioParams = audio_tags.AudioParams;
+const TextureTag = texture_tags.TextureTag;
 
 pub const Scene = enum { main_menu, game_play, game_over, credits };
 
@@ -20,9 +24,7 @@ pub const World = struct {
     positions: std.AutoHashMap(ecs.Entity, ecs.Position),
     velocities: std.AutoHashMap(ecs.Entity, ecs.Velocity),
     dimensions: std.AutoHashMap(ecs.Entity, ecs.Dimension),
-    sprites: std.AutoHashMap(ecs.SpriteTag, raylib.Texture2D),
     animations: std.AutoHashMap(ecs.Entity, ecs.Animation),
-    sounds: std.AutoHashMap(ecs.SoundTag, raylib.Sound),
 
     players: std.AutoHashMap(ecs.Entity, void),
     enemies: std.AutoHashMap(ecs.Entity, void),
@@ -32,7 +34,7 @@ pub const World = struct {
 
     needs_reset: std.AutoHashMap(ecs.Entity, void),
     jump_intents: std.AutoHashMap(ecs.Entity, ecs.JumpIntent),
-    sound_intents: std.AutoHashMap(ecs.SoundTag, ecs.SoundParams),
+    sound_intents: std.AutoHashMap(AudioTag, AudioParams),
     scene_transition_intents: std.AutoHashMap(ecs.Scene, void),
     jump_intent: bool,
     confirm_intent: bool,
@@ -61,10 +63,8 @@ pub const World = struct {
             .backgrounds = std.AutoHashMap(ecs.Entity, void).init(allocator),
             .needs_reset = std.AutoHashMap(ecs.Entity, void).init(allocator),
             .jump_intents = std.AutoHashMap(ecs.Entity, ecs.JumpIntent).init(allocator),
-            .sprites = std.AutoHashMap(ecs.SpriteTag, raylib.Texture2D).init(allocator),
             .animations = std.AutoHashMap(ecs.Entity, ecs.Animation).init(allocator),
-            .sounds = std.AutoHashMap(ecs.SoundTag, raylib.Sound).init(allocator),
-            .sound_intents = std.AutoHashMap(ecs.SoundTag, ecs.SoundParams).init(allocator),
+            .sound_intents = std.AutoHashMap(AudioTag, AudioParams).init(allocator),
             .scene_transition_intents = std.AutoHashMap(ecs.Scene, void).init(allocator),
             .jump_intent = false,
             .confirm_intent = false,
@@ -78,8 +78,6 @@ pub const World = struct {
     }
 
     pub fn deinit(self: *World) void {
-        resource_audio.deinit(self);
-
         self.positions.deinit();
         self.velocities.deinit();
         self.dimensions.deinit();
@@ -90,9 +88,7 @@ pub const World = struct {
         self.backgrounds.deinit();
         self.needs_reset.deinit();
         self.jump_intents.deinit();
-        self.sprites.deinit();
         self.animations.deinit();
-        self.sounds.deinit();
         self.sound_intents.deinit();
         self.scene_transition_intents.deinit();
     }
@@ -131,8 +127,13 @@ pub const World = struct {
         return self.health;
     }
 
-    pub fn updateScore(self: *World, val: i32) i32 {
+    pub fn updateAndDisplayScore(self: *World, val: i32) i32 {
+        // Update and display player hud values
+        self.player_hud_score = val;
+        self.player_hud_timer = ecs.PLAYER_HUD_TIMER_MAX;
+
         self.score += val;
+
         return self.score;
     }
 
@@ -151,10 +152,5 @@ pub const World = struct {
         self.scene_transition_intents.put(scene, {}) catch |err| {
             std.debug.print("Add scene transition intent failed {}: {}\n", .{ scene, err });
         };
-    }
-
-    pub fn updatePlayerHud(self: *World, score: i32) void {
-        self.player_hud_score = score;
-        self.player_hud_timer = ecs.PLAYER_HUD_TIMER_MAX;
     }
 };

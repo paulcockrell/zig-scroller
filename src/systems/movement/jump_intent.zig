@@ -2,14 +2,15 @@ const std = @import("std");
 const ecs = @import("../../ecs.zig");
 
 pub fn system(world: *ecs.World) void {
-    ecs.Query.jumpIntents(world, jump);
-    world.jump_intents.clearRetainingCapacity();
-}
+    var it = world.jump_intents.iterator();
 
-fn jump(
-    vel: *ecs.Velocity,
-    intent: *ecs.JumpIntent,
-    _: *ecs.World,
-) void {
-    vel.dy = intent.force;
+    while (it.next()) |entry| {
+        const ent = entry.key_ptr.*;
+        const vel = world.velocities.getPtr(ent) orelse continue;
+        const intent = world.jump_intents.getPtr(ent) orelse continue;
+
+        vel.dy = intent.force;
+    }
+
+    world.jump_intents.clearRetainingCapacity();
 }

@@ -8,14 +8,6 @@ pub const PLAYER_HUD_TIMER_MAX: f32 = 1.0;
 
 pub const Entity = u32;
 
-pub const SoundTag = enum { background, jump, ring, hit, stomp };
-
-pub const SoundParams = struct {
-    volume: f32,
-};
-
-pub const SpriteTag = enum { player, enemy, ring, background, platform };
-
 pub const Animation = struct {
     animation_timer: f32,
     frame_duration: f32,

@@ -9,6 +9,7 @@ const input = @import("systems/input/keyboard.zig");
 const scenes_change = @import("systems/scenes/change.zig");
 const scenes_update = @import("systems/scenes/update.zig");
 const scenes_render = @import("systems/scenes/render.zig");
+const resource_system = @import("systems/resources/resources.zig");
 
 const VIRTUAL_SCREEN_WIDTH: i32 = 480;
 const VIRTUAL_SCREEN_HEIGHT: i32 = 270;
@@ -18,19 +19,15 @@ const SCREEN_HEIGHT: i32 = 720;
 pub fn main(init: std.process.Init) !void {
     const allocator = init.gpa;
 
+    var resources = resource_system.Resources.init(allocator);
+
     var world = ecs.World.init(
         allocator,
         VIRTUAL_SCREEN_WIDTH,
         VIRTUAL_SCREEN_HEIGHT,
     );
 
-    initRaylib(&world);
-
-    // Define a render texture to render
-    const target: raylib.RenderTexture2D = try raylib.loadRenderTexture(
-        VIRTUAL_SCREEN_WIDTH,
-        VIRTUAL_SCREEN_HEIGHT,
-    );
+    const target = try initRaylib();
 
     //const bg_music = try raylib.loadMusicStream("resources/audio/djartmusic-best-game-console-301284.mp3");
     //raylib.playMusicStream(bg_music);
@@ -63,7 +60,7 @@ pub fn main(init: std.process.Init) !void {
 
         // Draw our scene to the render texture
         raylib.beginTextureMode(target);
-        scenes_render.system(&world, delta);
+        scenes_render.system(&world, &resources, delta);
         raylib.endTextureMode();
 
         raylib.beginDrawing();
@@ -93,11 +90,12 @@ pub fn main(init: std.process.Init) !void {
     }
 
     world.deinit();
+    resources.deinit();
     raylib.closeAudioDevice();
     raylib.closeWindow();
 }
 
-fn initRaylib(world: *ecs.World) void {
+fn initRaylib() !raylib.RenderTexture2D {
     raylib.initWindow(
         SCREEN_WIDTH,
         SCREEN_HEIGHT,
@@ -108,14 +106,10 @@ fn initRaylib(world: *ecs.World) void {
 
     raylib.setTargetFPS(ecs.FPS);
 
-    resource_textures.system(world) catch |err| {
-        std.debug.print("Failed to load texture resources. Exiting. {}", .{err});
-        return;
-    };
+    const target: raylib.RenderTexture2D = try raylib.loadRenderTexture(
+        VIRTUAL_SCREEN_WIDTH,
+        VIRTUAL_SCREEN_HEIGHT,
+    );
 
-    // must come before entities are spawned
-    resource_audio.system(world) catch |err| {
-        std.debug.print("Failed to load audio resources. Exiting. {}", .{err});
-        return;
-    };
+    return target;
 }

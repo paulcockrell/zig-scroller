@@ -5,70 +5,101 @@ const JUMP_FORCE: f32 = -250.0;
 const RING_SCORE: i32 = 1;
 const ENEMY_STOMP: i32 = 10;
 
-pub fn system(world: *ecs.World) void {
-    ecs.Query.players(world, {}, checkEntityCollision);
-}
-
-const PlayerCtx = struct {
+const EntityBundle = struct {
     ent: ecs.Entity,
-    x: f32,
-    y: f32,
-    w: f32,
-    h: f32,
-    dy: f32,
-    dx: f32,
+    pos: *ecs.Position,
+    dim: *ecs.Dimension,
+    vel: ?*ecs.Velocity = null,
 };
 
-fn checkEntityCollision(
-    _: void,
-    ent: ecs.Entity,
-    _: *ecs.Animation,
-    pos: *ecs.Position,
-    vel: *ecs.Velocity,
-    dim: *ecs.Dimension,
-    world: *ecs.World,
-) void {
-    const ctx = PlayerCtx{
-        .ent = ent,
-        .x = pos.x,
-        .y = pos.y,
-        .w = dim.width,
-        .h = dim.height,
-        .dy = vel.dy,
-        .dx = vel.dx,
-    };
-    ecs.Query.enemies(world, ctx, checkEnemyCollision);
-    ecs.Query.rings(world, ctx, checkRingCollision);
+pub fn system(world: *ecs.World) void {
+    var it = world.players.iterator();
+    while (it.next()) |ent| {
+        const pos = world.positions.getPtr(ent) orelse continue;
+        const dim = world.dimensions.getPtr(ent) orelse continue;
+        const vel = world.velocities.getPtr(ent) orelse continue;
+
+        const player = .{
+            .ent = ent,
+            .pos = pos,
+            .dim = dim,
+            .vel = vel,
+        };
+
+        checkPlayerCollision(world, &player);
+    }
 }
 
-fn checkEnemyCollision(
-    player_ctx: PlayerCtx,
-    enemy: ecs.Entity,
-    _: *ecs.Animation,
-    enemy_pos: *ecs.Position,
-    _: *ecs.Velocity,
-    enemy_dim: *ecs.Dimension,
+fn checkPlayerCollision(
     world: *ecs.World,
+    player: *EntityBundle,
 ) void {
-    if (stomp(
-        player_ctx.x,
-        player_ctx.y,
-        player_ctx.w,
-        player_ctx.h,
-        player_ctx.dy,
-        enemy_pos.x,
-        enemy_pos.y,
-        enemy_dim.width,
-        enemy_dim.height,
-    )) {
-        world.score += ENEMY_STOMP;
-        world.updatePlayerHud(ENEMY_STOMP);
+    handleEnemies(world, player);
+    handleRings(world, player);
+}
 
-        world.jump_intents.put(player_ctx.ent, .{ .force = JUMP_FORCE }) catch |err| {
+fn handleEnemies(world: *ecs.World, player: *EntityBundle) void {
+    var it = world.enemies.iterator();
+    while (it.next()) |ent| {
+        const pos = world.positions.getPtr(ent) orelse continue;
+        const dim = world.dimensions.getPtr(ent) orelse continue;
+
+        const enemy = .{
+            .ent = ent,
+            .pos = pos,
+            .dim = dim,
+        };
+
+        if (checkEnemyStomp(
+            world,
+            player,
+            &enemy,
+        )) continue;
+
+        checkEnemyCollision(
+            world,
+            player,
+            &enemy,
+        );
+    }
+}
+
+fn handleRings(world: *ecs.World, player: *EntityBundle) void {
+    var it = world.rings.iterator();
+    while (it.next()) |ent| {
+        const pos = world.positions.getPtr(ent) orelse continue;
+        const dim = world.dimensions.getPtr(ent) orelse continue;
+
+        const ring = .{
+            .ent = ent,
+            .pos = pos,
+            .dim = dim,
+        };
+
+        checkRingCollision(
+            world,
+            player,
+            &ring,
+        );
+    }
+}
+
+fn checkEnemyStomp(
+    world: *ecs.World,
+    player: *EntityBundle,
+    enemy: *EntityBundle,
+) bool {
+    if (enemyStomp(
+        player,
+        enemy,
+    )) {
+        _ = world.updateAndDisplayScore(ENEMY_STOMP);
+
+        world.jump_intents.put(player.ent, .{ .force = JUMP_FORCE }) catch |err| {
             std.debug.print("Entity jump intent failed {}\n", .{err});
         };
 
-        world.needs_reset.put(enemy, {}) catch |err| {
+        world.needs_reset.put(enemy.ent, {}) catch |err| {
             std.debug.print("Entity reset failed {}\n", .{err});
         };
 
@@ -76,106 +107,72 @@ fn checkEnemyCollision(
             std.debug.print("Stomp sound intent failed {}\n", .{err});
         };
 
-        return;
+        return true;
     }
 
-    if (overlap(
-        player_ctx.x,
-        player_ctx.y,
-        player_ctx.w,
-        player_ctx.h,
-        enemy_pos.x,
-        enemy_pos.y,
-        enemy_dim.width,
-        enemy_dim.height,
-    )) {
-        const health = world.updateHealth(1);
+    return false;
+}
 
-        world.needs_reset.put(enemy, {}) catch |err| {
-            std.debug.print("Entity reset failed {}\n", .{err});
+fn checkEnemyCollision(
+    world: *ecs.World,
+    player: *EntityBundle,
+    enemy: *EntityBundle,
+) void {
+    if (!overlap(player, enemy)) return;
+
+    const health = world.updateHealth(1);
+
+    world.needs_reset.put(enemy.ent, {}) catch |err| {
+        std.debug.print("Entity reset failed {}\n", .{err});
+    };
+
+    world.sound_intents.put(ecs.SoundTag.hit, .{ .volume = 0.3 }) catch |err| {
+        std.debug.print("Hit sound intent failed {}\n", .{err});
+    };
+
+    if (health <= 0) {
+        world.changeScene(ecs.Scene.game_over) catch |err| {
+            std.debug.print("Failed to change to scene 'game_over' {}\n", .{err});
         };
-
-        world.sound_intents.put(ecs.SoundTag.hit, .{ .volume = 0.3 }) catch |err| {
-            std.debug.print("Hit sound intent failed {}\n", .{err});
-        };
-
-        if (health <= 0) {
-            world.changeScene(ecs.Scene.game_over) catch |err| {
-                std.debug.print("Failed to change to scene 'game_over' {}\n", .{err});
-            };
-        }
     }
 }
 
 fn checkRingCollision(
-    player_ctx: PlayerCtx,
-    ring: ecs.Entity,
-    _: *ecs.Animation,
-    ring_pos: *ecs.Position,
-    _: *ecs.Velocity,
-    ring_dim: *ecs.Dimension,
     world: *ecs.World,
+    player: *EntityBundle,
+    ring: *EntityBundle,
 ) void {
-    if (overlap(
-        player_ctx.x,
-        player_ctx.y,
-        player_ctx.w,
-        player_ctx.h,
-        ring_pos.x,
-        ring_pos.y,
-        ring_dim.width,
-        ring_dim.height,
-    )) {
-        _ = world.updateScore(RING_SCORE);
-        world.updatePlayerHud(RING_SCORE);
+    if (!overlap(player, ring)) return;
 
-        world.needs_reset.put(ring, {}) catch |err| {
-            std.debug.print("Entity reset failed {}\n", .{err});
-        };
+    _ = world.updateAndDisplayScore(RING_SCORE);
 
-        world.sound_intents.put(ecs.SoundTag.ring, .{ .volume = 0.3 }) catch |err| {
-            std.debug.print("Ring sound intent failed {}\n", .{err});
-        };
-    }
+    world.needs_reset.put(ring.ent, {}) catch |err| {
+        std.debug.print("Entity reset failed {}\n", .{err});
+    };
+
+    world.sound_intents.put(ecs.SoundTag.ring, .{ .volume = 0.3 }) catch |err| {
+        std.debug.print("Ring sound intent failed {}\n", .{err});
+    };
 }
 
-fn stomp(
-    x1: f32,
-    y1: f32,
-    w1: f32,
-    h1: f32,
-    dy1: f32,
-    x2: f32,
-    y2: f32,
-    w2: f32,
-    h2: f32,
+fn enemyStomp(
+    player: *EntityBundle,
+    enemy: *EntityBundle,
 ) bool {
-    if (dy1 <= 0) return false; // if obj1 is not falling return
+    const player_bottom = player.pos.y + player.dim.height;
+    const enemy_top = enemy.pos.y;
 
-    return overlap(
-        x1,
-        y1,
-        w1,
-        h1,
-        x2,
-        y2,
-        w2,
-        h2,
-    );
+    return player.vel.?.y > 0 and
+        player_bottom <= enemy_top + 10 and
+        overlap(player, enemy);
 }
 
 fn overlap(
-    x1: f32,
-    y1: f32,
-    w1: f32,
-    h1: f32,
-    x2: f32,
-    y2: f32,
-    w2: f32,
-    h2: f32,
+    player: *EntityBundle,
+    other: *EntityBundle,
 ) bool {
-    return !(x1 + w1 < x2 or
-        x1 > x2 + w2 or
-        y1 + h1 < y2 or
-        y1 > y2 + h2);
+    return !(player.pos.x + player.dim.width < other.pos.x or
+        player.pos.x > other.pos.x + other.dim.width or
+        player.pos.y + player.dim.height < other.pos.y or
+        player.pos.y > other.pos.y + other.dim.height);
 }

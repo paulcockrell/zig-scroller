@@ -5,17 +5,28 @@ const GRAVITY: f32 = 500.0;
 const MAX_FALL_SPEED: f32 = 400.0;
 
 pub fn system(world: *ecs.World, delta: f32) void {
-    ecs.Query.players(world, delta, applyPlayerGravity);
+    var it = world.players.iterator();
+    while (it.next()) |ent| {
+        const pos = world.positions.getPtr(ent) orelse continue;
+        const dim = world.dimensions.getPtr(ent) orelse continue;
+        const vel = world.velocities.getPtr(ent) orelse continue;
+
+        applyPlayerGravity(
+            world,
+            pos,
+            vel,
+            dim,
+            delta,
+        );
+    }
 }
 
 fn applyPlayerGravity(
-    delta: f32,
-    _: ecs.Entity,
-    _: *ecs.Animation,
+    world: *ecs.World,
     pos: *ecs.Position,
     vel: *ecs.Velocity,
     dim: *ecs.Dimension,
-    world: *ecs.World,
+    delta: f32,
 ) void {
     const is_grounded = pos.y + dim.height >= world.groundY() and vel.dy == 0;
 
@@ -27,6 +38,7 @@ fn applyPlayerGravity(
         } else {
             vel.dy += GRAVITY * delta;
         }
+
         if (vel.dy > MAX_FALL_SPEED) {
             vel.dy = MAX_FALL_SPEED;
         }

@@ -1,38 +1,52 @@
 const std = @import("std");
 const raylib = @import("raylib");
 const ecs = @import("../../ecs.zig");
+const audio_tags = @import("./audio_tags.zig");
 
-pub fn system(world: *ecs.World) !void {
-    try loadJumpSound(world);
-    try loadRingSound(world);
-    try loadHitSound(world);
-    try loadStompSound(world);
-}
+const AudioTag = audio_tags.AudioTag;
 
-pub fn deinit(world: *ecs.World) void {
-    ecs.Query.sounds(world, unload_sounds);
-}
+pub const AudioSystem = struct {
+    sounds: std.AutoHashMap(AudioTag, raylib.Sound),
 
-fn unload_sounds(_: ecs.SoundTag, sound: *raylib.Sound, _: *ecs.World) void {
-    raylib.unloadSound(sound.*);
-}
+    pub fn init(allocator: std.mem.Allocator) !AudioSystem {
+        var sounds = std.AutoHashMap(AudioTag, raylib.Sound).init(allocator);
 
-fn loadJumpSound(world: *ecs.World) !void {
-    const jump = try raylib.loadSound("resources/audio/lumora_studios-pixel-jump-319167.mp3");
-    try world.sounds.put(ecs.SoundTag.jump, jump);
-}
+        const jump = try raylib.loadSound(
+            "resources/audio/lumora_studios-pixel-jump-319167.mp3",
+        );
+        const ring = try raylib.loadSound(
+            "resources/audio/ring.wav",
+        );
+        const hit = try raylib.loadSound(
+            "resources/audio/destroy.wav",
+        );
+        const stomp = try raylib.loadSound(
+            "resources/audio/hyper-ring.wav",
+        );
 
-fn loadRingSound(world: *ecs.World) !void {
-    const ring = try raylib.loadSound("resources/audio/ring.wav");
-    try world.sounds.put(ecs.SoundTag.ring, ring);
-}
+        sounds.put(AudioTag.jump, jump);
+        sounds.put(AudioTag.ring, ring);
+        sounds.put(AudioTag.hit, hit);
+        sounds.put(AudioTag.stomp, stomp);
 
-fn loadHitSound(world: *ecs.World) !void {
-    const hit = try raylib.loadSound("resources/audio/destroy.wav");
-    try world.sounds.put(ecs.SoundTag.hit, hit);
-}
+        return .{
+            .sounds = sounds,
+        };
+    }
 
-fn loadStompSound(world: *ecs.World) !void {
-    const stomp = try raylib.loadSound("resources/audio/hyper-ring.wav");
-    try world.sounds.put(ecs.SoundTag.stomp, stomp);
-}
+    pub fn deinit(self: *AudioSystem) void {
+        var it = self.sounds.iterator();
+
+        while (it.next()) |ent| {
+            raylib.unloadSound(ent.value_ptr.*);
+        }
+
+        self.sounds.deinit();
+    }
+
+    pub fn play(self: *AudioSystem, tag: AudioTag) void {
+        if (self.sounds.get(tag)) |sound| {
+            raylib.playSound(sound);
+        }
+    }
+};
