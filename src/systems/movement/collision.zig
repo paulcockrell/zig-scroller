@@ -14,7 +14,8 @@ const EntityBundle = struct {
 
 pub fn system(world: *ecs.World) void {
     var it = world.players.iterator();
-    while (it.next()) |ent| {
+    while (it.next()) |entry| {
+        const ent = entry.key_ptr.*;
         const pos = world.positions.getPtr(ent) orelse continue;
         const dim = world.dimensions.getPtr(ent) orelse continue;
         const vel = world.velocities.getPtr(ent) orelse continue;
@@ -40,7 +41,8 @@ fn checkPlayerCollision(
 
 fn handleEnemies(world: *ecs.World, player: *EntityBundle) void {
     var it = world.enemies.iterator();
-    while (it.next()) |ent| {
+    while (it.next()) |entry| {
+        const ent = entry.key_ptr.*;
         const pos = world.positions.getPtr(ent) orelse continue;
         const dim = world.dimensions.getPtr(ent) orelse continue;
 
@@ -66,7 +68,8 @@ fn handleEnemies(world: *ecs.World, player: *EntityBundle) void {
 
 fn handleRings(world: *ecs.World, player: *EntityBundle) void {
     var it = world.rings.iterator();
-    while (it.next()) |ent| {
+    while (it.next()) |entry| {
+        const ent = entry.key_ptr.*;
         const pos = world.positions.getPtr(ent) orelse continue;
         const dim = world.dimensions.getPtr(ent) orelse continue;
 
