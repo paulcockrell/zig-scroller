@@ -89,28 +89,23 @@ fn checkEnemyStomp(
     player: *EntityBundle,
     enemy: *EntityBundle,
 ) bool {
-    if (enemyStomp(
-        player,
-        enemy,
-    )) {
-        _ = world.updateAndDisplayScore(ENEMY_STOMP);
+    if (!enemyStomp(player, enemy)) return false;
 
-        world.jump_intents.put(player.ent, .{ .force = JUMP_FORCE }) catch |err| {
-            std.debug.print("Entity jump intent failed {}\n", .{err});
-        };
+    _ = world.updateAndDisplayScore(ENEMY_STOMP);
 
-        world.needs_reset.put(enemy.ent, {}) catch |err| {
-            std.debug.print("Entity reset failed {}\n", .{err});
-        };
+    world.jump_intents.put(player.ent, .{ .force = JUMP_FORCE }) catch |err| {
+        std.debug.print("Entity jump intent failed {}\n", .{err});
+    };
 
-        world.sound_intents.put(ecs.SoundTag.stomp, .{ .volume = 0.3 }) catch |err| {
-            std.debug.print("Stomp sound intent failed {}\n", .{err});
-        };
+    world.needs_reset.put(enemy.ent, {}) catch |err| {
+        std.debug.print("Entity reset failed {}\n", .{err});
+    };
 
-        return true;
-    }
+    world.sound_intents.put(ecs.SoundTag.stomp, .{ .volume = 0.3 }) catch |err| {
+        std.debug.print("Stomp sound intent failed {}\n", .{err});
+    };
 
-    return false;
+    return true;
 }
 
 fn checkEnemyCollision(
