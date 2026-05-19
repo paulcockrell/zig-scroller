@@ -11,8 +11,9 @@ const FONT_SIZE: i32 = 16;
 pub fn system(world: *ecs.World, resources: *Resources, delta: f32) void {
     var it = world.players.iterator();
     while (it.next()) |entry| {
-        const pos = world.positions.getPtr(entry) orelse continue;
-        const dim = world.dimensions.getPtr(entry) orelse continue;
+        const ent = entry.key_ptr.*;
+        const pos = world.positions.getPtr(ent) orelse continue;
+        const dim = world.dimensions.getPtr(ent) orelse continue;
 
         displayPlayerHud(
             world,

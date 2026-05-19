@@ -8,14 +8,16 @@ pub fn system(world: *ecs.World) void {
 
 fn enemiesWrap(world: *ecs.World) void {
     var it = world.enemies.iterator();
-    while (it.next()) |ent| {
+    while (it.next()) |entry| {
+        const ent = entry.key_ptr.*;
         wrap(world, ent);
     }
 }
 
 fn ringsWrap(world: *ecs.World) void {
     var it = world.rings.iterator();
-    while (it.next()) |ent| {
+    while (it.next()) |entry| {
+        const ent = entry.key_ptr.*;
         wrap(world, ent);
     }
 }

@@ -12,19 +12,19 @@ pub const TextureSystem = struct {
         var textures = std.AutoHashMap(TextureTag, raylib.Texture).init(allocator);
 
         const player = try loadSprite("resources/graphics/player.png");
-        textures.put(TextureTag.player, player);
+        try textures.put(TextureTag.player, player);
 
         const enemy = try loadSprite("resources/graphics/enemy.png");
-        textures.put(TextureTag.enemy, enemy);
+        try textures.put(TextureTag.enemy, enemy);
 
         const ring = try loadSprite("resources/graphics/ring.png");
-        textures.put(TextureTag.ring, ring);
+        try textures.put(TextureTag.ring, ring);
 
         const background = try loadSprite("resources/graphics/background.png");
-        textures.put(TextureTag.background, background);
+        try textures.put(TextureTag.background, background);
 
         const platform = try loadSprite("resources/graphics/platform.png");
-        textures.put(TextureTag.platform, platform);
+        try textures.put(TextureTag.platform, platform);
 
         return .{
             .textures = textures,
@@ -34,7 +34,7 @@ pub const TextureSystem = struct {
     pub fn deinit(self: *TextureSystem) void {
         var it = self.textures.iterator();
         while (it.next()) |ent| {
-            raylib.unloadSound(ent.value_ptr.*);
+            raylib.unloadTexture(ent.value_ptr.*);
         }
 
         self.textures.deinit();

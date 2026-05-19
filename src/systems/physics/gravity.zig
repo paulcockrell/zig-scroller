@@ -6,7 +6,8 @@ const MAX_FALL_SPEED: f32 = 400.0;
 
 pub fn system(world: *ecs.World, delta: f32) void {
     var it = world.players.iterator();
-    while (it.next()) |ent| {
+    while (it.next()) |entry| {
+        const ent = entry.key_ptr.*;
         const pos = world.positions.getPtr(ent) orelse continue;
         const dim = world.dimensions.getPtr(ent) orelse continue;
         const vel = world.velocities.getPtr(ent) orelse continue;

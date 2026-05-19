@@ -12,10 +12,10 @@ fn movePlayers(world: *ecs.World, delta: f32) void {
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
         const pos = world.positions.getPtr(ent) orelse return;
-        const dim = world.positions.getPtr(ent) orelse return;
+        const dim = world.dimensions.getPtr(ent) orelse return;
         const vel = world.velocities.getPtr(ent) orelse return;
 
-        playerMovement(world, pos, dim, vel, delta);
+        playerMovement(world, pos, vel, dim, delta);
         backgroundMovement(world, pos);
     }
 }

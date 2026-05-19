@@ -5,7 +5,9 @@ const game_over = @import("../../scenes/game_over.zig");
 const credits = @import("../../scenes/credits.zig");
 const resource_system = @import("../resources/resources.zig");
 
-pub fn system(world: *ecs.World, resources: *resource_system.Resources, delta: f32) void {
+const Resources = resource_system.Resources;
+
+pub fn system(world: *ecs.World, resources: *Resources, delta: f32) void {
     switch (world.scene) {
         ecs.Scene.game_play => {
             game_play.render(world, resources, delta);

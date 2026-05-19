@@ -13,11 +13,15 @@ pub const Resources = struct {
     audio: AudioSystem,
     textures: TextureSystem,
 
-    pub fn init(allocator: std.mem.Allocator) Resources {
+    pub fn init(allocator: std.mem.Allocator) !Resources {
+        const text = try TextSystem.init();
+        const audio = try AudioSystem.init(allocator);
+        const textures = try TextureSystem.init(allocator);
+
         return .{
-            .text = TextSystem.init(),
-            .audio = AudioSystem.init(allocator),
-            .textures = TextureSystem.init(allocator),
+            .text = text,
+            .audio = audio,
+            .textures = textures,
         };
     }
 

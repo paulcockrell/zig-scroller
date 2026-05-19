@@ -9,7 +9,8 @@ pub fn system(world: *ecs.World, delta: f32) void {
 
 fn enemiesScroll(world: *ecs.World, delta: f32) void {
     var it = world.enemies.iterator();
-    while (it.next()) |ent| {
+    while (it.next()) |entry| {
+        const ent = entry.key_ptr.*;
         const pos = world.positions.getPtr(ent) orelse return;
         const vel = world.velocities.getPtr(ent) orelse return;
 
@@ -19,7 +20,8 @@ fn enemiesScroll(world: *ecs.World, delta: f32) void {
 
 fn ringsScroll(world: *ecs.World, delta: f32) void {
     var it = world.rings.iterator();
-    while (it.next()) |ent| {
+    while (it.next()) |entry| {
+        const ent = entry.key_ptr.*;
         const pos = world.positions.getPtr(ent) orelse return;
         const vel = world.velocities.getPtr(ent) orelse return;
 
@@ -29,7 +31,8 @@ fn ringsScroll(world: *ecs.World, delta: f32) void {
 
 fn backgroundsScroll(world: *ecs.World, delta: f32) void {
     var it = world.rings.iterator();
-    while (it.next()) |ent| {
+    while (it.next()) |entry| {
+        const ent = entry.key_ptr.*;
         const pos = world.positions.getPtr(ent) orelse return;
         const vel = world.velocities.getPtr(ent) orelse return;
 
@@ -39,7 +42,8 @@ fn backgroundsScroll(world: *ecs.World, delta: f32) void {
 
 fn platformsScroll(world: *ecs.World, delta: f32) void {
     var it = world.rings.iterator();
-    while (it.next()) |ent| {
+    while (it.next()) |entry| {
+        const ent = entry.key_ptr.*;
         const pos = world.positions.getPtr(ent) orelse return;
         const vel = world.velocities.getPtr(ent) orelse return;
 

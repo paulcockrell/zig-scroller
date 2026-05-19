@@ -3,6 +3,9 @@ const raylib = @import("raylib");
 const ecs = @import("../ecs.zig");
 const input = @import("../systems/input/keyboard.zig");
 const credits = @import("../systems/rendering/credits.zig");
+const resource_system = @import("../systems/resources/resources.zig");
+
+const Resources = resource_system.Resources;
 
 pub fn enter(world: *ecs.World) void {
     _ = world;
@@ -22,7 +25,7 @@ pub fn update(world: *ecs.World, delta: f32) void {
     }
 }
 
-pub fn render(world: *ecs.World, delta: f32) void {
+pub fn render(world: *ecs.World, resources: *Resources, delta: f32) void {
     raylib.clearBackground(raylib.Color.black);
-    credits.system(world, delta);
+    credits.system(world, resources, delta);
 }

@@ -1,9 +1,12 @@
 const std = @import("std");
 const ecs = @import("../../ecs.zig");
+const audio_tags = @import("../../systems/resources/audio_tags.zig");
 
 const JUMP_FORCE: f32 = -250.0;
 const RING_SCORE: i32 = 1;
 const ENEMY_STOMP: i32 = 10;
+
+const AudioTag = audio_tags.AudioTag;
 
 const EntityBundle = struct {
     ent: ecs.Entity,
@@ -20,7 +23,7 @@ pub fn system(world: *ecs.World) void {
         const dim = world.dimensions.getPtr(ent) orelse continue;
         const vel = world.velocities.getPtr(ent) orelse continue;
 
-        const player = .{
+        const player = EntityBundle{
             .ent = ent,
             .pos = pos,
             .dim = dim,
@@ -33,20 +36,23 @@ pub fn system(world: *ecs.World) void {
 
 fn checkPlayerCollision(
     world: *ecs.World,
-    player: *EntityBundle,
+    player: *const EntityBundle,
 ) void {
     handleEnemies(world, player);
     handleRings(world, player);
 }
 
-fn handleEnemies(world: *ecs.World, player: *EntityBundle) void {
+fn handleEnemies(
+    world: *ecs.World,
+    player: *const EntityBundle,
+) void {
     var it = world.enemies.iterator();
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
         const pos = world.positions.getPtr(ent) orelse continue;
         const dim = world.dimensions.getPtr(ent) orelse continue;
 
-        const enemy = .{
+        const enemy = EntityBundle{
             .ent = ent,
             .pos = pos,
             .dim = dim,
@@ -66,14 +72,17 @@ fn handleEnemies(world: *ecs.World, player: *EntityBundle) void {
     }
 }
 
-fn handleRings(world: *ecs.World, player: *EntityBundle) void {
+fn handleRings(
+    world: *ecs.World,
+    player: *const EntityBundle,
+) void {
     var it = world.rings.iterator();
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
         const pos = world.positions.getPtr(ent) orelse continue;
         const dim = world.dimensions.getPtr(ent) orelse continue;
 
-        const ring = .{
+        const ring = EntityBundle{
             .ent = ent,
             .pos = pos,
             .dim = dim,
@@ -89,8 +98,8 @@ fn handleRings(world: *ecs.World, player: *EntityBundle) void {
 
 fn checkEnemyStomp(
     world: *ecs.World,
-    player: *EntityBundle,
-    enemy: *EntityBundle,
+    player: *const EntityBundle,
+    enemy: *const EntityBundle,
 ) bool {
     if (!enemyStomp(player, enemy)) return false;
 
@@ -104,7 +113,7 @@ fn checkEnemyStomp(
         std.debug.print("Entity reset failed {}\n", .{err});
     };
 
-    world.sound_intents.put(ecs.SoundTag.stomp, .{ .volume = 0.3 }) catch |err| {
+    world.sound_intents.put(AudioTag.stomp, .{ .volume = 0.3 }) catch |err| {
         std.debug.print("Stomp sound intent failed {}\n", .{err});
     };
 
@@ -113,8 +122,8 @@ fn checkEnemyStomp(
 
 fn checkEnemyCollision(
     world: *ecs.World,
-    player: *EntityBundle,
-    enemy: *EntityBundle,
+    player: *const EntityBundle,
+    enemy: *const EntityBundle,
 ) void {
     if (!overlap(player, enemy)) return;
 
@@ -124,7 +133,7 @@ fn checkEnemyCollision(
         std.debug.print("Entity reset failed {}\n", .{err});
     };
 
-    world.sound_intents.put(ecs.SoundTag.hit, .{ .volume = 0.3 }) catch |err| {
+    world.sound_intents.put(AudioTag.hit, .{ .volume = 0.3 }) catch |err| {
         std.debug.print("Hit sound intent failed {}\n", .{err});
     };
 
@@ -137,8 +146,8 @@ fn checkEnemyCollision(
 
 fn checkRingCollision(
     world: *ecs.World,
-    player: *EntityBundle,
-    ring: *EntityBundle,
+    player: *const EntityBundle,
+    ring: *const EntityBundle,
 ) void {
     if (!overlap(player, ring)) return;
 
@@ -148,26 +157,26 @@ fn checkRingCollision(
         std.debug.print("Entity reset failed {}\n", .{err});
     };
 
-    world.sound_intents.put(ecs.SoundTag.ring, .{ .volume = 0.3 }) catch |err| {
+    world.sound_intents.put(AudioTag.ring, .{ .volume = 0.3 }) catch |err| {
         std.debug.print("Ring sound intent failed {}\n", .{err});
     };
 }
 
 fn enemyStomp(
-    player: *EntityBundle,
-    enemy: *EntityBundle,
+    player: *const EntityBundle,
+    enemy: *const EntityBundle,
 ) bool {
     const player_bottom = player.pos.y + player.dim.height;
     const enemy_top = enemy.pos.y;
 
-    return player.vel.?.y > 0 and
+    return player.vel.?.dy > 0 and
         player_bottom <= enemy_top + 10 and
         overlap(player, enemy);
 }
 
 fn overlap(
-    player: *EntityBundle,
-    other: *EntityBundle,
+    player: *const EntityBundle,
+    other: *const EntityBundle,
 ) bool {
     return !(player.pos.x + player.dim.width < other.pos.x or
         player.pos.x > other.pos.x + other.dim.width or

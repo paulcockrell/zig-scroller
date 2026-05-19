@@ -7,9 +7,13 @@ const Resources = resource_system.Resources;
 pub const TextSystem = struct {
     pixel_font: raylib.Font,
 
-    pub fn init() TextSystem {
+    pub fn init() !TextSystem {
         return .{
-            .pixel_font = raylib.loadFont("../../../resources/fonts/m6x11.ttf"),
+            .pixel_font = try raylib.loadFontEx(
+                "./resources/fonts/m6x11.ttf",
+                16,
+                null,
+            ),
         };
     }
 
@@ -38,21 +42,20 @@ pub const TextSystem = struct {
     pub fn drawTextPixelCentered(
         self: *TextSystem,
         world: *ecs.World,
-        resources: *Resources,
         text: [:0]const u8,
-        font_size: i32,
-        y: i32,
+        font_size: f32,
+        y: f32,
         colour: raylib.Color,
     ) void {
-        const text_width = raylib.measureText(text, font_size);
-        const x: i32 = @divFloor(world.screen_width - text_width, 2);
+        const text_width = raylib.measureText(text, @as(i32, @intFromFloat(font_size)));
+        const x = @as(f32, @floatFromInt(world.screen_width - text_width)) / 2.0;
 
-        resources.text.drawTextPixel(
-            self,
+        raylib.drawTextEx(
+            self.pixel_font,
             text,
-            x,
-            y,
+            .{ .x = @floor(x), .y = @floor(y) },
             font_size,
+            0,
             colour,
         );
     }

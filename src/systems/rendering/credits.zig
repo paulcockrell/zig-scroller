@@ -12,25 +12,25 @@ pub fn system(world: *ecs.World, resources: *Resources, delta: f32) void {
 }
 
 fn drawText(world: *ecs.World, resources: *Resources) void {
-    const y_center = @divFloor(world.screen_height, 2);
+    const y_center = @as(f32, @floatFromInt(world.screen_height)) / 2;
 
     var text = raylib.textFormat("CREDITS", .{});
-    var font_size: i32 = 24;
+    var font_size: f32 = 24.0;
     resources.text.drawTextPixelCentered(
         world,
         text,
         font_size,
-        y_center - 96,
+        y_center - 96.0,
         raylib.Color.white,
     );
 
     text = raylib.textFormat("PROGRAMMING: Paul Cockrell", .{});
-    font_size = 16;
+    font_size = 16.0;
     resources.text.drawTextPixelCentered(
         world,
         text,
         font_size,
-        y_center - 48,
+        y_center - 48.0,
         raylib.Color.white,
     );
 
@@ -39,7 +39,7 @@ fn drawText(world: *ecs.World, resources: *Resources) void {
         world,
         text,
         font_size,
-        y_center - 24,
+        y_center - 24.0,
         raylib.Color.white,
     );
 

@@ -12,22 +12,22 @@ pub const AudioSystem = struct {
         var sounds = std.AutoHashMap(AudioTag, raylib.Sound).init(allocator);
 
         const jump = try raylib.loadSound(
-            "resources/audio/lumora_studios-pixel-jump-319167.mp3",
+            "./resources/audio/lumora_studios-pixel-jump-319167.mp3",
         );
         const ring = try raylib.loadSound(
-            "resources/audio/ring.wav",
+            "./resources/audio/ring.wav",
         );
         const hit = try raylib.loadSound(
-            "resources/audio/destroy.wav",
+            "./resources/audio/destroy.wav",
         );
         const stomp = try raylib.loadSound(
-            "resources/audio/hyper-ring.wav",
+            "./resources/audio/hyper-ring.wav",
         );
 
-        sounds.put(AudioTag.jump, jump);
-        sounds.put(AudioTag.ring, ring);
-        sounds.put(AudioTag.hit, hit);
-        sounds.put(AudioTag.stomp, stomp);
+        try sounds.put(AudioTag.jump, jump);
+        try sounds.put(AudioTag.ring, ring);
+        try sounds.put(AudioTag.hit, hit);
+        try sounds.put(AudioTag.stomp, stomp);
 
         return .{
             .sounds = sounds,

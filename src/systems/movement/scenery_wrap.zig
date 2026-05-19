@@ -10,7 +10,8 @@ fn backgroundsWrap(world: *ecs.World) void {
     const rightmost_edge = findRightmostEdge(world, world.backgrounds);
 
     var it = world.backgrounds.iterator();
-    while (it.next()) |ent| {
+    while (it.next()) |entry| {
+        const ent = entry.key_ptr.*;
         wrap(
             world,
             ent,
@@ -23,7 +24,8 @@ fn platformsWrap(world: *ecs.World) void {
     const rightmost_edge = findRightmostEdge(world, world.platforms);
 
     var it = world.platforms.iterator();
-    while (it.next()) |ent| {
+    while (it.next()) |entry| {
+        const ent = entry.key_ptr.*;
         wrap(
             world,
             ent,
@@ -48,10 +50,8 @@ fn findRightmostEdge(world: *ecs.World, collection: anytype) f32 {
     var it = collection.iterator();
     while (it.next()) |entry| {
         const entity = entry.key_ptr.*;
-
         const pos = world.positions.getPtr(entity) orelse continue;
         const dims = world.dimensions.getPtr(entity) orelse continue;
-
         const right_edge = pos.x + dims.width;
 
         if (right_edge > max_right_edge) {
