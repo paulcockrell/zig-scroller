@@ -30,7 +30,7 @@ fn ringsScroll(world: *ecs.World, delta: f32) void {
 }
 
 fn backgroundsScroll(world: *ecs.World, delta: f32) void {
-    var it = world.rings.iterator();
+    var it = world.backgrounds.iterator();
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
         const pos = world.positions.getPtr(ent) orelse return;
@@ -41,7 +41,7 @@ fn backgroundsScroll(world: *ecs.World, delta: f32) void {
 }
 
 fn platformsScroll(world: *ecs.World, delta: f32) void {
-    var it = world.rings.iterator();
+    var it = world.platforms.iterator();
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
         const pos = world.positions.getPtr(ent) orelse return;
