@@ -2,7 +2,7 @@ const std = @import("std");
 const raylib = @import("raylib");
 const ecs = @import("../ecs.zig");
 const gravity = @import("../systems/physics/gravity.zig");
-const movement = @import("../systems/movement/movement.zig");
+const jump = @import("../systems/movement/jump.zig");
 const collision = @import("../systems/movement/collision.zig");
 const jump_intent = @import("../systems/movement/jump_intent.zig");
 const difficulty = @import("../systems/gameplay/difficulty.zig");
@@ -45,13 +45,13 @@ pub fn update(world: *ecs.World, resources: *Resources, delta: f32) void {
     world.time += delta;
 
     if (world.jump_intent) {
-        ecs.Query.players(world, resources, {}, jump);
+        ecs.Query.players(world, resources, {}, playerJump);
     }
 
     collision.system(world);
     jump_intent.system(world);
     gravity.system(world, delta);
-    movement.system(world, delta);
+    jump.system(world, delta);
     scroll.system(world, delta);
     entity_wrap.system(world);
     entity_reset.system(world);
@@ -68,7 +68,7 @@ pub fn render(world: *ecs.World, resources: *Resources, delta: f32) void {
     player_hud.system(world, resources, delta);
 }
 
-fn jump(
+fn playerJump(
     _: void,
     ent: ecs.Entity,
     _: *ecs.Animation,

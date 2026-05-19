@@ -2,7 +2,7 @@ const std = @import("std");
 const raylib = @import("raylib");
 const ecs = @import("../ecs.zig");
 const main_menu = @import("../systems/rendering/main_menu.zig");
-const movement = @import("../systems/movement/movement.zig");
+const jump = @import("../systems/movement/jump.zig");
 const scroll = @import("../systems/movement/scroll.zig");
 const sprite = @import("../systems/rendering/sprite.zig");
 const scenery_wrap = @import("../systems/movement/scenery_wrap.zig");
@@ -36,7 +36,7 @@ pub fn update(world: *ecs.World, delta: f32) void {
         };
     }
 
-    movement.system(world, delta);
+    jump.system(world, delta);
     scroll.system(world, delta);
     scenery_wrap.system(world);
 }

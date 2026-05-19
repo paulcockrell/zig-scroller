@@ -1,0 +1,52 @@
+const std = @import("std");
+const ecs = @import("../../ecs.zig");
+const background = @import("../../entities/background.zig");
+const player = @import("../../entities/player.zig");
+
+pub fn system(world: *ecs.World, delta: f32) void {
+    movePlayers(world, delta);
+}
+
+fn movePlayers(world: *ecs.World, delta: f32) void {
+    var it = world.players.iterator();
+    while (it.next()) |entry| {
+        const ent = entry.key_ptr.*;
+        const pos = world.positions.getPtr(ent) orelse return;
+        const dim = world.positions.getPtr(ent) orelse return;
+        const vel = world.velocities.getPtr(ent) orelse return;
+
+        playerMovement(world, pos, dim, vel, delta);
+        backgroundMovement(world, pos);
+    }
+}
+
+fn playerMovement(
+    world: *ecs.World,
+    pos: *ecs.Position,
+    vel: *ecs.Velocity,
+    dim: *ecs.Dimension,
+    dt: f32,
+) void {
+    pos.y += vel.dy * dt;
+
+    if (vel.dy > 0.0) { // falling
+        if (pos.y > world.groundY() - dim.height) { // below ground
+            pos.y = world.groundY() - dim.height;
+            vel.dy = 0;
+        }
+    }
+}
+
+// Moves the background inline with player jumping to give nice effect
+fn backgroundMovement(
+    world: *ecs.World,
+    player_pos: *ecs.Position,
+) void {
+    var it = world.backgrounds.iterator();
+    while (it.next()) |entry| {
+        const ent = entry.key_ptr.*;
+        const pos = world.positions.getPtr(ent) orelse return;
+
+        pos.y = (player_pos.y + player.HEIGHT - world.groundY()) / 2.5;
+    }
+}
