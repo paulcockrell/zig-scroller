@@ -103,7 +103,7 @@ fn checkEnemyStomp(
 ) bool {
     if (!enemyStomp(player, enemy)) return false;
 
-    _ = world.updateAndDisplayScore(ENEMY_STOMP);
+    _ = world.addScore(ENEMY_STOMP);
 
     world.jump_intents.put(player.ent, .{ .force = JUMP_FORCE }) catch |err| {
         std.debug.print("Entity jump intent failed {}\n", .{err});
@@ -151,7 +151,7 @@ fn checkRingCollision(
 ) void {
     if (!overlap(player, ring)) return;
 
-    _ = world.updateAndDisplayScore(RING_SCORE);
+    world.addScore(RING_SCORE);
 
     world.needs_reset.put(ring.ent, {}) catch |err| {
         std.debug.print("Entity reset failed {}\n", .{err});

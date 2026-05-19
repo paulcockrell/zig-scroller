@@ -18,7 +18,7 @@ const enemy = @import("../entities/enemy.zig");
 const ring = @import("../entities/ring.zig");
 const platform = @import("../entities/platform.zig");
 const background = @import("../entities/background.zig");
-const player_hud = @import("../systems/rendering/player_hud.zig");
+const popup_points = @import("../systems/rendering/popup_points.zig");
 const resource_system = @import("../systems/resources/resources.zig");
 const audio_tags = @import("../systems/resources/audio_tags.zig");
 
@@ -65,7 +65,7 @@ pub fn render(world: *ecs.World, resources: *Resources, delta: f32) void {
 
     sprite.system(world, resources, delta);
     hud.system(world, resources);
-    player_hud.system(world, resources, delta);
+    popup_points.system(world, resources, delta);
 }
 
 fn jumpPlayer(

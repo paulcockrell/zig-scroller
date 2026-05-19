@@ -38,8 +38,8 @@ pub const World = struct {
     scene_transition_intents: std.AutoHashMap(ecs.Scene, void),
     jump_intent: bool,
     confirm_intent: bool,
-    player_hud_score: i32,
-    player_hud_timer: f32,
+    popup_points: i32,
+    popup_points_timer: f32,
 
     prng: std.Random.Xoshiro256,
 
@@ -68,8 +68,8 @@ pub const World = struct {
             .scene_transition_intents = std.AutoHashMap(ecs.Scene, void).init(allocator),
             .jump_intent = false,
             .confirm_intent = false,
-            .player_hud_timer = 0.0,
-            .player_hud_score = 0,
+            .popup_points_timer = 0.0,
+            .popup_points = 0,
             .prng = std.Random.DefaultPrng.init(std.testing.random_seed),
             .time = 0.0,
             .scroll_speed = ecs.BASE_SCROLL_SPEED,
@@ -109,8 +109,8 @@ pub const World = struct {
         self.time = 0;
         self.jump_intent = false;
         self.confirm_intent = false;
-        self.player_hud_timer = 0.0;
-        self.player_hud_score = 0;
+        self.popup_points = 0;
+        self.popup_points_timer = 0.0;
         self.health = ecs.MAX_HEALTH;
         self.scroll_speed = ecs.BASE_SCROLL_SPEED;
     }
@@ -127,14 +127,10 @@ pub const World = struct {
         return self.health;
     }
 
-    pub fn updateAndDisplayScore(self: *World, val: i32) i32 {
-        // Update and display player hud values
-        self.player_hud_score = val;
-        self.player_hud_timer = ecs.PLAYER_HUD_TIMER_MAX;
-
+    pub fn addScore(self: *World, val: i32) void {
         self.score += val;
-
-        return self.score;
+        self.popup_points = val;
+        self.popup_points_timer = ecs.POPUP_POINTS_TIMER_MAX;
     }
 
     pub fn rng(self: *World, floor: u16, ceil: u16) u16 {

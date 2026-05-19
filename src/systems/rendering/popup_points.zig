@@ -15,7 +15,7 @@ pub fn system(world: *ecs.World, resources: *Resources, delta: f32) void {
         const pos = world.positions.getPtr(ent) orelse continue;
         const dim = world.dimensions.getPtr(ent) orelse continue;
 
-        displayPlayerHud(
+        displayPopupPoints(
             world,
             resources,
             pos,
@@ -25,22 +25,22 @@ pub fn system(world: *ecs.World, resources: *Resources, delta: f32) void {
     }
 }
 
-fn displayPlayerHud(
+fn displayPopupPoints(
     world: *ecs.World,
     resources: *Resources,
     pos: *ecs.Position,
     dim: *ecs.Dimension,
     delta: f32,
 ) void {
-    if (world.player_hud_timer <= 0.0) {
-        world.player_hud_timer = 0;
-        world.player_hud_score = 0;
+    if (world.popup_points_timer <= 0.0) {
+        world.popup_points_timer = 0.0;
+        world.popup_points = 0;
         return;
     } else {
-        world.player_hud_timer -= delta;
+        world.popup_points_timer -= delta;
     }
 
-    const text = raylib.textFormat("+%d", .{world.player_hud_score});
+    const text = raylib.textFormat("+%d", .{world.popup_points});
     const text_width = raylib.measureText(text, FONT_SIZE);
     const x = pos.x + (dim.width / 2.0) - (@as(f32, @floatFromInt(text_width)) / 2.0);
     const y = pos.y - OFFSET_Y;
