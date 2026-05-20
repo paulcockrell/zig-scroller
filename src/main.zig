@@ -3,13 +3,11 @@ const raylib = @import("raylib");
 
 const ecs = @import("ecs.zig");
 
-const resource_audio = @import("systems/resources/audio.zig");
-const resource_textures = @import("systems/resources/textures.zig");
 const input = @import("systems/input/keyboard.zig");
 const scenes_change = @import("systems/scenes/change.zig");
 const scenes_update = @import("systems/scenes/update.zig");
 const scenes_render = @import("systems/scenes/render.zig");
-const resource_system = @import("systems/resources/resources.zig");
+const Resources = @import("resources/resources.zig").Resources;
 
 const VIRTUAL_SCREEN_WIDTH: i32 = 480;
 const VIRTUAL_SCREEN_HEIGHT: i32 = 270;
@@ -27,7 +25,7 @@ pub fn main(init: std.process.Init) !void {
 
     const target = try initRaylib();
 
-    var resources = try resource_system.Resources.init(allocator);
+    var resources = try Resources.init(allocator);
 
     //const bg_music = try raylib.loadMusicStream("resources/audio/djartmusic-best-game-console-301284.mp3");
     //raylib.playMusicStream(bg_music);

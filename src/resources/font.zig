@@ -1,13 +1,10 @@
 const raylib = @import("raylib");
-const ecs = @import("../../ecs.zig");
-const resource_system = @import("resources.zig");
+const ecs = @import("../ecs.zig");
 
-const Resources = resource_system.Resources;
-
-pub const TextSystem = struct {
+pub const FontManager = struct {
     pixel_font: raylib.Font,
 
-    pub fn init() !TextSystem {
+    pub fn init() !FontManager {
         return .{
             .pixel_font = try raylib.loadFontEx(
                 "./resources/fonts/m6x11.ttf",
@@ -17,12 +14,12 @@ pub const TextSystem = struct {
         };
     }
 
-    pub fn deinit(self: *TextSystem) void {
+    pub fn deinit(self: *FontManager) void {
         raylib.unloadFont(self.pixel_font);
     }
 
     pub fn drawTextPixel(
-        self: *TextSystem,
+        self: *FontManager,
         text: [:0]const u8,
         x: f32,
         y: f32,
@@ -40,7 +37,7 @@ pub const TextSystem = struct {
     }
 
     pub fn drawTextPixelCentered(
-        self: *TextSystem,
+        self: *FontManager,
         world: *ecs.World,
         text: [:0]const u8,
         font_size: f32,

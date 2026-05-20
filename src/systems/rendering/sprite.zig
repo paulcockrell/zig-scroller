@@ -2,11 +2,8 @@ const std = @import("std");
 const raylib = @import("raylib");
 const ecs = @import("../../ecs.zig");
 const player = @import("../../entities/player.zig");
-const texture_tags = @import("../../systems/resources/texture_tags.zig");
-const resource_system = @import("../../systems/resources/resources.zig");
-
-const Resources = resource_system.Resources;
-const TextureTag = texture_tags.TextureTag;
+const TextureTag = @import("../../resources/texture_tags.zig").TextureTag;
+const Resources = @import("../../resources/resources.zig").Resources;
 
 pub fn system(world: *ecs.World, resources: *Resources, delta: f32) void {
     renderBackgrounds(world, resources, delta);

@@ -1,14 +1,12 @@
 const std = @import("std");
 const raylib = @import("raylib");
-const ecs = @import("../../ecs.zig");
-const audio_tags = @import("./audio_tags.zig");
+const ecs = @import("../ecs.zig");
+const AudioTag = @import("./audio_tag.zig").AudioTag;
 
-const AudioTag = audio_tags.AudioTag;
-
-pub const AudioSystem = struct {
+pub const AudioManager = struct {
     sounds: std.AutoHashMap(AudioTag, raylib.Sound),
 
-    pub fn init(allocator: std.mem.Allocator) !AudioSystem {
+    pub fn init(allocator: std.mem.Allocator) !AudioManager {
         var sounds = std.AutoHashMap(AudioTag, raylib.Sound).init(allocator);
 
         const jump = try raylib.loadSound(
@@ -34,7 +32,7 @@ pub const AudioSystem = struct {
         };
     }
 
-    pub fn deinit(self: *AudioSystem) void {
+    pub fn deinit(self: *AudioManager) void {
         var it = self.sounds.iterator();
 
         while (it.next()) |ent| {
@@ -44,7 +42,7 @@ pub const AudioSystem = struct {
         self.sounds.deinit();
     }
 
-    pub fn play(self: *AudioSystem, tag: AudioTag) void {
+    pub fn play(self: *AudioManager, tag: AudioTag) void {
         if (self.sounds.get(tag)) |sound| {
             raylib.playSound(sound);
         }

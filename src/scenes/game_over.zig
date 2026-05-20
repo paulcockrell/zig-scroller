@@ -3,9 +3,7 @@ const raylib = @import("raylib");
 const ecs = @import("../ecs.zig");
 const input = @import("../systems/input/keyboard.zig");
 const game_over = @import("../systems/rendering/game_over.zig");
-const resource_systems = @import("../systems/resources/resources.zig");
-
-const Resources = resource_systems.Resources;
+const Resources = @import("../resources/resources.zig").Resources;
 
 pub fn enter(world: *ecs.World) void {
     _ = world;

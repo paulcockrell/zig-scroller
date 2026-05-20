@@ -1,9 +1,7 @@
 const std = @import("std");
 const raylib = @import("raylib");
 const ecs = @import("../../ecs.zig");
-const resources_system = @import("../resources/resources.zig");
-
-const Resources = resources_system.Resources;
+const Resources = @import("../../resources/resources.zig").Resources;
 
 pub fn system(world: *ecs.World, resources: *Resources) void {
     drawText(world, resources);

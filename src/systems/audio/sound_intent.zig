@@ -1,12 +1,7 @@
 const std = @import("std");
 const raylib = @import("raylib");
 const ecs = @import("../../ecs.zig");
-const resource_system = @import("../resources/resources.zig");
-const sound_tags = @import("../resources/audio_tags.zig");
-
-pub const Resources = resource_system.Resources;
-pub const SoundTag = sound_tags.SoundTag;
-pub const SoundParams = sound_tags.SoundParams;
+const Resources = @import("../../resources/resources.zig").Resources;
 
 pub fn system(world: *ecs.World, resources: *Resources) void {
     var it = world.sound_intents.iterator();

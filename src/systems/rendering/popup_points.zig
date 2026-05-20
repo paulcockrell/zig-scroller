@@ -1,9 +1,7 @@
 const std = @import("std");
 const raylib = @import("raylib");
 const ecs = @import("../../ecs.zig");
-const resource_system = @import("../resources/resources.zig");
-
-const Resources = resource_system.Resources;
+const Resources = @import("../../resources/resources.zig").Resources;
 
 const OFFSET_Y: f32 = 25.0;
 const FONT_SIZE: i32 = 16;

@@ -1,14 +1,14 @@
 const std = @import("std");
 const raylib = @import("raylib");
-const ecs = @import("../../ecs.zig");
+const ecs = @import("../ecs.zig");
 const texture_tags = @import("./texture_tags.zig");
 
 const TextureTag = texture_tags.TextureTag;
 
-pub const TextureSystem = struct {
+pub const TextureManager = struct {
     textures: std.AutoHashMap(TextureTag, raylib.Texture),
 
-    pub fn init(allocator: std.mem.Allocator) !TextureSystem {
+    pub fn init(allocator: std.mem.Allocator) !TextureManager {
         var textures = std.AutoHashMap(TextureTag, raylib.Texture).init(allocator);
 
         const player = try loadSprite("resources/graphics/player.png");
@@ -31,7 +31,7 @@ pub const TextureSystem = struct {
         };
     }
 
-    pub fn deinit(self: *TextureSystem) void {
+    pub fn deinit(self: *TextureManager) void {
         var it = self.textures.iterator();
         while (it.next()) |ent| {
             raylib.unloadTexture(ent.value_ptr.*);
@@ -40,7 +40,7 @@ pub const TextureSystem = struct {
         self.textures.deinit();
     }
 
-    pub fn get(self: *TextureSystem, key: TextureTag) ?*raylib.Texture {
+    pub fn get(self: *TextureManager, key: TextureTag) ?*raylib.Texture {
         return self.textures.getPtr(key);
     }
 };

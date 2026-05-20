@@ -1,12 +1,10 @@
 const std = @import("std");
 const ecs = @import("../../ecs.zig");
-const audio_tags = @import("../../systems/resources/audio_tags.zig");
+const AudioTag = @import("../../resources/audio_tag.zig").AudioTag;
 
 const JUMP_FORCE: f32 = -250.0;
 const RING_SCORE: i32 = 1;
 const ENEMY_STOMP: i32 = 10;
-
-const AudioTag = audio_tags.AudioTag;
 
 const EntityBundle = struct {
     ent: ecs.Entity,

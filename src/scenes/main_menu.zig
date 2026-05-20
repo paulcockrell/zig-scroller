@@ -9,9 +9,7 @@ const scenery_wrap = @import("../systems/movement/scenery_wrap.zig");
 const player = @import("../entities/player.zig");
 const platform = @import("../entities/platform.zig");
 const background = @import("../entities/background.zig");
-const resource_system = @import("../systems/resources/resources.zig");
-
-const Resources = resource_system.Resources;
+const Resources = @import("../resources/resources.zig").Resources;
 
 pub fn enter(world: *ecs.World) !void {
     try player.spawn(world);
