@@ -45,7 +45,7 @@ pub const FontManager = struct {
         colour: raylib.Color,
     ) void {
         const text_width = raylib.measureText(text, @as(i32, @intFromFloat(font_size)));
-        const x = @as(f32, @floatFromInt(world.screen_width - text_width)) / 2.0;
+        const x = @as(f32, @floatFromInt(world.game.screen_width - text_width)) / 2.0;
 
         raylib.drawTextEx(
             self.pixel_font,

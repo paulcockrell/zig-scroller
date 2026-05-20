@@ -16,14 +16,14 @@ pub fn exit(world: *ecs.World) void {
 pub fn update(world: *ecs.World, delta: f32) void {
     _ = delta;
 
-    if (world.confirm_intent) {
-        world.changeScene(ecs.Scene.main_menu) catch |err| {
+    if (world.game.confirm_intent) {
+        world.game.changeScene(ecs.Scene.main_menu) catch |err| {
             std.debug.print("Failed to change scene: Game Over -> Main Menu: {}\n", .{err});
         };
     }
 }
 
-pub fn render(world: *ecs.World, resources: *Resources, delta: f32) void {
+pub fn render(world: *ecs.World, delta: f32) void {
     raylib.clearBackground(raylib.Color.black);
-    game_over.system(world, resources, delta);
+    game_over.system(world, delta);
 }

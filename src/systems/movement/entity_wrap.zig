@@ -7,7 +7,7 @@ pub fn system(world: *ecs.World) void {
 }
 
 fn enemiesWrap(world: *ecs.World) void {
-    var it = world.enemies.iterator();
+    var it = world.ecs.enemies.iterator();
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
         wrap(world, ent);
@@ -15,7 +15,7 @@ fn enemiesWrap(world: *ecs.World) void {
 }
 
 fn ringsWrap(world: *ecs.World) void {
-    var it = world.rings.iterator();
+    var it = world.ecs.rings.iterator();
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
         wrap(world, ent);
@@ -23,11 +23,11 @@ fn ringsWrap(world: *ecs.World) void {
 }
 
 fn wrap(world: *ecs.World, ent: ecs.Entity) void {
-    const pos = world.positions.getPtr(ent) orelse return;
-    const dim = world.dimensions.getPtr(ent) orelse return;
+    const pos = world.ecs.positions.getPtr(ent) orelse return;
+    const dim = world.ecs.dimensions.getPtr(ent) orelse return;
 
     if (pos.x + dim.width < 0) {
-        world.needs_reset.put(ent, {}) catch |err| {
+        world.game.needs_reset.put(ent, {}) catch |err| {
             std.debug.print("Entity reset failed {}\n", .{err});
         };
     }

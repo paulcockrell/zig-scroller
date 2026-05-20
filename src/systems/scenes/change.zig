@@ -6,12 +6,12 @@ const game_over = @import("../../scenes/game_over.zig");
 const credits = @import("../../scenes/credits.zig");
 
 pub fn system(world: *ecs.World) void {
-    var it = world.scene_transition_intents.iterator();
+    var it = world.game.scene_transition_intents.iterator();
     while (it.next()) |ent| {
-        exitCurrentScene(world.scene, world);
+        exitCurrentScene(world.game.scene, world);
 
         const new_scene = ent.key_ptr.*;
-        world.scene = new_scene;
+        world.game.scene = new_scene;
 
         enterScene(new_scene, world) catch |err| {
             std.debug.print("Failed to enter scene {}: {}", .{ new_scene, err });

@@ -1,15 +1,14 @@
 const std = @import("std");
 const raylib = @import("raylib");
 const ecs = @import("../../ecs.zig");
-const Resources = @import("../../resources/resources.zig").Resources;
 
-pub fn system(world: *ecs.World, resources: *Resources) void {
-    var it = world.sound_intents.iterator();
+pub fn system(world: *ecs.World) void {
+    var it = world.game.sound_intents.iterator();
 
     while (it.next()) |entry| {
         const audio_tag = entry.key_ptr.*;
         const audio_params = entry.value_ptr;
-        const sound = resources.audio.sounds.get(audio_tag);
+        const sound = world.resources.audio_manager.sounds.get(audio_tag);
 
         if (sound) |s| {
             raylib.setSoundVolume(s, audio_params.volume);
@@ -19,5 +18,5 @@ pub fn system(world: *ecs.World, resources: *Resources) void {
         }
     }
 
-    world.sound_intents.clearRetainingCapacity();
+    world.game.sound_intents.clearRetainingCapacity();
 }

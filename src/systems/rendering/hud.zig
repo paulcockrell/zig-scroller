@@ -1,18 +1,17 @@
 const std = @import("std");
 const raylib = @import("raylib");
 const ecs = @import("../../ecs.zig");
-const Resources = @import("../../resources/resources.zig").Resources;
 
-pub fn system(world: *ecs.World, resources: *Resources) void {
-    drawScore(world, resources);
-    drawSpeed(world, resources);
-    drawTime(world, resources);
-    drawHealth(world, resources);
+pub fn system(world: *ecs.World) void {
+    drawScore(world);
+    drawSpeed(world);
+    drawTime(world);
+    drawHealth(world);
 }
 
-fn drawScore(world: *ecs.World, resources: *Resources) void {
-    resources.text.drawTextPixel(
-        raylib.textFormat("SCORE: %03i", .{world.score}),
+fn drawScore(world: *ecs.World) void {
+    world.resources.font_manager.drawTextPixel(
+        raylib.textFormat("SCORE: %03i", .{world.game.score}),
         10,
         10,
         16,
@@ -20,10 +19,10 @@ fn drawScore(world: *ecs.World, resources: *Resources) void {
     );
 }
 
-fn drawSpeed(world: *ecs.World, resources: *Resources) void {
-    const scroll_speed = @as(i32, @intFromFloat(world.scroll_speed));
+fn drawSpeed(world: *ecs.World) void {
+    const scroll_speed = @as(i32, @intFromFloat(world.game.scroll_speed));
 
-    resources.text.drawTextPixel(
+    world.resources.font_manager.drawTextPixel(
         raylib.textFormat("SPEED: %03i", .{scroll_speed}),
         10,
         30,
@@ -32,9 +31,9 @@ fn drawSpeed(world: *ecs.World, resources: *Resources) void {
     );
 }
 
-fn drawTime(world: *ecs.World, resources: *Resources) void {
-    resources.text.drawTextPixel(
-        raylib.textFormat("TIME: %.1fs", .{world.time}),
+fn drawTime(world: *ecs.World) void {
+    world.resources.font_manager.drawTextPixel(
+        raylib.textFormat("TIME: %.1fs", .{world.game.time}),
         10,
         50,
         16,
@@ -42,16 +41,16 @@ fn drawTime(world: *ecs.World, resources: *Resources) void {
     );
 }
 
-fn drawHealth(world: *ecs.World, resources: *Resources) void {
+fn drawHealth(world: *ecs.World) void {
     var text_color = raylib.Color.white;
-    text_color = switch (world.health) {
+    text_color = switch (world.game.health) {
         0...3 => raylib.Color.red,
         4...7 => raylib.Color.orange,
         else => raylib.Color.green,
     };
 
-    resources.text.drawTextPixel(
-        raylib.textFormat("HEALTH: %03i", .{world.health}),
+    world.resources.font_manager.drawTextPixel(
+        raylib.textFormat("HEALTH: %03i", .{world.game.health}),
         10,
         70,
         16,

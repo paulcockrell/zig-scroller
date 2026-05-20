@@ -3,24 +3,22 @@ const raylib = @import("raylib");
 const ecs = @import("../../ecs.zig");
 const player = @import("../../entities/player.zig");
 const TextureTag = @import("../../resources/texture_tags.zig").TextureTag;
-const Resources = @import("../../resources/resources.zig").Resources;
 
-pub fn system(world: *ecs.World, resources: *Resources, delta: f32) void {
-    renderBackgrounds(world, resources, delta);
-    renderPlatforms(world, resources, delta);
-    renderPlayers(world, resources, delta);
-    renderEnemies(world, resources, delta);
-    renderRings(world, resources, delta);
+pub fn system(world: *ecs.World, delta: f32) void {
+    renderBackgrounds(world, delta);
+    renderPlatforms(world, delta);
+    renderPlayers(world, delta);
+    renderEnemies(world, delta);
+    renderRings(world, delta);
 }
 
-fn renderBackgrounds(world: *ecs.World, resources: *Resources, delta: f32) void {
-    var it = world.backgrounds.iterator();
+fn renderBackgrounds(world: *ecs.World, delta: f32) void {
+    var it = world.ecs.backgrounds.iterator();
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
 
         render(
             world,
-            resources,
             ent,
             TextureTag.background,
             delta,
@@ -28,14 +26,13 @@ fn renderBackgrounds(world: *ecs.World, resources: *Resources, delta: f32) void 
     }
 }
 
-fn renderPlatforms(world: *ecs.World, resources: *Resources, delta: f32) void {
-    var it = world.platforms.iterator();
+fn renderPlatforms(world: *ecs.World, delta: f32) void {
+    var it = world.ecs.platforms.iterator();
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
 
         render(
             world,
-            resources,
             ent,
             TextureTag.platform,
             delta,
@@ -43,14 +40,13 @@ fn renderPlatforms(world: *ecs.World, resources: *Resources, delta: f32) void {
     }
 }
 
-fn renderEnemies(world: *ecs.World, resources: *Resources, delta: f32) void {
-    var it = world.enemies.iterator();
+fn renderEnemies(world: *ecs.World, delta: f32) void {
+    var it = world.ecs.enemies.iterator();
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
 
         render(
             world,
-            resources,
             ent,
             TextureTag.enemy,
             delta,
@@ -58,14 +54,13 @@ fn renderEnemies(world: *ecs.World, resources: *Resources, delta: f32) void {
     }
 }
 
-fn renderRings(world: *ecs.World, resources: *Resources, delta: f32) void {
-    var it = world.rings.iterator();
+fn renderRings(world: *ecs.World, delta: f32) void {
+    var it = world.ecs.rings.iterator();
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
 
         render(
             world,
-            resources,
             ent,
             TextureTag.ring,
             delta,
@@ -73,14 +68,13 @@ fn renderRings(world: *ecs.World, resources: *Resources, delta: f32) void {
     }
 }
 
-fn renderPlayers(world: *ecs.World, resources: *Resources, delta: f32) void {
-    var it = world.players.iterator();
+fn renderPlayers(world: *ecs.World, delta: f32) void {
+    var it = world.ecs.players.iterator();
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
 
         renderPlayer(
             world,
-            resources,
             ent,
             delta,
         );
@@ -89,14 +83,13 @@ fn renderPlayers(world: *ecs.World, resources: *Resources, delta: f32) void {
 
 fn renderPlayer(
     world: *ecs.World,
-    resources: *Resources,
     ent: ecs.Entity,
     delta: f32,
 ) void {
-    const anim = world.animations.getPtr(ent) orelse return;
-    const pos = world.positions.getPtr(ent) orelse return;
-    const dim = world.dimensions.getPtr(ent) orelse return;
-    const texture = resources.textures.get(TextureTag.player) orelse return;
+    const anim = world.ecs.animations.getPtr(ent) orelse return;
+    const pos = world.ecs.positions.getPtr(ent) orelse return;
+    const dim = world.ecs.dimensions.getPtr(ent) orelse return;
+    const texture = world.resources.textures.get(TextureTag.player) orelse return;
     const src_x = @as(f32, @floatFromInt(anim.frame_idx)) * dim.width;
     const src_y =
         if (player.isJumping(world, ent))
@@ -117,15 +110,14 @@ fn renderPlayer(
 
 fn render(
     world: *ecs.World,
-    resources: *Resources,
     ent: ecs.Entity,
     texture_tag: TextureTag,
     delta: f32,
 ) void {
-    const texture = resources.textures.get(texture_tag) orelse return;
-    const anim = world.animations.getPtr(ent) orelse return;
-    const pos = world.positions.getPtr(ent) orelse return;
-    const dim = world.dimensions.getPtr(ent) orelse return;
+    const texture = world.resources.textures.get(texture_tag) orelse return;
+    const anim = world.ecs.animations.getPtr(ent) orelse return;
+    const pos = world.ecs.positions.getPtr(ent) orelse return;
+    const dim = world.ecs.dimensions.getPtr(ent) orelse return;
     const src_x = @as(f32, @floatFromInt(anim.frame_idx)) * dim.width;
     const src_y: f32 = 0.0;
 
@@ -169,5 +161,10 @@ fn spriteRenderer(
         pos.y,
     );
 
-    raylib.drawTextureRec(texture.*, rl_rect, rl_pos, .white);
+    raylib.drawTextureRec(
+        texture.*,
+        rl_rect,
+        rl_pos,
+        .white,
+    );
 }

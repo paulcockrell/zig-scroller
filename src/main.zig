@@ -25,12 +25,10 @@ pub fn main(init: std.process.Init) !void {
 
     const target = try initRaylib();
 
-    var resources = try Resources.init(allocator);
-
     //const bg_music = try raylib.loadMusicStream("resources/audio/djartmusic-best-game-console-301284.mp3");
     //raylib.playMusicStream(bg_music);
 
-    try world.changeScene(ecs.Scene.main_menu);
+    try world.game.changeScene(ecs.Scene.main_menu);
 
     while (!raylib.windowShouldClose()) {
         //raylib.updateMusicStream(bg_music);
@@ -52,13 +50,13 @@ pub fn main(init: std.process.Init) !void {
         input.system(&world);
 
         scenes_change.system(&world);
-        scenes_update.system(&world, &resources, delta);
+        scenes_update.system(&world, delta);
 
         input.resetInput(&world);
 
         // Draw our scene to the render texture
         raylib.beginTextureMode(target);
-        scenes_render.system(&world, &resources, delta);
+        scenes_render.system(&world, delta);
         raylib.endTextureMode();
 
         raylib.beginDrawing();
@@ -88,7 +86,6 @@ pub fn main(init: std.process.Init) !void {
     }
 
     world.deinit();
-    resources.deinit();
     raylib.closeAudioDevice();
     raylib.closeWindow();
 }

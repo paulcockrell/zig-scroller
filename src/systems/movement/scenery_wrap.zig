@@ -7,9 +7,9 @@ pub fn system(world: *ecs.World) void {
 }
 
 fn backgroundsWrap(world: *ecs.World) void {
-    const rightmost_edge = findRightmostEdge(world, world.backgrounds);
+    const rightmost_edge = findRightmostEdge(world, world.ecs.backgrounds);
 
-    var it = world.backgrounds.iterator();
+    var it = world.ecs.backgrounds.iterator();
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
         wrap(
@@ -21,9 +21,9 @@ fn backgroundsWrap(world: *ecs.World) void {
 }
 
 fn platformsWrap(world: *ecs.World) void {
-    const rightmost_edge = findRightmostEdge(world, world.platforms);
+    const rightmost_edge = findRightmostEdge(world, world.ecs.platforms);
 
-    var it = world.platforms.iterator();
+    var it = world.ecs.platforms.iterator();
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
         wrap(
@@ -35,8 +35,8 @@ fn platformsWrap(world: *ecs.World) void {
 }
 
 fn wrap(world: *ecs.World, ent: ecs.Entity, rightmost_edge: f32) void {
-    var pos = world.positions.getPtr(ent) orelse return;
-    const tile_dims = world.dimensions.getPtr(ent) orelse return;
+    var pos = world.ecs.positions.getPtr(ent) orelse return;
+    const tile_dims = world.ecs.dimensions.getPtr(ent) orelse return;
     const tile_right_edge = pos.x + tile_dims.width;
 
     if (tile_right_edge <= 0) {
@@ -50,8 +50,8 @@ fn findRightmostEdge(world: *ecs.World, collection: anytype) f32 {
     var it = collection.iterator();
     while (it.next()) |entry| {
         const entity = entry.key_ptr.*;
-        const pos = world.positions.getPtr(entity) orelse continue;
-        const dims = world.dimensions.getPtr(entity) orelse continue;
+        const pos = world.ecs.positions.getPtr(entity) orelse continue;
+        const dims = world.ecs.dimensions.getPtr(entity) orelse continue;
         const right_edge = pos.x + dims.width;
 
         if (right_edge > max_right_edge) {

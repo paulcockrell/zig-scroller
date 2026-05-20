@@ -22,9 +22,9 @@ pub const World = struct {
                 .screen_width = screen_width,
                 .screen_height = screen_height,
             },
-            .resources = Resources{
-                .allocator = allocator,
-            },
+            .resources = Resources.init(
+                allocator,
+            ),
         };
     }
 
@@ -37,7 +37,6 @@ pub const World = struct {
     pub fn reset(self: *World) void {
         self.ecs.reset();
         self.game.reset();
-        self.resources.reset();
     }
 };
 
@@ -70,7 +69,7 @@ const ECS = struct {
         };
     }
 
-    pub fn deinit(self: *World) void {
+    pub fn deinit(self: *ECS) void {
         self.positions.deinit();
         self.velocities.deinit();
         self.dimensions.deinit();
@@ -81,7 +80,7 @@ const ECS = struct {
         self.backgrounds.deinit();
     }
 
-    pub fn reset(self: *World) void {
+    pub fn reset(self: *ECS) void {
         self.positions.clearRetainingCapacity();
         self.velocities.clearRetainingCapacity();
         self.dimensions.clearRetainingCapacity();
@@ -145,14 +144,14 @@ const GameState = struct {
         };
     }
 
-    pub fn deinit(self: *World) void {
+    pub fn deinit(self: *GameState) void {
         self.needs_reset.deinit();
         self.jump_intents.deinit();
         self.sound_intents.deinit();
         self.scene_transition_intents.deinit();
     }
 
-    pub fn reset(self: *World) void {
+    pub fn reset(self: *GameState) void {
         self.needs_reset.clearRetainingCapacity();
         self.jump_intents.clearRetainingCapacity();
         self.sound_intents.clearRetainingCapacity();
@@ -185,14 +184,14 @@ const GameState = struct {
         };
     }
 
-    pub fn rng(self: *World, floor: u16, ceil: u16) u16 {
+    pub fn rng(self: *GameState, floor: u16, ceil: u16) u16 {
         const rand = self.prng.random();
         const offset = rand.intRangeAtMost(u16, floor, ceil);
 
         return offset;
     }
 
-    pub fn groundY(self: *World) f32 {
+    pub fn groundY(self: *GameState) f32 {
         return @as(f32, @floatFromInt(self.screen_height)) - ecs.PLATFORM_HEIGHT;
     }
 };

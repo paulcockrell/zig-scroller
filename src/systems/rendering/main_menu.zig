@@ -1,18 +1,17 @@
 const std = @import("std");
 const raylib = @import("raylib");
 const ecs = @import("../../ecs.zig");
-const Resources = @import("../../resources/resources.zig").Resources;
 
-pub fn system(world: *ecs.World, resources: *Resources) void {
-    drawText(world, resources);
+pub fn system(world: *ecs.World) void {
+    drawText(world);
 }
 
-fn drawText(world: *ecs.World, resources: *Resources) void {
-    const y_center = @as(f32, @floatFromInt(world.screen_height)) / 2.0;
+fn drawText(world: *ecs.World) void {
+    const y_center = @as(f32, @floatFromInt(world.game.screen_height)) / 2.0;
 
     var text = raylib.textFormat("Zero Dash", .{});
     var font_size: f32 = 24.0;
-    resources.text.drawTextPixelCentered(
+    world.resources.font_manager.drawTextPixelCentered(
         world,
         text,
         font_size,
@@ -22,7 +21,7 @@ fn drawText(world: *ecs.World, resources: *Resources) void {
 
     text = raylib.textFormat("press 'space' to play", .{});
     font_size = 16.0;
-    resources.text.drawTextPixelCentered(
+    world.resources.font_manager.drawTextPixelCentered(
         world,
         text,
         font_size,
@@ -31,7 +30,7 @@ fn drawText(world: *ecs.World, resources: *Resources) void {
     );
 
     text = raylib.textFormat("press 'c' for credits", .{});
-    resources.text.drawTextPixelCentered(
+    world.resources.font_manager.drawTextPixelCentered(
         world,
         text,
         font_size,
@@ -40,7 +39,7 @@ fn drawText(world: *ecs.World, resources: *Resources) void {
     );
 
     text = raylib.textFormat("press 'esc' to exit", .{});
-    resources.text.drawTextPixelCentered(
+    world.resources.font_manager.drawTextPixelCentered(
         world,
         text,
         font_size,

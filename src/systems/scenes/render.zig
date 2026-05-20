@@ -3,21 +3,20 @@ const main_menu = @import("../../scenes/main_menu.zig");
 const game_play = @import("../../scenes/game_play.zig");
 const game_over = @import("../../scenes/game_over.zig");
 const credits = @import("../../scenes/credits.zig");
-const Resources = @import("../../resources/resources.zig").Resources;
 
-pub fn system(world: *ecs.World, resources: *Resources, delta: f32) void {
-    switch (world.scene) {
+pub fn system(world: *ecs.World, delta: f32) void {
+    switch (world.game.scene) {
         ecs.Scene.game_play => {
-            game_play.render(world, resources, delta);
+            game_play.render(world, delta);
         },
         ecs.Scene.game_over => {
-            game_over.render(world, resources, delta);
+            game_over.render(world, delta);
         },
         ecs.Scene.credits => {
-            credits.render(world, resources, delta);
+            credits.render(world, delta);
         },
         else => {
-            main_menu.render(world, resources, delta);
+            main_menu.render(world, delta);
         },
     }
 }

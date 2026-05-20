@@ -14,12 +14,12 @@ const EntityBundle = struct {
 };
 
 pub fn system(world: *ecs.World) void {
-    var it = world.players.iterator();
+    var it = world.ecs.players.iterator();
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
-        const pos = world.positions.getPtr(ent) orelse continue;
-        const dim = world.dimensions.getPtr(ent) orelse continue;
-        const vel = world.velocities.getPtr(ent) orelse continue;
+        const pos = world.ecs.positions.getPtr(ent) orelse continue;
+        const dim = world.ecs.dimensions.getPtr(ent) orelse continue;
+        const vel = world.ecs.velocities.getPtr(ent) orelse continue;
 
         const player = EntityBundle{
             .ent = ent,
@@ -44,11 +44,11 @@ fn handleEnemies(
     world: *ecs.World,
     player: *const EntityBundle,
 ) void {
-    var it = world.enemies.iterator();
+    var it = world.ecs.enemies.iterator();
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
-        const pos = world.positions.getPtr(ent) orelse continue;
-        const dim = world.dimensions.getPtr(ent) orelse continue;
+        const pos = world.ecs.positions.getPtr(ent) orelse continue;
+        const dim = world.ecs.dimensions.getPtr(ent) orelse continue;
 
         const enemy = EntityBundle{
             .ent = ent,
@@ -74,11 +74,11 @@ fn handleRings(
     world: *ecs.World,
     player: *const EntityBundle,
 ) void {
-    var it = world.rings.iterator();
+    var it = world.ecs.rings.iterator();
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
-        const pos = world.positions.getPtr(ent) orelse continue;
-        const dim = world.dimensions.getPtr(ent) orelse continue;
+        const pos = world.ecs.positions.getPtr(ent) orelse continue;
+        const dim = world.ecs.dimensions.getPtr(ent) orelse continue;
 
         const ring = EntityBundle{
             .ent = ent,
@@ -101,17 +101,17 @@ fn checkEnemyStomp(
 ) bool {
     if (!enemyStomp(player, enemy)) return false;
 
-    _ = world.addScore(ENEMY_STOMP);
+    _ = world.game.addScore(ENEMY_STOMP);
 
-    world.jump_intents.put(player.ent, .{ .force = JUMP_FORCE }) catch |err| {
+    world.game.jump_intents.put(player.ent, .{ .force = JUMP_FORCE }) catch |err| {
         std.debug.print("Entity jump intent failed {}\n", .{err});
     };
 
-    world.needs_reset.put(enemy.ent, {}) catch |err| {
+    world.game.needs_reset.put(enemy.ent, {}) catch |err| {
         std.debug.print("Entity reset failed {}\n", .{err});
     };
 
-    world.sound_intents.put(AudioTag.stomp, .{ .volume = 0.3 }) catch |err| {
+    world.game.sound_intents.put(AudioTag.stomp, .{ .volume = 0.3 }) catch |err| {
         std.debug.print("Stomp sound intent failed {}\n", .{err});
     };
 
@@ -125,18 +125,18 @@ fn checkEnemyCollision(
 ) void {
     if (!overlap(player, enemy)) return;
 
-    const health = world.updateHealth(1);
+    const health = world.game.updateHealth(1);
 
-    world.needs_reset.put(enemy.ent, {}) catch |err| {
+    world.game.needs_reset.put(enemy.ent, {}) catch |err| {
         std.debug.print("Entity reset failed {}\n", .{err});
     };
 
-    world.sound_intents.put(AudioTag.hit, .{ .volume = 0.3 }) catch |err| {
+    world.game.sound_intents.put(AudioTag.hit, .{ .volume = 0.3 }) catch |err| {
         std.debug.print("Hit sound intent failed {}\n", .{err});
     };
 
     if (health <= 0) {
-        world.changeScene(ecs.Scene.game_over) catch |err| {
+        world.game.changeScene(ecs.Scene.game_over) catch |err| {
             std.debug.print("Failed to change to scene 'game_over' {}\n", .{err});
         };
     }
@@ -149,13 +149,13 @@ fn checkRingCollision(
 ) void {
     if (!overlap(player, ring)) return;
 
-    world.addScore(RING_SCORE);
+    world.game.addScore(RING_SCORE);
 
-    world.needs_reset.put(ring.ent, {}) catch |err| {
+    world.game.needs_reset.put(ring.ent, {}) catch |err| {
         std.debug.print("Entity reset failed {}\n", .{err});
     };
 
-    world.sound_intents.put(AudioTag.ring, .{ .volume = 0.3 }) catch |err| {
+    world.game.sound_intents.put(AudioTag.ring, .{ .volume = 0.3 }) catch |err| {
         std.debug.print("Ring sound intent failed {}\n", .{err});
     };
 }

@@ -5,19 +5,19 @@ pub const WIDTH: f32 = 504.0;
 const FRAME_COUNT: i32 = 1;
 
 pub fn spawn(world: *ecs.World) !void {
-    try spawnPlatform(world, 0, world.groundY());
-    try spawnPlatform(world, WIDTH, world.groundY());
+    try spawnPlatform(world, 0, world.game.groundY());
+    try spawnPlatform(world, WIDTH, world.game.groundY());
 }
 
 fn spawnPlatform(world: *ecs.World, x: f32, y: f32) !void {
-    const ent = world.createEntity();
+    const ent = world.ecs.createEntity();
 
-    try world.platforms.put(
+    try world.ecs.platforms.put(
         ent,
         {},
     );
 
-    try world.animations.put(
+    try world.ecs.animations.put(
         ent,
         .{
             .animation_timer = 0,
@@ -26,15 +26,15 @@ fn spawnPlatform(world: *ecs.World, x: f32, y: f32) !void {
             .frame_count = FRAME_COUNT,
         },
     );
-    try world.positions.put(
+    try world.ecs.positions.put(
         ent,
         .{ .x = x, .y = y },
     );
-    try world.velocities.put(
+    try world.ecs.velocities.put(
         ent,
         .{ .dx = 2.0, .dy = 0.0 },
     );
-    try world.dimensions.put(
+    try world.ecs.dimensions.put(
         ent,
         .{ .width = WIDTH, .height = ecs.PLATFORM_HEIGHT },
     );

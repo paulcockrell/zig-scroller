@@ -19,7 +19,6 @@ const ring = @import("../entities/ring.zig");
 const platform = @import("../entities/platform.zig");
 const background = @import("../entities/background.zig");
 const popup_points = @import("../systems/rendering/popup_points.zig");
-const Resources = @import("../resources/resources.zig").Resources;
 const AudioTag = @import("../resources/audio_tag.zig").AudioTag;
 
 const JUMP_FORCE: f32 = -250.0;
@@ -40,10 +39,10 @@ pub fn exit(world: *ecs.World) void {
     _ = world;
 }
 
-pub fn update(world: *ecs.World, resources: *Resources, delta: f32) void {
-    world.time += delta;
+pub fn update(world: *ecs.World, delta: f32) void {
+    world.game.time += delta;
 
-    if (world.jump_intent) jumpPlayer(world);
+    if (world.game.jump_intent) jumpPlayer(world);
 
     collision.system(world);
     jump_intent.system(world);
@@ -54,31 +53,31 @@ pub fn update(world: *ecs.World, resources: *Resources, delta: f32) void {
     entity_reset.system(world);
     scenery_wrap.system(world);
     difficulty.system(world);
-    sound_intent.system(world, resources);
+    sound_intent.system(world);
 }
 
-pub fn render(world: *ecs.World, resources: *Resources, delta: f32) void {
+pub fn render(world: *ecs.World, delta: f32) void {
     raylib.clearBackground(raylib.Color.black);
 
-    sprite.system(world, resources, delta);
-    hud.system(world, resources);
-    popup_points.system(world, resources, delta);
+    sprite.system(world, delta);
+    hud.system(world);
+    popup_points.system(world, delta);
 }
 
 fn jumpPlayer(
     world: *ecs.World,
 ) void {
-    var it = world.players.iterator();
+    var it = world.ecs.players.iterator();
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
 
         if (player.isJumping(world, ent)) return;
 
-        world.jump_intents.put(ent, .{ .force = JUMP_FORCE }) catch |err| {
+        world.game.jump_intents.put(ent, .{ .force = JUMP_FORCE }) catch |err| {
             std.debug.print("Entity jump intent failed {}\n", .{err});
         };
 
-        world.sound_intents.put(AudioTag.jump, .{ .volume = 0.3 }) catch |err| {
+        world.game.sound_intents.put(AudioTag.jump, .{ .volume = 0.3 }) catch |err| {
             std.debug.print("Jump sound intent failed {}\n", .{err});
         };
     }

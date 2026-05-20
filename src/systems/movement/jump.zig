@@ -8,12 +8,12 @@ pub fn system(world: *ecs.World, delta: f32) void {
 }
 
 fn movePlayers(world: *ecs.World, delta: f32) void {
-    var it = world.players.iterator();
+    var it = world.ecs.players.iterator();
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
-        const pos = world.positions.getPtr(ent) orelse return;
-        const dim = world.dimensions.getPtr(ent) orelse return;
-        const vel = world.velocities.getPtr(ent) orelse return;
+        const pos = world.ecs.positions.getPtr(ent) orelse return;
+        const dim = world.ecs.dimensions.getPtr(ent) orelse return;
+        const vel = world.ecs.velocities.getPtr(ent) orelse return;
 
         playerMovement(world, pos, vel, dim, delta);
         backgroundMovement(world, pos);
@@ -30,8 +30,8 @@ fn playerMovement(
     pos.y += vel.dy * dt;
 
     if (vel.dy > 0.0) { // falling
-        if (pos.y > world.groundY() - dim.height) { // below ground
-            pos.y = world.groundY() - dim.height;
+        if (pos.y > world.game.groundY() - dim.height) { // below ground
+            pos.y = world.game.groundY() - dim.height;
             vel.dy = 0;
         }
     }
@@ -42,11 +42,11 @@ fn backgroundMovement(
     world: *ecs.World,
     player_pos: *ecs.Position,
 ) void {
-    var it = world.backgrounds.iterator();
+    var it = world.ecs.backgrounds.iterator();
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
-        const pos = world.positions.getPtr(ent) orelse return;
+        const pos = world.ecs.positions.getPtr(ent) orelse return;
 
-        pos.y = (player_pos.y + player.HEIGHT - world.groundY()) / 2.5;
+        pos.y = (player_pos.y + player.HEIGHT - world.game.groundY()) / 2.5;
     }
 }

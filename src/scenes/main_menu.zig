@@ -22,14 +22,14 @@ pub fn exit(world: *ecs.World) void {
 }
 
 pub fn update(world: *ecs.World, delta: f32) void {
-    if (world.jump_intent) {
-        world.changeScene(ecs.Scene.game_play) catch |err| {
+    if (world.game.jump_intent) {
+        world.game.changeScene(ecs.Scene.game_play) catch |err| {
             std.debug.print("Failed to change scene: Main Menu -> Game Play: {}\n", .{err});
         };
     }
 
-    if (world.confirm_intent) {
-        world.changeScene(ecs.Scene.credits) catch |err| {
+    if (world.game.confirm_intent) {
+        world.game.changeScene(ecs.Scene.credits) catch |err| {
             std.debug.print("Failed to change scene: Main Menu -> Credits: {}\n", .{err});
         };
     }
@@ -39,8 +39,8 @@ pub fn update(world: *ecs.World, delta: f32) void {
     scenery_wrap.system(world);
 }
 
-pub fn render(world: *ecs.World, resources: *Resources, delta: f32) void {
+pub fn render(world: *ecs.World, delta: f32) void {
     raylib.clearBackground(raylib.Color.black);
-    sprite.system(world, resources, delta);
-    main_menu.system(world, resources);
+    sprite.system(world, delta);
+    main_menu.system(world);
 }
