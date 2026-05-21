@@ -1,18 +1,11 @@
 const std = @import("std");
 const raylib = @import("raylib");
-
 const ecs = @import("ecs.zig");
-
 const input = @import("systems/input/keyboard.zig");
 const scenes_change = @import("systems/scenes/change.zig");
 const scenes_update = @import("systems/scenes/update.zig");
 const scenes_render = @import("systems/scenes/render.zig");
 const Resources = @import("resources/resources.zig").Resources;
-
-const VIRTUAL_SCREEN_WIDTH: i32 = 480;
-const VIRTUAL_SCREEN_HEIGHT: i32 = 270;
-const SCREEN_WIDTH: i32 = 1280;
-const SCREEN_HEIGHT: i32 = 720;
 
 pub fn main(init: std.process.Init) !void {
     const allocator = init.gpa;
@@ -21,8 +14,8 @@ pub fn main(init: std.process.Init) !void {
 
     var world = try ecs.World.init(
         allocator,
-        VIRTUAL_SCREEN_WIDTH,
-        VIRTUAL_SCREEN_HEIGHT,
+        ecs.VIRTUAL_SCREEN_WIDTH,
+        ecs.VIRTUAL_SCREEN_HEIGHT,
     );
 
     //const bg_music = try raylib.loadMusicStream("resources/audio/djartmusic-best-game-console-301284.mp3");
@@ -37,11 +30,11 @@ pub fn main(init: std.process.Init) !void {
         const window_height = raylib.getScreenHeight();
 
         const scale: f32 = @min(
-            @as(f32, @floatFromInt(window_width)) / @as(f32, @floatFromInt(VIRTUAL_SCREEN_WIDTH)),
-            @as(f32, @floatFromInt(window_height)) / @as(f32, @floatFromInt(VIRTUAL_SCREEN_HEIGHT)),
+            @as(f32, @floatFromInt(window_width)) / @as(f32, @floatFromInt(ecs.VIRTUAL_SCREEN_WIDTH)),
+            @as(f32, @floatFromInt(window_height)) / @as(f32, @floatFromInt(ecs.VIRTUAL_SCREEN_HEIGHT)),
         );
-        const scaled_width = @as(f32, @floatFromInt(VIRTUAL_SCREEN_WIDTH)) * scale;
-        const scaled_height = @as(f32, @floatFromInt(VIRTUAL_SCREEN_HEIGHT)) * scale;
+        const scaled_width = @as(f32, @floatFromInt(ecs.VIRTUAL_SCREEN_WIDTH)) * scale;
+        const scaled_height = @as(f32, @floatFromInt(ecs.VIRTUAL_SCREEN_HEIGHT)) * scale;
         const center_x = (@as(f32, @floatFromInt(window_width)) - scaled_width) / 2;
         const center_y = (@as(f32, @floatFromInt(window_height)) - scaled_height) / 2;
 
@@ -92,8 +85,8 @@ pub fn main(init: std.process.Init) !void {
 
 fn initRaylib() !raylib.RenderTexture2D {
     raylib.initWindow(
-        SCREEN_WIDTH,
-        SCREEN_HEIGHT,
+        ecs.SCREEN_WIDTH,
+        ecs.SCREEN_HEIGHT,
         "Zig scroller",
     );
 
@@ -102,8 +95,8 @@ fn initRaylib() !raylib.RenderTexture2D {
     raylib.setTargetFPS(ecs.FPS);
 
     const target: raylib.RenderTexture2D = try raylib.loadRenderTexture(
-        VIRTUAL_SCREEN_WIDTH,
-        VIRTUAL_SCREEN_HEIGHT,
+        ecs.VIRTUAL_SCREEN_WIDTH,
+        ecs.VIRTUAL_SCREEN_HEIGHT,
     );
 
     return target;

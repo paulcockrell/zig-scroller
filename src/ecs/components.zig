@@ -7,6 +7,10 @@ pub const PLATFORM_HEIGHT: f32 = 57.0;
 pub const POPUP_POINTS_TIMER_MAX: f32 = 1.0;
 pub const GRAVITY: f32 = 500.0;
 pub const MAX_FALL_SPEED: f32 = 400.0;
+pub const VIRTUAL_SCREEN_WIDTH: i32 = 480;
+pub const VIRTUAL_SCREEN_HEIGHT: i32 = 270;
+pub const SCREEN_WIDTH: i32 = 1280;
+pub const SCREEN_HEIGHT: i32 = 720;
 
 pub const Entity = u32;
 

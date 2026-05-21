@@ -15,6 +15,12 @@ pub const MAX_HEALTH = @import("ecs/components.zig").MAX_HEALTH;
 pub const FPS = @import("ecs/components.zig").FPS;
 pub const PLATFORM_HEIGHT = @import("ecs/components.zig").PLATFORM_HEIGHT;
 pub const POPUP_POINTS_TIMER_MAX = @import("ecs/components.zig").POPUP_POINTS_TIMER_MAX;
+pub const GRAVITY = @import("ecs/components.zig").GRAVITY;
+pub const MAX_FALL_SPEED = @import("ecs/components.zig").MAX_FALL_SPEED;
+pub const VIRTUAL_SCREEN_WIDTH = @import("ecs/components.zig").VIRTUAL_SCREEN_WIDTH;
+pub const VIRTUAL_SCREEN_HEIGHT = @import("ecs/components.zig").VIRTUAL_SCREEN_HEIGHT;
+pub const SCREEN_WIDTH = @import("ecs/components.zig").SCREEN_WIDTH;
+pub const SCREEN_HEIGHT = @import("ecs/components.zig").SCREEN_HEIGHT;
 
 pub const AUDIO_DIR = "resources/audio/";
 pub const GRAPHICS_DIR = "resources/graphics/";
