@@ -9,7 +9,7 @@ pub fn system(world: *ecs.World) void {
 fn drawText(world: *ecs.World) void {
     const y_center = @as(f32, @floatFromInt(world.game.screen_height)) / 2.0;
 
-    var text = raylib.textFormat("Zero Dash", .{});
+    var text = raylib.textFormat("Zig Scroller", .{});
     var font_size: f32 = 24.0;
     world.resources.font_manager.drawTextPixelCentered(
         world,

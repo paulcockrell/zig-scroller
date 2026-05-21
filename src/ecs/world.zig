@@ -164,8 +164,6 @@ const GameState = struct {
         self.popup_points_timer = 0.0;
         self.scroll_speed = ecs.BASE_SCROLL_SPEED;
         self.scene = Scene.main_menu;
-        self.screen_width = 0;
-        self.screen_height = 0;
     }
 
     pub fn addScore(self: *GameState, val: i32) void {

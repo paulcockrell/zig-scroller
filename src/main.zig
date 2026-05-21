@@ -87,7 +87,7 @@ fn initRaylib() !raylib.RenderTexture2D {
     raylib.initWindow(
         ecs.SCREEN_WIDTH,
         ecs.SCREEN_HEIGHT,
-        "Zig scroller",
+        "Zig Scroller",
     );
 
     raylib.initAudioDevice();
