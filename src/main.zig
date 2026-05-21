@@ -17,7 +17,7 @@ const SCREEN_HEIGHT: i32 = 720;
 pub fn main(init: std.process.Init) !void {
     const allocator = init.gpa;
 
-    var world = ecs.World.init(
+    var world = try ecs.World.init(
         allocator,
         VIRTUAL_SCREEN_WIDTH,
         VIRTUAL_SCREEN_HEIGHT,

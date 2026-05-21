@@ -12,17 +12,17 @@ pub const World = struct {
     game: GameState,
     resources: Resources,
 
-    pub fn init(allocator: std.mem.Allocator, screen_width: i32, screen_height: i32) World {
+    pub fn init(allocator: std.mem.Allocator, screen_width: i32, screen_height: i32) !World {
         return .{
-            .ecs = ECS{
-                .allocator = allocator,
-            },
-            .game = GameState{
-                .allocator = allocator,
-                .screen_width = screen_width,
-                .screen_height = screen_height,
-            },
-            .resources = Resources.init(
+            .ecs = ECS.init(
+                allocator,
+            ),
+            .game = GameState.init(
+                allocator,
+                screen_width,
+                screen_height,
+            ),
+            .resources = try Resources.init(
                 allocator,
             ),
         };
@@ -41,8 +41,6 @@ pub const World = struct {
 };
 
 const ECS = struct {
-    allocator: std.mem.Allocator,
-
     positions: std.AutoHashMap(ecs.Entity, ecs.Position),
     velocities: std.AutoHashMap(ecs.Entity, ecs.Velocity),
     dimensions: std.AutoHashMap(ecs.Entity, ecs.Dimension),
@@ -56,7 +54,7 @@ const ECS = struct {
 
     next_entity: ecs.Entity = 0,
 
-    pub fn init(allocator: std.mem.Allocator) World {
+    pub fn init(allocator: std.mem.Allocator) ECS {
         return .{
             .positions = std.AutoHashMap(ecs.Entity, ecs.Position).init(allocator),
             .velocities = std.AutoHashMap(ecs.Entity, ecs.Velocity).init(allocator),
@@ -128,9 +126,8 @@ const GameState = struct {
 
     prng: std.Random.Xoshiro256,
 
-    pub fn init(allocator: std.mem.Allocator, screen_width: i32, screen_height: i32) World {
+    pub fn init(allocator: std.mem.Allocator, screen_width: i32, screen_height: i32) GameState {
         return .{
-            .allocator = allocator,
             .needs_reset = std.AutoHashMap(ecs.Entity, void).init(allocator),
             .jump_intents = std.AutoHashMap(ecs.Entity, ecs.JumpIntent).init(allocator),
             .sound_intents = std.AutoHashMap(AudioTag, AudioParams).init(allocator),
