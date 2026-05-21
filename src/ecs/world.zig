@@ -48,6 +48,7 @@ const ECS = struct {
     dimensions: std.AutoHashMap(ecs.Entity, ecs.Dimension),
     platforms: std.AutoHashMap(ecs.Entity, void),
     backgrounds: std.AutoHashMap(ecs.Entity, void),
+    animations: std.AutoHashMap(ecs.Entity, ecs.Animation),
 
     players: std.AutoHashMap(ecs.Entity, void),
     enemies: std.AutoHashMap(ecs.Entity, void),
@@ -60,6 +61,7 @@ const ECS = struct {
             .positions = std.AutoHashMap(ecs.Entity, ecs.Position).init(allocator),
             .velocities = std.AutoHashMap(ecs.Entity, ecs.Velocity).init(allocator),
             .dimensions = std.AutoHashMap(ecs.Entity, ecs.Dimension).init(allocator),
+            .animations = std.AutoHashMap(ecs.Entity, ecs.Animation).init(allocator),
             .players = std.AutoHashMap(ecs.Entity, void).init(allocator),
             .enemies = std.AutoHashMap(ecs.Entity, void).init(allocator),
             .rings = std.AutoHashMap(ecs.Entity, void).init(allocator),
@@ -78,6 +80,7 @@ const ECS = struct {
         self.rings.deinit();
         self.platforms.deinit();
         self.backgrounds.deinit();
+        self.animations.deinit();
     }
 
     pub fn reset(self: *ECS) void {
@@ -89,6 +92,7 @@ const ECS = struct {
         self.rings.clearRetainingCapacity();
         self.platforms.clearRetainingCapacity();
         self.backgrounds.clearRetainingCapacity();
+        self.animations.clearRetainingCapacity();
         self.next_entity = 0;
     }
 

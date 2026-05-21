@@ -18,7 +18,7 @@ pub fn system(world: *ecs.World) void {
         };
     }
 
-    world.scene_transition_intents.clearRetainingCapacity();
+    world.game.scene_transition_intents.clearRetainingCapacity();
 }
 
 fn exitCurrentScene(scene: ecs.Scene, world: *ecs.World) void {

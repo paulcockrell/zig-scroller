@@ -89,7 +89,7 @@ fn renderPlayer(
     const anim = world.ecs.animations.getPtr(ent) orelse return;
     const pos = world.ecs.positions.getPtr(ent) orelse return;
     const dim = world.ecs.dimensions.getPtr(ent) orelse return;
-    const texture = world.resources.textures.get(TextureTag.player) orelse return;
+    const texture = world.resources.texture_manager.get(TextureTag.player) orelse return;
     const src_x = @as(f32, @floatFromInt(anim.frame_idx)) * dim.width;
     const src_y =
         if (player.isJumping(world, ent))
@@ -114,7 +114,7 @@ fn render(
     texture_tag: TextureTag,
     delta: f32,
 ) void {
-    const texture = world.resources.textures.get(texture_tag) orelse return;
+    const texture = world.resources.texture_manager.get(texture_tag) orelse return;
     const anim = world.ecs.animations.getPtr(ent) orelse return;
     const pos = world.ecs.positions.getPtr(ent) orelse return;
     const dim = world.ecs.dimensions.getPtr(ent) orelse return;
