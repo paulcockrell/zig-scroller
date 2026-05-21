@@ -5,6 +5,8 @@ pub const MAX_HEALTH: i32 = 10;
 pub const FPS: i32 = 60;
 pub const PLATFORM_HEIGHT: f32 = 57.0;
 pub const POPUP_POINTS_TIMER_MAX: f32 = 1.0;
+pub const GRAVITY: f32 = 500.0;
+pub const MAX_FALL_SPEED: f32 = 400.0;
 
 pub const Entity = u32;
 

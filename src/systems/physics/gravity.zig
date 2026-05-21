@@ -1,9 +1,6 @@
 const std = @import("std");
 const ecs = @import("../../ecs.zig");
 
-const GRAVITY: f32 = 500.0;
-const MAX_FALL_SPEED: f32 = 400.0;
-
 pub fn system(world: *ecs.World, delta: f32) void {
     var it = world.ecs.players.iterator();
     while (it.next()) |entry| {
@@ -35,13 +32,13 @@ fn applyPlayerGravity(
         vel.dy = 0;
     } else {
         if (vel.dy > 0) {
-            vel.dy += GRAVITY * 1.5 * delta; // fall faster than jump
+            vel.dy += ecs.GRAVITY * 1.5 * delta; // fall faster than jump
         } else {
-            vel.dy += GRAVITY * delta;
+            vel.dy += ecs.GRAVITY * delta;
         }
 
-        if (vel.dy > MAX_FALL_SPEED) {
-            vel.dy = MAX_FALL_SPEED;
+        if (vel.dy > ecs.MAX_FALL_SPEED) {
+            vel.dy = ecs.MAX_FALL_SPEED;
         }
     }
 }
