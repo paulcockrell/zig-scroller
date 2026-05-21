@@ -2,6 +2,7 @@ const std = @import("std");
 const raylib = @import("raylib");
 const ecs = @import("../ecs.zig");
 const AudioTag = @import("./audio_tag.zig").AudioTag;
+const AUDIO_DIR = @import("../ecs.zig").AUDIO_DIR;
 
 pub const AudioManager = struct {
     sounds: std.AutoHashMap(AudioTag, raylib.Sound),
@@ -10,16 +11,16 @@ pub const AudioManager = struct {
         var sounds = std.AutoHashMap(AudioTag, raylib.Sound).init(allocator);
 
         const jump = try raylib.loadSound(
-            "./resources/audio/lumora_studios-pixel-jump-319167.mp3",
+            AUDIO_DIR ++ "lumora_studios-pixel-jump-319167.mp3",
         );
         const ring = try raylib.loadSound(
-            "./resources/audio/ring.wav",
+            AUDIO_DIR ++ "ring.wav",
         );
         const hit = try raylib.loadSound(
-            "./resources/audio/destroy.wav",
+            AUDIO_DIR ++ "destroy.wav",
         );
         const stomp = try raylib.loadSound(
-            "./resources/audio/hyper-ring.wav",
+            AUDIO_DIR ++ "hyper-ring.wav",
         );
 
         try sounds.put(AudioTag.jump, jump);

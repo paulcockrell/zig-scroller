@@ -15,3 +15,7 @@ pub const MAX_HEALTH = @import("ecs/components.zig").MAX_HEALTH;
 pub const FPS = @import("ecs/components.zig").FPS;
 pub const PLATFORM_HEIGHT = @import("ecs/components.zig").PLATFORM_HEIGHT;
 pub const POPUP_POINTS_TIMER_MAX = @import("ecs/components.zig").POPUP_POINTS_TIMER_MAX;
+
+pub const AUDIO_DIR = "resources/audio/";
+pub const GRAPHICS_DIR = "resources/graphics/";
+pub const FONTS_DIR = "resources/fonts/";

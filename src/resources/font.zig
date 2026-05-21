@@ -7,7 +7,7 @@ pub const FontManager = struct {
     pub fn init() !FontManager {
         return .{
             .pixel_font = try raylib.loadFontEx(
-                "./resources/fonts/m6x11.ttf",
+                ecs.FONTS_DIR ++ "m6x11.ttf",
                 16,
                 null,
             ),

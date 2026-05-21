@@ -11,19 +11,19 @@ pub const TextureManager = struct {
     pub fn init(allocator: std.mem.Allocator) !TextureManager {
         var textures = std.AutoHashMap(TextureTag, raylib.Texture).init(allocator);
 
-        const player = try loadSprite("resources/graphics/player.png");
+        const player = try loadSprite(ecs.GRAPHICS_DIR ++ "player.png");
         try textures.put(TextureTag.player, player);
 
-        const enemy = try loadSprite("resources/graphics/enemy.png");
+        const enemy = try loadSprite(ecs.GRAPHICS_DIR ++ "enemy.png");
         try textures.put(TextureTag.enemy, enemy);
 
-        const ring = try loadSprite("resources/graphics/ring.png");
+        const ring = try loadSprite(ecs.GRAPHICS_DIR ++ "ring.png");
         try textures.put(TextureTag.ring, ring);
 
-        const background = try loadSprite("resources/graphics/background.png");
+        const background = try loadSprite(ecs.GRAPHICS_DIR ++ "background.png");
         try textures.put(TextureTag.background, background);
 
-        const platform = try loadSprite("resources/graphics/platform.png");
+        const platform = try loadSprite(ecs.GRAPHICS_DIR ++ "platform.png");
         try textures.put(TextureTag.platform, platform);
 
         return .{

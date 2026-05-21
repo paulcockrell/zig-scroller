@@ -17,13 +17,13 @@ const SCREEN_HEIGHT: i32 = 720;
 pub fn main(init: std.process.Init) !void {
     const allocator = init.gpa;
 
+    const target = try initRaylib();
+
     var world = try ecs.World.init(
         allocator,
         VIRTUAL_SCREEN_WIDTH,
         VIRTUAL_SCREEN_HEIGHT,
     );
-
-    const target = try initRaylib();
 
     //const bg_music = try raylib.loadMusicStream("resources/audio/djartmusic-best-game-console-301284.mp3");
     //raylib.playMusicStream(bg_music);
