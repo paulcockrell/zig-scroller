@@ -4,7 +4,7 @@ const ecs = @import("../ecs.zig");
 const main_menu = @import("../systems/rendering/main_menu.zig");
 const jump = @import("../systems/movement/jump.zig");
 const scroll = @import("../systems/movement/scroll.zig");
-const sprite = @import("../systems/rendering/sprite.zig");
+const game_play = @import("../systems/rendering/game_play.zig");
 const scenery_wrap = @import("../systems/movement/scenery_wrap.zig");
 const player = @import("../entities/player.zig");
 const platform = @import("../entities/platform.zig");
@@ -41,6 +41,6 @@ pub fn update(world: *ecs.World, delta: f32) void {
 
 pub fn render(world: *ecs.World, delta: f32) void {
     raylib.clearBackground(raylib.Color.black);
-    sprite.system(world, delta);
+    game_play.system(world, delta);
     main_menu.system(world);
 }

@@ -7,7 +7,7 @@ const collision = @import("../systems/movement/collision.zig");
 const jump_intent = @import("../systems/movement/jump_intent.zig");
 const difficulty = @import("../systems/gameplay/difficulty.zig");
 const hud = @import("../systems/rendering/hud.zig");
-const sprite = @import("../systems/rendering/sprite.zig");
+const game_play = @import("../systems/rendering/game_play.zig");
 const scroll = @import("../systems/movement/scroll.zig");
 const entity_wrap = @import("../systems/movement/entity_wrap.zig");
 const entity_reset = @import("../systems/gameplay/entity_reset.zig");
@@ -59,7 +59,7 @@ pub fn update(world: *ecs.World, delta: f32) void {
 pub fn render(world: *ecs.World, delta: f32) void {
     raylib.clearBackground(raylib.Color.black);
 
-    sprite.system(world, delta);
+    game_play.system(world, delta);
     hud.system(world);
     popup_points.system(world, delta);
 }
