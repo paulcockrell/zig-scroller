@@ -11,20 +11,20 @@ pub const TextureManager = struct {
     pub fn init(allocator: std.mem.Allocator) !TextureManager {
         var textures = std.AutoHashMap(TextureTag, raylib.Texture).init(allocator);
 
-        const player = try loadSprite(ecs.GRAPHICS_DIR ++ "player.png");
-        try textures.put(TextureTag.player, player);
+        const player_texture = try loadTexture(ecs.GRAPHICS_DIR ++ "player.png");
+        try textures.put(TextureTag.player, player_texture);
 
-        const enemy = try loadSprite(ecs.GRAPHICS_DIR ++ "enemy.png");
-        try textures.put(TextureTag.enemy, enemy);
+        const enemy_texture = try loadTexture(ecs.GRAPHICS_DIR ++ "enemy.png");
+        try textures.put(TextureTag.enemy, enemy_texture);
 
-        const ring = try loadSprite(ecs.GRAPHICS_DIR ++ "ring.png");
-        try textures.put(TextureTag.ring, ring);
+        const ring_texture = try loadTexture(ecs.GRAPHICS_DIR ++ "ring.png");
+        try textures.put(TextureTag.ring, ring_texture);
 
-        const background = try loadSprite(ecs.GRAPHICS_DIR ++ "background.png");
-        try textures.put(TextureTag.background, background);
+        const background_texture = try loadTexture(ecs.GRAPHICS_DIR ++ "background.png");
+        try textures.put(TextureTag.background, background_texture);
 
-        const platform = try loadSprite(ecs.GRAPHICS_DIR ++ "platform.png");
-        try textures.put(TextureTag.platform, platform);
+        const platform_texture = try loadTexture(ecs.GRAPHICS_DIR ++ "platform.png");
+        try textures.put(TextureTag.platform, platform_texture);
 
         return .{
             .textures = textures,
@@ -45,7 +45,7 @@ pub const TextureManager = struct {
     }
 };
 
-fn loadSprite(img_path: [:0]const u8) !raylib.Texture {
+fn loadTexture(img_path: [:0]const u8) !raylib.Texture {
     const image = try raylib.loadImage(img_path);
     const texture = try raylib.loadTextureFromImage(image);
 
