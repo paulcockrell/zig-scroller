@@ -29,7 +29,10 @@ pub const FontManager = struct {
         raylib.drawTextEx(
             self.pixel_font,
             text,
-            .{ .x = @floor(x), .y = @floor(y) },
+            .{
+                .x = @floor(x),
+                .y = @floor(y),
+            },
             font_size,
             0,
             colour,
@@ -44,13 +47,22 @@ pub const FontManager = struct {
         y: f32,
         colour: raylib.Color,
     ) void {
-        const text_width = raylib.measureText(text, @as(i32, @intFromFloat(font_size)));
-        const x = @as(f32, @floatFromInt(world.game.screen_width - text_width)) / 2.0;
+        const text_size = raylib.measureTextEx(
+            self.pixel_font,
+            text,
+            font_size,
+            0,
+        );
+
+        const x = (@as(f32, @floatFromInt(world.game.screen_width)) - text_size.x) / 2.0;
 
         raylib.drawTextEx(
             self.pixel_font,
             text,
-            .{ .x = @floor(x), .y = @floor(y) },
+            .{
+                .x = @floor(x),
+                .y = @floor(y),
+            },
             font_size,
             0,
             colour,
