@@ -56,11 +56,11 @@ fn handleEnemies(
             .dim = dim,
         };
 
-        if (checkEnemyStomp(
+        checkEnemyStomp(
             world,
             player,
             &enemy,
-        )) continue;
+        );
 
         checkEnemyCollision(
             world,
@@ -98,8 +98,8 @@ fn checkEnemyStomp(
     world: *ecs.World,
     player: *const EntityBundle,
     enemy: *const EntityBundle,
-) bool {
-    if (!enemyStomp(player, enemy)) return false;
+) void {
+    if (!enemyAttack(world, player, enemy)) return;
 
     _ = world.game.addScore(ENEMY_STOMP);
 
@@ -114,8 +114,6 @@ fn checkEnemyStomp(
     world.game.sound_intents.put(AudioTag.stomp, .{ .volume = 0.3 }) catch |err| {
         std.debug.print("Stomp sound intent failed {}\n", .{err});
     };
-
-    return true;
 }
 
 fn checkEnemyCollision(
@@ -124,6 +122,7 @@ fn checkEnemyCollision(
     enemy: *const EntityBundle,
 ) void {
     if (!overlap(player, enemy)) return;
+    if (enemyAttack(world, player, enemy)) return;
 
     const health = world.game.updateHealth(1);
 
@@ -160,16 +159,13 @@ fn checkRingCollision(
     };
 }
 
-fn enemyStomp(
+fn enemyAttack(
+    world: *ecs.World,
     player: *const EntityBundle,
     enemy: *const EntityBundle,
 ) bool {
-    const player_bottom = player.pos.y + player.dim.height;
-    const enemy_top = enemy.pos.y;
-
-    return player.vel.?.dy > 0 and
-        player_bottom <= enemy_top + 10 and
-        overlap(player, enemy);
+    // player is jumping while colliding with enemy
+    return (player.pos.y + player.dim.height) < world.game.groundY() and overlap(player, enemy);
 }
 
 fn overlap(

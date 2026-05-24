@@ -25,9 +25,9 @@ fn playerMovement(
     pos: *ecs.Position,
     vel: *ecs.Velocity,
     dim: *ecs.Dimension,
-    dt: f32,
+    delta: f32,
 ) void {
-    pos.y += vel.dy * dt;
+    pos.y += vel.dy * delta;
 
     if (vel.dy > 0.0) { // falling
         if (pos.y > world.game.groundY() - dim.height) { // below ground
