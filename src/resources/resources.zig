@@ -10,9 +10,14 @@ pub const Resources = struct {
     texture_manager: TextureManager,
 
     pub fn init(allocator: std.mem.Allocator) !Resources {
-        const font_manager = try FontManager.init();
-        const audio_manager = try AudioManager.init(allocator);
-        const texture_manager = try TextureManager.init(allocator);
+        var font_manager = try FontManager.init();
+        errdefer font_manager.deinit();
+
+        var audio_manager = try AudioManager.init(allocator);
+        errdefer audio_manager.deinit();
+
+        var texture_manager = try TextureManager.init(allocator);
+        errdefer texture_manager.deinit();
 
         return .{
             .font_manager = font_manager,

@@ -9,19 +9,27 @@ pub const AudioManager = struct {
 
     pub fn init(allocator: std.mem.Allocator) !AudioManager {
         var sounds = std.AutoHashMap(AudioTag, raylib.Sound).init(allocator);
+        errdefer sounds.deinit();
 
         const jump = try raylib.loadSound(
             AUDIO_DIR ++ "lumora_studios-pixel-jump-319167.mp3",
         );
+        errdefer raylib.unloadSound(jump);
+
         const ring = try raylib.loadSound(
             AUDIO_DIR ++ "ring.wav",
         );
+        errdefer raylib.unloadSound(ring);
+
         const hit = try raylib.loadSound(
             AUDIO_DIR ++ "destroy.wav",
         );
+        errdefer raylib.unloadSound(hit);
+
         const stomp = try raylib.loadSound(
             AUDIO_DIR ++ "hyper-ring.wav",
         );
+        errdefer raylib.unloadSound(stomp);
 
         try sounds.put(AudioTag.jump, jump);
         try sounds.put(AudioTag.ring, ring);

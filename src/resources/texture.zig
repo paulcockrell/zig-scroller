@@ -10,20 +10,26 @@ pub const TextureManager = struct {
 
     pub fn init(allocator: std.mem.Allocator) !TextureManager {
         var textures = std.AutoHashMap(TextureTag, raylib.Texture).init(allocator);
+        errdefer textures.deinit();
 
         const player_texture = try loadTexture(ecs.GRAPHICS_DIR ++ "player.png");
+        errdefer raylib.unloadTexture(player_texture);
         try textures.put(TextureTag.player, player_texture);
 
         const enemy_texture = try loadTexture(ecs.GRAPHICS_DIR ++ "enemy.png");
+        errdefer raylib.unloadTexture(enemy_texture);
         try textures.put(TextureTag.enemy, enemy_texture);
 
         const ring_texture = try loadTexture(ecs.GRAPHICS_DIR ++ "ring.png");
+        errdefer raylib.unloadTexture(ring_texture);
         try textures.put(TextureTag.ring, ring_texture);
 
         const background_texture = try loadTexture(ecs.GRAPHICS_DIR ++ "background.png");
+        errdefer raylib.unloadTexture(background_texture);
         try textures.put(TextureTag.background, background_texture);
 
         const platform_texture = try loadTexture(ecs.GRAPHICS_DIR ++ "platform.png");
+        errdefer raylib.unloadTexture(platform_texture);
         try textures.put(TextureTag.platform, platform_texture);
 
         return .{
@@ -47,7 +53,7 @@ pub const TextureManager = struct {
 
 fn loadTexture(img_path: [:0]const u8) !raylib.Texture {
     const image = try raylib.loadImage(img_path);
-    const texture = try raylib.loadTextureFromImage(image);
+    defer image.unload();
 
-    return texture;
+    return try raylib.loadTextureFromImage(image);
 }

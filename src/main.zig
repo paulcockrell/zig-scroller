@@ -5,26 +5,32 @@ const input = @import("systems/input/keyboard.zig");
 const scenes_change = @import("systems/scenes/change.zig");
 const scenes_update = @import("systems/scenes/update.zig");
 const scenes_render = @import("systems/scenes/render.zig");
-const Resources = @import("resources/resources.zig").Resources;
 
 pub fn main(init: std.process.Init) !void {
     const allocator = init.gpa;
 
+    defer raylib.closeWindow();
+    defer raylib.closeAudioDevice();
+
     const target = try initRaylib();
+    defer raylib.unloadRenderTexture(target);
 
     var world = try ecs.World.init(
         allocator,
         ecs.VIRTUAL_SCREEN_WIDTH,
         ecs.VIRTUAL_SCREEN_HEIGHT,
     );
+    defer world.deinit();
 
-    //const bg_music = try raylib.loadMusicStream("resources/audio/djartmusic-best-game-console-301284.mp3");
-    //raylib.playMusicStream(bg_music);
+    const bg_music = try raylib.loadMusicStream("resources/audio/djartmusic-best-game-console-301284.mp3");
+    defer bg_music.unload();
+
+    raylib.playMusicStream(bg_music);
 
     try world.game.changeScene(ecs.Scene.main_menu);
 
     while (!raylib.windowShouldClose()) {
-        //raylib.updateMusicStream(bg_music);
+        raylib.updateMusicStream(bg_music);
 
         const window_width = raylib.getScreenWidth();
         const window_height = raylib.getScreenHeight();
@@ -77,10 +83,6 @@ pub fn main(init: std.process.Init) !void {
         );
         raylib.endDrawing();
     }
-
-    world.deinit();
-    raylib.closeAudioDevice();
-    raylib.closeWindow();
 }
 
 fn initRaylib() !raylib.RenderTexture2D {
