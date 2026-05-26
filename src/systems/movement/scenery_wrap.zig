@@ -1,5 +1,5 @@
 const std = @import("std");
-const ecs = @import("../../ecs.zig");
+const ecs = @import("../../engine/ecs/ecs.zig");
 
 pub fn system(world: *ecs.World) void {
     backgroundsWrap(world);

@@ -1,16 +1,19 @@
-const ecs = @import("../ecs.zig");
+const std = @import("std");
+const ecs = @import("../../engine/ecs/ecs.zig");
+const PLATFORM_HEIGHT = @import("../../shared/constants.zig").PLATFORM_HEIGHT;
 
-const WIDTH: f32 = 20.0;
-const HEIGHT: f32 = 20.0;
-const FRAME_COUNT: i32 = 7;
+const WIDTH: f32 = 504.0;
+const FRAME_COUNT: i32 = 1;
 
 pub fn spawn(world: *ecs.World) !void {
-    const ent = world.ecs.createEntity();
-    const x = @as(f32, @floatFromInt(world.game.screen_width + world.game.rng(0, 500)));
-    const y = world.game.groundY() - HEIGHT;
-    const frame_duration: f32 = 1.0 / 14.0;
+    try spawnPlatform(world, 0, world.game.groundY());
+    try spawnPlatform(world, WIDTH, world.game.groundY());
+}
 
-    try world.ecs.rings.put(
+fn spawnPlatform(world: *ecs.World, x: f32, y: f32) !void {
+    const ent = world.ecs.createEntity();
+
+    try world.ecs.platforms.put(
         ent,
         {},
     );
@@ -19,7 +22,7 @@ pub fn spawn(world: *ecs.World) !void {
         ent,
         .{
             .animation_timer = 0,
-            .frame_duration = frame_duration,
+            .frame_duration = 0,
             .frame_idx = 0,
             .frame_count = FRAME_COUNT,
         },
@@ -34,6 +37,6 @@ pub fn spawn(world: *ecs.World) !void {
     );
     try world.ecs.dimensions.put(
         ent,
-        .{ .width = WIDTH, .height = HEIGHT },
+        .{ .width = WIDTH, .height = PLATFORM_HEIGHT },
     );
 }

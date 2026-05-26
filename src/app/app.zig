@@ -1,10 +1,15 @@
 const std = @import("std");
 const raylib = @import("raylib");
-const ecs = @import("../ecs.zig");
+const ecs = @import("../engine/ecs/ecs.zig");
 const input = @import("../systems/input/keyboard.zig");
 const scenes_change = @import("../systems/scenes/change.zig");
 const scenes_update = @import("../systems/scenes/update.zig");
 const scenes_render = @import("../systems/scenes/render.zig");
+const VIRTUAL_SCREEN_WIDTH = @import("../shared/constants.zig").VIRTUAL_SCREEN_WIDTH;
+const VIRTUAL_SCREEN_HEIGHT = @import("../shared/constants.zig").VIRTUAL_SCREEN_HEIGHT;
+const SCREEN_WIDTH = @import("../shared/constants.zig").SCREEN_WIDTH;
+const SCREEN_HEIGHT = @import("../shared/constants.zig").SCREEN_HEIGHT;
+const FPS = @import("../shared/constants.zig").FPS;
 
 pub const App = struct {
     world: ecs.World,
@@ -16,8 +21,8 @@ pub const App = struct {
         const bg_music = try raylib.loadMusicStream("resources/audio/djartmusic-best-game-console-301284.mp3");
         const world = try ecs.World.init(
             allocator,
-            ecs.VIRTUAL_SCREEN_WIDTH,
-            ecs.VIRTUAL_SCREEN_HEIGHT,
+            VIRTUAL_SCREEN_WIDTH,
+            VIRTUAL_SCREEN_HEIGHT,
         );
 
         return .{
@@ -44,7 +49,7 @@ pub const App = struct {
             const delta = raylib.getFrameTime();
 
             self.updateMusic();
-            self.processInput();
+            self.handleInput();
             self.update(delta);
             self.render(delta);
         }
@@ -54,7 +59,7 @@ pub const App = struct {
         raylib.updateMusicStream(self.bg_music);
     }
 
-    fn processInput(self: *App) void {
+    fn handleInput(self: *App) void {
         input.system(&self.world);
     }
 
@@ -94,16 +99,16 @@ pub const App = struct {
 
     fn initRaylib() !raylib.RenderTexture2D {
         raylib.initWindow(
-            ecs.SCREEN_WIDTH,
-            ecs.SCREEN_HEIGHT,
+            SCREEN_WIDTH,
+            SCREEN_HEIGHT,
             "Zig Scroller",
         );
         raylib.initAudioDevice();
-        raylib.setTargetFPS(ecs.FPS);
+        raylib.setTargetFPS(FPS);
 
         const target_texture: raylib.RenderTexture2D = try raylib.loadRenderTexture(
-            ecs.VIRTUAL_SCREEN_WIDTH,
-            ecs.VIRTUAL_SCREEN_HEIGHT,
+            VIRTUAL_SCREEN_WIDTH,
+            VIRTUAL_SCREEN_HEIGHT,
         );
 
         return target_texture;
@@ -115,11 +120,11 @@ pub const App = struct {
         const window_width = raylib.getScreenWidth();
         const window_height = raylib.getScreenHeight();
         const scale: f32 = @min(
-            @as(f32, @floatFromInt(window_width)) / @as(f32, @floatFromInt(ecs.VIRTUAL_SCREEN_WIDTH)),
-            @as(f32, @floatFromInt(window_height)) / @as(f32, @floatFromInt(ecs.VIRTUAL_SCREEN_HEIGHT)),
+            @as(f32, @floatFromInt(window_width)) / @as(f32, @floatFromInt(VIRTUAL_SCREEN_WIDTH)),
+            @as(f32, @floatFromInt(window_height)) / @as(f32, @floatFromInt(VIRTUAL_SCREEN_HEIGHT)),
         );
-        const scaled_width = @as(f32, @floatFromInt(ecs.VIRTUAL_SCREEN_WIDTH)) * scale;
-        const scaled_height = @as(f32, @floatFromInt(ecs.VIRTUAL_SCREEN_HEIGHT)) * scale;
+        const scaled_width = @as(f32, @floatFromInt(VIRTUAL_SCREEN_WIDTH)) * scale;
+        const scaled_height = @as(f32, @floatFromInt(VIRTUAL_SCREEN_HEIGHT)) * scale;
         const center_x = (@as(f32, @floatFromInt(window_width)) - scaled_width) / 2;
         const center_y = (@as(f32, @floatFromInt(window_height)) - scaled_height) / 2;
 

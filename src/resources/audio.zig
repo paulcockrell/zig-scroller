@@ -1,8 +1,8 @@
 const std = @import("std");
 const raylib = @import("raylib");
-const ecs = @import("../ecs.zig");
+const ecs = @import("../engine/ecs/ecs.zig");
 const AudioTag = @import("./audio_tag.zig").AudioTag;
-const AUDIO_DIR = @import("../ecs.zig").AUDIO_DIR;
+const AUDIO_DIR = @import("../shared/constants.zig").AUDIO_DIR;
 
 pub const AudioManager = struct {
     sounds: std.AutoHashMap(AudioTag, raylib.Sound),

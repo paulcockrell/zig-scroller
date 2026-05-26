@@ -1,9 +1,9 @@
 const std = @import("std");
-const ecs = @import("../../ecs.zig");
-const main_menu = @import("../../scenes/main_menu.zig");
-const game_play = @import("../../scenes/game_play.zig");
-const game_over = @import("../../scenes/game_over.zig");
-const credits = @import("../../scenes/credits.zig");
+const ecs = @import("../../engine/ecs/ecs.zig");
+const main_menu = @import("../../game/scenes/main_menu.zig");
+const game_play = @import("../../game/scenes/game_play.zig");
+const game_over = @import("../../game/scenes/game_over.zig");
+const credits = @import("../../game/scenes/credits.zig");
 
 pub fn system(world: *ecs.World) void {
     var it = world.game.scene_transition_intents.iterator();

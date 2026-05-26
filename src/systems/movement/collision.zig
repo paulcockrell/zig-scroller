@@ -1,5 +1,5 @@
 const std = @import("std");
-const ecs = @import("../../ecs.zig");
+const ecs = @import("../../engine/ecs/ecs.zig");
 const AudioTag = @import("../../resources/audio_tag.zig").AudioTag;
 
 const JUMP_FORCE: f32 = -250.0;

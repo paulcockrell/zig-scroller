@@ -1,7 +1,7 @@
 const std = @import("std");
 const raylib = @import("raylib");
-const ecs = @import("../../ecs.zig");
-const player = @import("../../entities/player.zig");
+const ecs = @import("../../engine/ecs/ecs.zig");
+const player = @import("../../game/entities/player.zig");
 
 pub fn system(world: *ecs.World) void {
     if (raylib.isKeyPressed(raylib.KeyboardKey.space)) {

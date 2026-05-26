@@ -1,7 +1,7 @@
 const std = @import("std");
-const ecs = @import("../../ecs.zig");
-const background = @import("../../entities/background.zig");
-const platform = @import("../../entities/background.zig");
+const ecs = @import("../../engine/ecs/ecs.zig");
+const background = @import("../../game/entities/background.zig");
+const platform = @import("../../game/entities/background.zig");
 
 pub fn system(world: *ecs.World) void {
     var it = world.game.needs_reset.iterator();

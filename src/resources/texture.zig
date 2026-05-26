@@ -1,7 +1,8 @@
 const std = @import("std");
 const raylib = @import("raylib");
-const ecs = @import("../ecs.zig");
+const ecs = @import("../engine/ecs/ecs.zig");
 const texture_tags = @import("./texture_tags.zig");
+const GRAPHICS_DIR = @import("../shared/constants.zig").GRAPHICS_DIR;
 
 const TextureTag = texture_tags.TextureTag;
 
@@ -12,23 +13,23 @@ pub const TextureManager = struct {
         var textures = std.AutoHashMap(TextureTag, raylib.Texture).init(allocator);
         errdefer textures.deinit();
 
-        const player_texture = try loadTexture(ecs.GRAPHICS_DIR ++ "player.png");
+        const player_texture = try loadTexture(GRAPHICS_DIR ++ "player.png");
         errdefer raylib.unloadTexture(player_texture);
         try textures.put(TextureTag.player, player_texture);
 
-        const enemy_texture = try loadTexture(ecs.GRAPHICS_DIR ++ "enemy.png");
+        const enemy_texture = try loadTexture(GRAPHICS_DIR ++ "enemy.png");
         errdefer raylib.unloadTexture(enemy_texture);
         try textures.put(TextureTag.enemy, enemy_texture);
 
-        const ring_texture = try loadTexture(ecs.GRAPHICS_DIR ++ "ring.png");
+        const ring_texture = try loadTexture(GRAPHICS_DIR ++ "ring.png");
         errdefer raylib.unloadTexture(ring_texture);
         try textures.put(TextureTag.ring, ring_texture);
 
-        const background_texture = try loadTexture(ecs.GRAPHICS_DIR ++ "background.png");
+        const background_texture = try loadTexture(GRAPHICS_DIR ++ "background.png");
         errdefer raylib.unloadTexture(background_texture);
         try textures.put(TextureTag.background, background_texture);
 
-        const platform_texture = try loadTexture(ecs.GRAPHICS_DIR ++ "platform.png");
+        const platform_texture = try loadTexture(GRAPHICS_DIR ++ "platform.png");
         errdefer raylib.unloadTexture(platform_texture);
         try textures.put(TextureTag.platform, platform_texture);
 

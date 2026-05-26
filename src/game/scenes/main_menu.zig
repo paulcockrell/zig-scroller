@@ -1,15 +1,15 @@
 const std = @import("std");
 const raylib = @import("raylib");
-const ecs = @import("../ecs.zig");
-const main_menu = @import("../systems/rendering/main_menu.zig");
-const jump = @import("../systems/movement/jump.zig");
-const scroll = @import("../systems/movement/scroll.zig");
-const game_play = @import("../systems/rendering/game_play.zig");
-const scenery_wrap = @import("../systems/movement/scenery_wrap.zig");
+const ecs = @import("../../engine/ecs/ecs.zig");
+const main_menu = @import("../rendering/main_menu.zig");
+const jump = @import("../../systems/movement/jump.zig");
+const scroll = @import("../../systems/movement/scroll.zig");
+const game_play = @import("../rendering/game_play.zig");
+const scenery_wrap = @import("../../systems/movement/scenery_wrap.zig");
 const player = @import("../entities/player.zig");
 const platform = @import("../entities/platform.zig");
 const background = @import("../entities/background.zig");
-const Resources = @import("../resources/resources.zig").Resources;
+const Resources = @import("../../resources/resources.zig").Resources;
 
 pub fn enter(world: *ecs.World) !void {
     try player.spawn(world);

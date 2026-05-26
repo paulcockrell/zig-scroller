@@ -1,9 +1,13 @@
 const std = @import("std");
 const raylib = @import("raylib");
-const ecs = @import("../ecs.zig");
-const Resources = @import("../resources/resources.zig").Resources;
-const AudioTag = @import("../resources/audio_tag.zig").AudioTag;
-const AudioParams = @import("../resources/audio_tag.zig").AudioParams;
+const ecs = @import("ecs.zig");
+const Resources = @import("../../resources/resources.zig").Resources;
+const AudioTag = @import("../../resources/audio_tag.zig").AudioTag;
+const AudioParams = @import("../../resources/audio_tag.zig").AudioParams;
+const MAX_HEALTH = @import("../../shared/constants.zig").MAX_HEALTH;
+const BASE_SCROLL_SPEED = @import("../../shared/constants.zig").BASE_SCROLL_SPEED;
+const PLATFORM_HEIGHT = @import("../../shared/constants.zig").PLATFORM_HEIGHT;
+const POPUP_POINTS_TIMER_MAX = @import("../../shared/constants.zig").POPUP_POINTS_TIMER_MAX;
 
 pub const Scene = enum { main_menu, game_play, game_over, credits };
 
@@ -105,7 +109,7 @@ const ECS = struct {
 const GameState = struct {
     time: f32 = 0.0,
 
-    health: i32 = ecs.MAX_HEALTH,
+    health: i32 = MAX_HEALTH,
 
     screen_width: i32 = 0,
     screen_height: i32 = 0,
@@ -137,7 +141,7 @@ const GameState = struct {
             .time = 0.0,
             .popup_points_timer = 0.0,
             .popup_points = 0,
-            .scroll_speed = ecs.BASE_SCROLL_SPEED,
+            .scroll_speed = BASE_SCROLL_SPEED,
             .scene = Scene.main_menu,
             .prng = std.Random.DefaultPrng.init(std.testing.random_seed),
             .screen_width = screen_width,
@@ -158,18 +162,18 @@ const GameState = struct {
         self.sound_intents.clearRetainingCapacity();
         self.scene_transition_intents.clearRetainingCapacity();
         self.time = 0;
-        self.health = ecs.MAX_HEALTH;
+        self.health = MAX_HEALTH;
         self.score = 0;
         self.popup_points = 0;
         self.popup_points_timer = 0.0;
-        self.scroll_speed = ecs.BASE_SCROLL_SPEED;
+        self.scroll_speed = BASE_SCROLL_SPEED;
         self.scene = Scene.main_menu;
     }
 
     pub fn addScore(self: *GameState, val: i32) void {
         self.score += val;
         self.popup_points = val;
-        self.popup_points_timer = ecs.POPUP_POINTS_TIMER_MAX;
+        self.popup_points_timer = POPUP_POINTS_TIMER_MAX;
     }
 
     pub fn updateHealth(self: *GameState, val: i32) i32 {
@@ -191,6 +195,6 @@ const GameState = struct {
     }
 
     pub fn groundY(self: *GameState) f32 {
-        return @as(f32, @floatFromInt(self.screen_height)) - ecs.PLATFORM_HEIGHT;
+        return @as(f32, @floatFromInt(self.screen_height)) - PLATFORM_HEIGHT;
     }
 };

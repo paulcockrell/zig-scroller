@@ -1,7 +1,7 @@
 const std = @import("std");
-const ecs = @import("../../ecs.zig");
-const background = @import("../../entities/background.zig");
-const player = @import("../../entities/player.zig");
+const ecs = @import("../../engine/ecs/ecs.zig");
+const background = @import("../../game/entities/background.zig");
+const player = @import("../../game/entities/player.zig");
 
 pub fn system(world: *ecs.World, delta: f32) void {
     movePlayers(world, delta);

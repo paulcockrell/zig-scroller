@@ -1,5 +1,6 @@
 const raylib = @import("raylib");
-const ecs = @import("../ecs.zig");
+const ecs = @import("../engine/ecs/ecs.zig");
+const FONTS_DIR = @import("../shared/constants.zig").FONTS_DIR;
 
 pub const FontManager = struct {
     pixel_font: raylib.Font,
@@ -7,7 +8,7 @@ pub const FontManager = struct {
     pub fn init() !FontManager {
         return .{
             .pixel_font = try raylib.loadFontEx(
-                ecs.FONTS_DIR ++ "m6x11.ttf",
+                FONTS_DIR ++ "m6x11.ttf",
                 16,
                 null,
             ),

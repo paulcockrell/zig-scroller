@@ -1,6 +1,6 @@
 const std = @import("std");
 const raylib = @import("raylib");
-const ecs = @import("../../ecs.zig");
+const ecs = @import("../../engine/ecs/ecs.zig");
 
 pub fn system(world: *ecs.World) void {
     drawScore(world);

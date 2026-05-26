@@ -1,6 +1,6 @@
 const std = @import("std");
 const raylib = @import("raylib");
-const ecs = @import("../../ecs.zig");
+const ecs = @import("../../engine/ecs/ecs.zig");
 
 const OFFSET_Y: f32 = 25.0;
 const FONT_SIZE: i32 = 16;

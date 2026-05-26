@@ -1,4 +1,4 @@
-const ecs = @import("../../ecs.zig");
+const ecs = @import("../../engine/ecs/ecs.zig");
 
 pub fn system(world: *ecs.World, delta: f32) void {
     enemiesScroll(world, delta);
