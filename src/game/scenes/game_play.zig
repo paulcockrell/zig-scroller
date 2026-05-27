@@ -1,6 +1,6 @@
 const std = @import("std");
 const raylib = @import("raylib");
-const ecs = @import("../../engine/ecs/ecs.zig");
+const World = @import("../world.zig").World;
 const gravity = @import("../systems/gravity.zig");
 const jump = @import("../systems/jump.zig");
 const collision = @import("../systems/collision.zig");
@@ -23,7 +23,7 @@ const AudioTag = @import("../../engine/assets/audio_tags.zig").AudioTag;
 
 const JUMP_FORCE: f32 = -250.0;
 
-pub fn enter(world: *ecs.World) !void {
+pub fn enter(world: *World) !void {
     try player.spawn(world);
     try platform.spawn(world);
     try background.spawn(world);
@@ -35,11 +35,11 @@ pub fn enter(world: *ecs.World) !void {
     }
 }
 
-pub fn exit(world: *ecs.World) void {
+pub fn exit(world: *World) void {
     _ = world;
 }
 
-pub fn update(world: *ecs.World, delta: f32) void {
+pub fn update(world: *World, delta: f32) void {
     world.game.time += delta;
 
     if (world.game.jump_intent) jumpPlayer(world);
@@ -56,7 +56,7 @@ pub fn update(world: *ecs.World, delta: f32) void {
     sound_intent.system(world);
 }
 
-pub fn render(world: *ecs.World, delta: f32) void {
+pub fn render(world: *World, delta: f32) void {
     raylib.clearBackground(raylib.Color.black);
 
     game_play.system(world, delta);
@@ -65,7 +65,7 @@ pub fn render(world: *ecs.World, delta: f32) void {
 }
 
 fn jumpPlayer(
-    world: *ecs.World,
+    world: *World,
 ) void {
     var it = world.ecs.players.iterator();
     while (it.next()) |entry| {

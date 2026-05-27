@@ -1,9 +1,9 @@
 const std = @import("std");
 const raylib = @import("raylib");
-const ecs = @import("../../engine/ecs/ecs.zig");
+const World = @import("../world.zig").World;
 const player = @import("../../game/entities/player.zig");
 
-pub fn system(world: *ecs.World) void {
+pub fn system(world: *World) void {
     if (raylib.isKeyPressed(raylib.KeyboardKey.space)) {
         world.game.jump_intent = true;
     } else {

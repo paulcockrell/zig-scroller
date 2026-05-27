@@ -1,11 +1,12 @@
 const std = @import("std");
-const ecs = @import("../../engine/ecs/ecs.zig");
+const World = @import("../world.zig").World;
+const Scene = @import("../world.zig").Scene;
 const main_menu = @import("../../game/scenes/main_menu.zig");
 const game_play = @import("../../game/scenes/game_play.zig");
 const game_over = @import("../../game/scenes/game_over.zig");
 const credits = @import("../../game/scenes/credits.zig");
 
-pub fn system(world: *ecs.World) void {
+pub fn system(world: *World) void {
     var it = world.game.scene_transition_intents.iterator();
     while (it.next()) |ent| {
         exitCurrentScene(world.game.scene, world);
@@ -21,35 +22,35 @@ pub fn system(world: *ecs.World) void {
     world.game.scene_transition_intents.clearRetainingCapacity();
 }
 
-fn exitCurrentScene(scene: ecs.Scene, world: *ecs.World) void {
+fn exitCurrentScene(scene: Scene, world: *World) void {
     switch (scene) {
-        ecs.Scene.game_play => {
+        Scene.game_play => {
             game_play.exit(world);
         },
-        ecs.Scene.game_over => {
+        Scene.game_over => {
             game_over.exit(world);
         },
-        ecs.Scene.credits => {
+        Scene.credits => {
             credits.exit(world);
         },
-        ecs.Scene.main_menu => {
+        Scene.main_menu => {
             main_menu.exit(world);
         },
     }
 }
 
-fn enterScene(scene: ecs.Scene, world: *ecs.World) !void {
+fn enterScene(scene: Scene, world: *World) !void {
     switch (scene) {
-        ecs.Scene.game_play => {
+        Scene.game_play => {
             try game_play.enter(world);
         },
-        ecs.Scene.game_over => {
+        Scene.game_over => {
             game_over.enter(world);
         },
-        ecs.Scene.credits => {
+        Scene.credits => {
             credits.enter(world);
         },
-        ecs.Scene.main_menu => {
+        Scene.main_menu => {
             try main_menu.enter(world);
         },
     }

@@ -1,12 +1,12 @@
 const std = @import("std");
 const raylib = @import("raylib");
-const ecs = @import("ecs.zig");
-const Resources = @import("../assets/resources.zig").Resources;
-const AudioTag = @import("../assets/audio_tags.zig").AudioTag;
-const AudioParams = @import("../assets/audio_tags.zig").AudioParams;
-const MAX_HEALTH = @import("../../game/game.zig").MAX_HEALTH;
-const BASE_SCROLL_SPEED = @import("../../game/game.zig").BASE_SCROLL_SPEED;
-const PLATFORM_HEIGHT = @import("../../game/entities/platform.zig").PLATFORM_HEIGHT;
+const ecs = @import("../engine/ecs/ecs.zig");
+const Resources = @import("../engine/assets/resources.zig").Resources;
+const AudioTag = @import("../engine/assets/audio_tags.zig").AudioTag;
+const AudioParams = @import("../engine/assets/audio_tags.zig").AudioParams;
+const MAX_HEALTH = @import("game.zig").MAX_HEALTH;
+const BASE_SCROLL_SPEED = @import("game.zig").BASE_SCROLL_SPEED;
+const PLATFORM_HEIGHT = @import("entities/platform.zig").PLATFORM_HEIGHT;
 
 const POPUP_POINTS_TIMER_MAX: f32 = 1.0;
 
@@ -125,7 +125,7 @@ const GameState = struct {
     needs_reset: std.AutoHashMap(ecs.Entity, void),
     jump_intents: std.AutoHashMap(ecs.Entity, ecs.JumpIntent),
     sound_intents: std.AutoHashMap(AudioTag, AudioParams),
-    scene_transition_intents: std.AutoHashMap(ecs.Scene, void),
+    scene_transition_intents: std.AutoHashMap(Scene, void),
     jump_intent: bool,
     confirm_intent: bool,
 
@@ -136,7 +136,7 @@ const GameState = struct {
             .needs_reset = std.AutoHashMap(ecs.Entity, void).init(allocator),
             .jump_intents = std.AutoHashMap(ecs.Entity, ecs.JumpIntent).init(allocator),
             .sound_intents = std.AutoHashMap(AudioTag, AudioParams).init(allocator),
-            .scene_transition_intents = std.AutoHashMap(ecs.Scene, void).init(allocator),
+            .scene_transition_intents = std.AutoHashMap(Scene, void).init(allocator),
             .jump_intent = false,
             .confirm_intent = false,
             .time = 0.0,
@@ -182,7 +182,7 @@ const GameState = struct {
         return self.health;
     }
 
-    pub fn changeScene(self: *GameState, scene: ecs.Scene) !void {
+    pub fn changeScene(self: *GameState, scene: Scene) !void {
         self.scene_transition_intents.put(scene, {}) catch |err| {
             std.debug.print("Add scene transition intent failed {}: {}\n", .{ scene, err });
         };

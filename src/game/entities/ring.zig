@@ -1,10 +1,10 @@
-const ecs = @import("../../engine/ecs/ecs.zig");
+const World = @import("../world.zig").World;
 
 const WIDTH: f32 = 20.0;
 const HEIGHT: f32 = 20.0;
 const FRAME_COUNT: i32 = 7;
 
-pub fn spawn(world: *ecs.World) !void {
+pub fn spawn(world: *World) !void {
     const ent = world.ecs.createEntity();
     const x = @as(f32, @floatFromInt(world.game.screen_width + world.game.rng(0, 500)));
     const y = world.game.groundY() - HEIGHT;

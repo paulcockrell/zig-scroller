@@ -1,15 +1,15 @@
 const std = @import("std");
 const raylib = @import("raylib");
-const ecs = @import("../../engine/ecs/ecs.zig");
+const World = @import("../world.zig").World;
 
-pub fn system(world: *ecs.World) void {
+pub fn system(world: *World) void {
     drawScore(world);
     drawSpeed(world);
     drawTime(world);
     drawHealth(world);
 }
 
-fn drawScore(world: *ecs.World) void {
+fn drawScore(world: *World) void {
     world.resources.font_manager.drawTextPixel(
         raylib.textFormat("SCORE: %03i", .{world.game.score}),
         10,
@@ -19,7 +19,7 @@ fn drawScore(world: *ecs.World) void {
     );
 }
 
-fn drawSpeed(world: *ecs.World) void {
+fn drawSpeed(world: *World) void {
     const scroll_speed = @as(i32, @intFromFloat(world.game.scroll_speed));
 
     world.resources.font_manager.drawTextPixel(
@@ -31,7 +31,7 @@ fn drawSpeed(world: *ecs.World) void {
     );
 }
 
-fn drawTime(world: *ecs.World) void {
+fn drawTime(world: *World) void {
     world.resources.font_manager.drawTextPixel(
         raylib.textFormat("TIME: %.1fs", .{world.game.time}),
         10,
@@ -41,7 +41,7 @@ fn drawTime(world: *ecs.World) void {
     );
 }
 
-fn drawHealth(world: *ecs.World) void {
+fn drawHealth(world: *World) void {
     var text_color = raylib.Color.white;
     text_color = switch (world.game.health) {
         0...3 => raylib.Color.red,

@@ -1,12 +1,13 @@
 const std = @import("std");
 const ecs = @import("../../engine/ecs/ecs.zig");
+const World = @import("../world.zig").World;
 
-pub fn system(world: *ecs.World) void {
+pub fn system(world: *World) void {
     backgroundsWrap(world);
     platformsWrap(world);
 }
 
-fn backgroundsWrap(world: *ecs.World) void {
+fn backgroundsWrap(world: *World) void {
     const rightmost_edge = findRightmostEdge(world, world.ecs.backgrounds);
 
     var it = world.ecs.backgrounds.iterator();
@@ -20,7 +21,7 @@ fn backgroundsWrap(world: *ecs.World) void {
     }
 }
 
-fn platformsWrap(world: *ecs.World) void {
+fn platformsWrap(world: *World) void {
     const rightmost_edge = findRightmostEdge(world, world.ecs.platforms);
 
     var it = world.ecs.platforms.iterator();
@@ -34,7 +35,7 @@ fn platformsWrap(world: *ecs.World) void {
     }
 }
 
-fn wrap(world: *ecs.World, ent: ecs.Entity, rightmost_edge: f32) void {
+fn wrap(world: *World, ent: ecs.Entity, rightmost_edge: f32) void {
     var pos = world.ecs.positions.getPtr(ent) orelse return;
     const tile_dims = world.ecs.dimensions.getPtr(ent) orelse return;
     const tile_right_edge = pos.x + tile_dims.width;
@@ -44,7 +45,7 @@ fn wrap(world: *ecs.World, ent: ecs.Entity, rightmost_edge: f32) void {
     }
 }
 
-fn findRightmostEdge(world: *ecs.World, collection: anytype) f32 {
+fn findRightmostEdge(world: *World, collection: anytype) f32 {
     var max_right_edge: f32 = -std.math.inf(f32);
 
     var it = collection.iterator();

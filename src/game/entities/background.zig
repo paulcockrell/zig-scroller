@@ -1,11 +1,11 @@
 const std = @import("std");
-const ecs = @import("../../engine/ecs/ecs.zig");
+const World = @import("../world.zig").World;
 
 const WIDTH: f32 = 578.0;
 const HEIGHT: f32 = 320.0;
 const FRAME_COUNT: i32 = 1;
 
-pub fn spawn(world: *ecs.World) !void {
+pub fn spawn(world: *World) !void {
     const y = (@as(f32, @floatFromInt(world.game.screen_height)) - HEIGHT) / 2.0;
 
     try spawnBackground(
@@ -20,7 +20,7 @@ pub fn spawn(world: *ecs.World) !void {
     );
 }
 
-fn spawnBackground(world: *ecs.World, x: f32, y: f32) !void {
+fn spawnBackground(world: *World, x: f32, y: f32) !void {
     const ent = world.ecs.createEntity();
 
     try world.ecs.backgrounds.put(

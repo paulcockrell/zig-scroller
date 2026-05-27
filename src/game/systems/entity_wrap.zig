@@ -1,12 +1,13 @@
 const std = @import("std");
 const ecs = @import("../../engine/ecs/ecs.zig");
+const World = @import("../world.zig").World;
 
-pub fn system(world: *ecs.World) void {
+pub fn system(world: *World) void {
     enemiesWrap(world);
     ringsWrap(world);
 }
 
-fn enemiesWrap(world: *ecs.World) void {
+fn enemiesWrap(world: *World) void {
     var it = world.ecs.enemies.iterator();
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
@@ -14,7 +15,7 @@ fn enemiesWrap(world: *ecs.World) void {
     }
 }
 
-fn ringsWrap(world: *ecs.World) void {
+fn ringsWrap(world: *World) void {
     var it = world.ecs.rings.iterator();
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
@@ -22,7 +23,7 @@ fn ringsWrap(world: *ecs.World) void {
     }
 }
 
-fn wrap(world: *ecs.World, ent: ecs.Entity) void {
+fn wrap(world: *World, ent: ecs.Entity) void {
     const pos = world.ecs.positions.getPtr(ent) orelse return;
     const dim = world.ecs.dimensions.getPtr(ent) orelse return;
 

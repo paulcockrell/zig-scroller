@@ -43,7 +43,7 @@ pub const FontManager = struct {
 
     pub fn drawTextPixelCentered(
         self: *FontManager,
-        world: *ecs.World,
+        screen_width: i32,
         text: [:0]const u8,
         font_size: f32,
         y: f32,
@@ -56,7 +56,7 @@ pub const FontManager = struct {
             0,
         );
 
-        const x = (@as(f32, @floatFromInt(world.game.screen_width)) - text_size.x) / 2.0;
+        const x = (@as(f32, @floatFromInt(screen_width)) - text_size.x) / 2.0;
 
         raylib.drawTextEx(
             self.pixel_font,

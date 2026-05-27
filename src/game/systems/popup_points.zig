@@ -1,11 +1,12 @@
 const std = @import("std");
 const raylib = @import("raylib");
 const ecs = @import("../../engine/ecs/ecs.zig");
+const World = @import("../world.zig").World;
 
 const OFFSET_Y: f32 = 25.0;
 const FONT_SIZE: i32 = 16;
 
-pub fn system(world: *ecs.World, delta: f32) void {
+pub fn system(world: *World, delta: f32) void {
     var it = world.ecs.players.iterator();
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
@@ -22,7 +23,7 @@ pub fn system(world: *ecs.World, delta: f32) void {
 }
 
 fn displayPopupPoints(
-    world: *ecs.World,
+    world: *World,
     pos: *ecs.Position,
     dim: *ecs.Dimension,
     delta: f32,

@@ -1,8 +1,8 @@
 const std = @import("std");
 const raylib = @import("raylib");
-const ecs = @import("../../engine/ecs/ecs.zig");
+const World = @import("../world.zig").World;
 
-pub fn system(world: *ecs.World) void {
+pub fn system(world: *World) void {
     var it = world.game.sound_intents.iterator();
 
     while (it.next()) |entry| {

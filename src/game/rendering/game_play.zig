@@ -1,10 +1,11 @@
 const std = @import("std");
 const raylib = @import("raylib");
 const ecs = @import("../../engine/ecs/ecs.zig");
+const World = @import("../world.zig").World;
 const player = @import("../entities/player.zig");
 const TextureTag = @import("../../engine/assets//texture_tags.zig").TextureTag;
 
-pub fn system(world: *ecs.World, delta: f32) void {
+pub fn system(world: *World, delta: f32) void {
     renderBackgrounds(world, delta);
     renderPlatforms(world, delta);
     renderPlayers(world, delta);
@@ -12,7 +13,7 @@ pub fn system(world: *ecs.World, delta: f32) void {
     renderRings(world, delta);
 }
 
-fn renderBackgrounds(world: *ecs.World, delta: f32) void {
+fn renderBackgrounds(world: *World, delta: f32) void {
     var it = world.ecs.backgrounds.iterator();
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
@@ -26,7 +27,7 @@ fn renderBackgrounds(world: *ecs.World, delta: f32) void {
     }
 }
 
-fn renderPlatforms(world: *ecs.World, delta: f32) void {
+fn renderPlatforms(world: *World, delta: f32) void {
     var it = world.ecs.platforms.iterator();
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
@@ -40,7 +41,7 @@ fn renderPlatforms(world: *ecs.World, delta: f32) void {
     }
 }
 
-fn renderEnemies(world: *ecs.World, delta: f32) void {
+fn renderEnemies(world: *World, delta: f32) void {
     var it = world.ecs.enemies.iterator();
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
@@ -54,7 +55,7 @@ fn renderEnemies(world: *ecs.World, delta: f32) void {
     }
 }
 
-fn renderRings(world: *ecs.World, delta: f32) void {
+fn renderRings(world: *World, delta: f32) void {
     var it = world.ecs.rings.iterator();
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
@@ -68,7 +69,7 @@ fn renderRings(world: *ecs.World, delta: f32) void {
     }
 }
 
-fn renderPlayers(world: *ecs.World, delta: f32) void {
+fn renderPlayers(world: *World, delta: f32) void {
     var it = world.ecs.players.iterator();
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
@@ -82,7 +83,7 @@ fn renderPlayers(world: *ecs.World, delta: f32) void {
 }
 
 fn renderPlayer(
-    world: *ecs.World,
+    world: *World,
     ent: ecs.Entity,
     delta: f32,
 ) void {
@@ -109,7 +110,7 @@ fn renderPlayer(
 }
 
 fn render(
-    world: *ecs.World,
+    world: *World,
     ent: ecs.Entity,
     texture_tag: TextureTag,
     delta: f32,

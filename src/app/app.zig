@@ -1,10 +1,11 @@
 const std = @import("std");
 const raylib = @import("raylib");
-const ecs = @import("../engine/ecs/ecs.zig");
-const input = @import("../engine/platform/input.zig");
-const scenes_change = @import("../engine/runtime/scene_change.zig");
-const scenes_update = @import("../engine/runtime/scene_update.zig");
-const scenes_render = @import("../engine/runtime/scene_render.zig");
+const World = @import("../game/world.zig").World;
+const Scene = @import("../game/world.zig").Scene;
+const input = @import("../game/systems/input.zig");
+const scenes_change = @import("../game/runtime/scene_change.zig");
+const scenes_update = @import("../game/runtime/scene_update.zig");
+const scenes_render = @import("../game/runtime/scene_render.zig");
 
 pub const FPS: i32 = 60;
 pub const SCREEN_WIDTH: i32 = 1280;
@@ -13,14 +14,14 @@ pub const VIRTUAL_SCREEN_WIDTH: i32 = 480;
 pub const VIRTUAL_SCREEN_HEIGHT: i32 = 270;
 
 pub const App = struct {
-    world: ecs.World,
+    world: World,
     target_texture: raylib.RenderTexture2D,
     bg_music: raylib.Music,
 
     pub fn init(allocator: std.mem.Allocator) !App {
         const target_texture = try initRaylib();
         const bg_music = try raylib.loadMusicStream("resources/audio/djartmusic-best-game-console-301284.mp3");
-        const world = try ecs.World.init(
+        const world = try World.init(
             allocator,
             VIRTUAL_SCREEN_WIDTH,
             VIRTUAL_SCREEN_HEIGHT,
@@ -44,7 +45,7 @@ pub const App = struct {
     pub fn run(self: *App) !void {
         raylib.playMusicStream(self.bg_music);
 
-        try self.world.game.changeScene(ecs.Scene.main_menu);
+        try self.world.game.changeScene(Scene.main_menu);
 
         while (!raylib.windowShouldClose()) {
             const delta = raylib.getFrameTime();

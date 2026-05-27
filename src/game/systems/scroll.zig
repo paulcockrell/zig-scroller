@@ -1,13 +1,14 @@
 const ecs = @import("../../engine/ecs/ecs.zig");
+const World = @import("../world.zig").World;
 
-pub fn system(world: *ecs.World, delta: f32) void {
+pub fn system(world: *World, delta: f32) void {
     enemiesScroll(world, delta);
     ringsScroll(world, delta);
     backgroundsScroll(world, delta);
     platformsScroll(world, delta);
 }
 
-fn enemiesScroll(world: *ecs.World, delta: f32) void {
+fn enemiesScroll(world: *World, delta: f32) void {
     var it = world.ecs.enemies.iterator();
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
@@ -18,7 +19,7 @@ fn enemiesScroll(world: *ecs.World, delta: f32) void {
     }
 }
 
-fn ringsScroll(world: *ecs.World, delta: f32) void {
+fn ringsScroll(world: *World, delta: f32) void {
     var it = world.ecs.rings.iterator();
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
@@ -29,7 +30,7 @@ fn ringsScroll(world: *ecs.World, delta: f32) void {
     }
 }
 
-fn backgroundsScroll(world: *ecs.World, delta: f32) void {
+fn backgroundsScroll(world: *World, delta: f32) void {
     var it = world.ecs.backgrounds.iterator();
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
@@ -40,7 +41,7 @@ fn backgroundsScroll(world: *ecs.World, delta: f32) void {
     }
 }
 
-fn platformsScroll(world: *ecs.World, delta: f32) void {
+fn platformsScroll(world: *World, delta: f32) void {
     var it = world.ecs.platforms.iterator();
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
@@ -52,7 +53,7 @@ fn platformsScroll(world: *ecs.World, delta: f32) void {
 }
 
 fn scroll(
-    world: *ecs.World,
+    world: *World,
     pos: *ecs.Position,
     vel: *ecs.Velocity,
     delta: f32,

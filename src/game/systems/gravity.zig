@@ -1,9 +1,11 @@
 const std = @import("std");
 const ecs = @import("../../engine/ecs/ecs.zig");
+const World = @import("../world.zig").World;
+
 const GRAVITY = @import("../game.zig").GRAVITY;
 const MAX_FALL_SPEED = @import("../game.zig").MAX_FALL_SPEED;
 
-pub fn system(world: *ecs.World, delta: f32) void {
+pub fn system(world: *World, delta: f32) void {
     var it = world.ecs.players.iterator();
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
@@ -22,7 +24,7 @@ pub fn system(world: *ecs.World, delta: f32) void {
 }
 
 fn applyPlayerGravity(
-    world: *ecs.World,
+    world: *World,
     pos: *ecs.Position,
     vel: *ecs.Velocity,
     dim: *ecs.Dimension,

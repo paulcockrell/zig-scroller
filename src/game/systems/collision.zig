@@ -1,5 +1,7 @@
 const std = @import("std");
 const ecs = @import("../../engine/ecs/ecs.zig");
+const World = @import("../world.zig").World;
+const Scene = @import("../world.zig").Scene;
 const AudioTag = @import("../../engine/assets/audio_tags.zig").AudioTag;
 
 const JUMP_FORCE: f32 = -250.0;
@@ -13,7 +15,7 @@ const EntityBundle = struct {
     vel: ?*ecs.Velocity = null,
 };
 
-pub fn system(world: *ecs.World) void {
+pub fn system(world: *World) void {
     var it = world.ecs.players.iterator();
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
@@ -33,7 +35,7 @@ pub fn system(world: *ecs.World) void {
 }
 
 fn checkPlayerCollision(
-    world: *ecs.World,
+    world: *World,
     player: *const EntityBundle,
 ) void {
     handleEnemies(world, player);
@@ -41,7 +43,7 @@ fn checkPlayerCollision(
 }
 
 fn handleEnemies(
-    world: *ecs.World,
+    world: *World,
     player: *const EntityBundle,
 ) void {
     var it = world.ecs.enemies.iterator();
@@ -71,7 +73,7 @@ fn handleEnemies(
 }
 
 fn handleRings(
-    world: *ecs.World,
+    world: *World,
     player: *const EntityBundle,
 ) void {
     var it = world.ecs.rings.iterator();
@@ -95,7 +97,7 @@ fn handleRings(
 }
 
 fn checkEnemyStomp(
-    world: *ecs.World,
+    world: *World,
     player: *const EntityBundle,
     enemy: *const EntityBundle,
 ) void {
@@ -117,7 +119,7 @@ fn checkEnemyStomp(
 }
 
 fn checkEnemyCollision(
-    world: *ecs.World,
+    world: *World,
     player: *const EntityBundle,
     enemy: *const EntityBundle,
 ) void {
@@ -135,14 +137,14 @@ fn checkEnemyCollision(
     };
 
     if (health <= 0) {
-        world.game.changeScene(ecs.Scene.game_over) catch |err| {
+        world.game.changeScene(Scene.game_over) catch |err| {
             std.debug.print("Failed to change to scene 'game_over' {}\n", .{err});
         };
     }
 }
 
 fn checkRingCollision(
-    world: *ecs.World,
+    world: *World,
     player: *const EntityBundle,
     ring: *const EntityBundle,
 ) void {
@@ -160,7 +162,7 @@ fn checkRingCollision(
 }
 
 fn enemyAttack(
-    world: *ecs.World,
+    world: *World,
     player: *const EntityBundle,
     enemy: *const EntityBundle,
 ) bool {
