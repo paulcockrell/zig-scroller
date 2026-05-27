@@ -1,4 +1,4 @@
-const ecs = @import("../../engine/ecs/ecs.zig");
+const ecs = @import("../../engine/ecs.zig");
 const World = @import("../world.zig").World;
 
 pub const WIDTH: f32 = 32.0;

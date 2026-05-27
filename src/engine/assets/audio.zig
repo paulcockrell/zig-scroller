@@ -1,6 +1,6 @@
 const std = @import("std");
 const raylib = @import("raylib");
-const ecs = @import("../../engine/ecs/ecs.zig");
+const ecs = @import("../../engine/ecs.zig");
 const AudioTag = @import("./audio_tags.zig").AudioTag;
 
 const AUDIO_DIR = "resources/audio/";

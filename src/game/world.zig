@@ -1,6 +1,6 @@
 const std = @import("std");
 const raylib = @import("raylib");
-const ecs = @import("../engine/ecs/ecs.zig");
+const ecs = @import("../engine/ecs.zig");
 const Resources = @import("../engine/assets/resources.zig").Resources;
 const AudioTag = @import("../engine/assets/audio_tags.zig").AudioTag;
 const AudioParams = @import("../engine/assets/audio_tags.zig").AudioParams;
@@ -13,13 +13,13 @@ const POPUP_POINTS_TIMER_MAX: f32 = 1.0;
 pub const Scene = enum { main_menu, game_play, game_over, credits };
 
 pub const World = struct {
-    ecs: ECS,
+    ecs: ecs.ECS,
     game: GameState,
     resources: Resources,
 
     pub fn init(allocator: std.mem.Allocator, screen_width: i32, screen_height: i32) !World {
         return .{
-            .ecs = ECS.init(
+            .ecs = ecs.ECS.init(
                 allocator,
             ),
             .game = GameState.init(
@@ -42,68 +42,6 @@ pub const World = struct {
     pub fn reset(self: *World) void {
         self.ecs.reset();
         self.game.reset();
-    }
-};
-
-const ECS = struct {
-    positions: std.AutoHashMap(ecs.Entity, ecs.Position),
-    velocities: std.AutoHashMap(ecs.Entity, ecs.Velocity),
-    dimensions: std.AutoHashMap(ecs.Entity, ecs.Dimension),
-    platforms: std.AutoHashMap(ecs.Entity, void),
-    backgrounds: std.AutoHashMap(ecs.Entity, void),
-    animations: std.AutoHashMap(ecs.Entity, ecs.Animation),
-
-    players: std.AutoHashMap(ecs.Entity, void),
-    enemies: std.AutoHashMap(ecs.Entity, void),
-    rings: std.AutoHashMap(ecs.Entity, void),
-
-    next_entity: ecs.Entity = 0,
-
-    pub fn init(allocator: std.mem.Allocator) ECS {
-        return .{
-            .positions = std.AutoHashMap(ecs.Entity, ecs.Position).init(allocator),
-            .velocities = std.AutoHashMap(ecs.Entity, ecs.Velocity).init(allocator),
-            .dimensions = std.AutoHashMap(ecs.Entity, ecs.Dimension).init(allocator),
-            .animations = std.AutoHashMap(ecs.Entity, ecs.Animation).init(allocator),
-            .players = std.AutoHashMap(ecs.Entity, void).init(allocator),
-            .enemies = std.AutoHashMap(ecs.Entity, void).init(allocator),
-            .rings = std.AutoHashMap(ecs.Entity, void).init(allocator),
-            .platforms = std.AutoHashMap(ecs.Entity, void).init(allocator),
-            .backgrounds = std.AutoHashMap(ecs.Entity, void).init(allocator),
-            .next_entity = 0,
-        };
-    }
-
-    pub fn deinit(self: *ECS) void {
-        self.positions.deinit();
-        self.velocities.deinit();
-        self.dimensions.deinit();
-        self.players.deinit();
-        self.enemies.deinit();
-        self.rings.deinit();
-        self.platforms.deinit();
-        self.backgrounds.deinit();
-        self.animations.deinit();
-    }
-
-    pub fn reset(self: *ECS) void {
-        self.positions.clearRetainingCapacity();
-        self.velocities.clearRetainingCapacity();
-        self.dimensions.clearRetainingCapacity();
-        self.players.clearRetainingCapacity();
-        self.enemies.clearRetainingCapacity();
-        self.rings.clearRetainingCapacity();
-        self.platforms.clearRetainingCapacity();
-        self.backgrounds.clearRetainingCapacity();
-        self.animations.clearRetainingCapacity();
-        self.next_entity = 0;
-    }
-
-    pub fn createEntity(self: *ECS) ecs.Entity {
-        const id = self.next_entity;
-        self.next_entity += 1;
-
-        return id;
     }
 };
 

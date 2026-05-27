@@ -1,7 +1,0 @@
-pub const Entity = @import("components.zig").Entity;
-pub const Animation = @import("components.zig").Animation;
-pub const Position = @import("components.zig").Position;
-pub const Velocity = @import("components.zig").Velocity;
-pub const Dimension = @import("components.zig").Dimension;
-pub const JumpIntent = @import("components.zig").JumpIntent;
-pub const NeedsReset = @import("components.zig").NeedsReset;

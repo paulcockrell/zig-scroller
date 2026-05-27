@@ -1,5 +1,5 @@
 const raylib = @import("raylib");
-const ecs = @import("../../engine/ecs/ecs.zig");
+const ecs = @import("../../engine/ecs.zig");
 
 const FONTS_DIR = "resources/fonts/";
 

@@ -1,5 +1,5 @@
 const std = @import("std");
-const ecs = @import("../../engine/ecs/ecs.zig");
+const ecs = @import("../../engine/ecs.zig");
 const World = @import("../world.zig").World;
 
 pub fn system(world: *World) void {

@@ -1,6 +1,6 @@
 const std = @import("std");
 const raylib = @import("raylib");
-const ecs = @import("../../engine/ecs/ecs.zig");
+const ecs = @import("../../engine/ecs.zig");
 const texture_tags = @import("./texture_tags.zig");
 
 const GRAPHICS_DIR = "resources/graphics/";
