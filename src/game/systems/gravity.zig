@@ -1,7 +1,7 @@
 const std = @import("std");
 const ecs = @import("../../engine/ecs/ecs.zig");
-const GRAVITY = @import("../../shared/constants.zig").GRAVITY;
-const MAX_FALL_SPEED = @import("../../shared/constants.zig").MAX_FALL_SPEED;
+const GRAVITY = @import("../game.zig").GRAVITY;
+const MAX_FALL_SPEED = @import("../game.zig").MAX_FALL_SPEED;
 
 pub fn system(world: *ecs.World, delta: f32) void {
     var it = world.ecs.players.iterator();

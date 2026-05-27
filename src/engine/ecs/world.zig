@@ -4,10 +4,11 @@ const ecs = @import("ecs.zig");
 const Resources = @import("../assets/resources.zig").Resources;
 const AudioTag = @import("../assets/audio_tags.zig").AudioTag;
 const AudioParams = @import("../assets/audio_tags.zig").AudioParams;
-const MAX_HEALTH = @import("../../shared/constants.zig").MAX_HEALTH;
-const BASE_SCROLL_SPEED = @import("../../shared/constants.zig").BASE_SCROLL_SPEED;
-const PLATFORM_HEIGHT = @import("../../shared/constants.zig").PLATFORM_HEIGHT;
-const POPUP_POINTS_TIMER_MAX = @import("../../shared/constants.zig").POPUP_POINTS_TIMER_MAX;
+const MAX_HEALTH = @import("../../game/game.zig").MAX_HEALTH;
+const BASE_SCROLL_SPEED = @import("../../game/game.zig").BASE_SCROLL_SPEED;
+const PLATFORM_HEIGHT = @import("../../game/entities/platform.zig").PLATFORM_HEIGHT;
+
+const POPUP_POINTS_TIMER_MAX: f32 = 1.0;
 
 pub const Scene = enum { main_menu, game_play, game_over, credits };
 

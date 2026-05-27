@@ -5,11 +5,12 @@ const input = @import("../systems/input/keyboard.zig");
 const scenes_change = @import("../systems/scenes/change.zig");
 const scenes_update = @import("../systems/scenes/update.zig");
 const scenes_render = @import("../systems/scenes/render.zig");
-const VIRTUAL_SCREEN_WIDTH = @import("../shared/constants.zig").VIRTUAL_SCREEN_WIDTH;
-const VIRTUAL_SCREEN_HEIGHT = @import("../shared/constants.zig").VIRTUAL_SCREEN_HEIGHT;
-const SCREEN_WIDTH = @import("../shared/constants.zig").SCREEN_WIDTH;
-const SCREEN_HEIGHT = @import("../shared/constants.zig").SCREEN_HEIGHT;
-const FPS = @import("../shared/constants.zig").FPS;
+
+pub const FPS: i32 = 60;
+pub const SCREEN_WIDTH: i32 = 1280;
+pub const SCREEN_HEIGHT: i32 = 720;
+pub const VIRTUAL_SCREEN_WIDTH: i32 = 480;
+pub const VIRTUAL_SCREEN_HEIGHT: i32 = 270;
 
 pub const App = struct {
     world: ecs.World,

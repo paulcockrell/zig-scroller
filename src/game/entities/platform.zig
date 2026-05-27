@@ -1,9 +1,10 @@
 const std = @import("std");
 const ecs = @import("../../engine/ecs/ecs.zig");
-const PLATFORM_HEIGHT = @import("../../shared/constants.zig").PLATFORM_HEIGHT;
 
 const WIDTH: f32 = 504.0;
 const FRAME_COUNT: i32 = 1;
+
+pub const PLATFORM_HEIGHT: f32 = 57.0;
 
 pub fn spawn(world: *ecs.World) !void {
     try spawnPlatform(world, 0, world.game.groundY());

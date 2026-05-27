@@ -1,8 +1,8 @@
 const std = @import("std");
 const ecs = @import("../../engine/ecs/ecs.zig");
-const MAX_SCROLL_SPEED = @import("../../shared/constants.zig").MAX_SCROLL_SPEED;
-const BASE_SCROLL_SPEED = @import("../../shared/constants.zig").BASE_SCROLL_SPEED;
-const SCROLL_SPEED_FACTOR = @import("../../shared/constants.zig").SCROLL_SPEED_FACTOR;
+const MAX_SCROLL_SPEED = @import("../game.zig").MAX_SCROLL_SPEED;
+const BASE_SCROLL_SPEED = @import("../game.zig").BASE_SCROLL_SPEED;
+const SCROLL_SPEED_FACTOR = @import("../game.zig").SCROLL_SPEED_FACTOR;
 
 pub fn system(world: *ecs.World) void {
     if (world.game.scroll_speed >= MAX_SCROLL_SPEED) return;
