@@ -1,7 +1,7 @@
 const std = @import("std");
 const raylib = @import("raylib");
-const World = @import("../world.zig").World;
-const Scene = @import("../world.zig").Scene;
+const World = @import("../game.zig").World;
+const Scene = @import("../game.zig").Scene;
 const input = @import("../systems/input.zig");
 const Resources = @import("../../engine/assets/resources.zig").Resources;
 

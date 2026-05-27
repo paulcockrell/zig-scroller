@@ -1,5 +1,5 @@
 const ecs = @import("../../engine/ecs.zig");
-const World = @import("../world.zig").World;
+const World = @import("../game.zig").World;
 
 pub fn system(world: *World, delta: f32) void {
     enemiesScroll(world, delta);

@@ -1,7 +1,7 @@
 const std = @import("std");
 const ecs = @import("../../engine/ecs.zig");
-const World = @import("../world.zig").World;
-const Scene = @import("../world.zig").Scene;
+const World = @import("../game.zig").World;
+const Scene = @import("../game.zig").Scene;
 const AudioTag = @import("../../engine/assets/audio_tags.zig").AudioTag;
 
 const JUMP_FORCE: f32 = -250.0;

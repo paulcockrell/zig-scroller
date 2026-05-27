@@ -1,6 +1,6 @@
 const std = @import("std");
 const ecs = @import("../../engine/ecs.zig");
-const World = @import("../world.zig").World;
+const World = @import("../game.zig").World;
 const MAX_SCROLL_SPEED = @import("../game.zig").MAX_SCROLL_SPEED;
 const BASE_SCROLL_SPEED = @import("../game.zig").BASE_SCROLL_SPEED;
 const SCROLL_SPEED_FACTOR = @import("../game.zig").SCROLL_SPEED_FACTOR;

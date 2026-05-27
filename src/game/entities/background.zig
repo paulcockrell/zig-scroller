@@ -1,5 +1,5 @@
 const std = @import("std");
-const World = @import("../world.zig").World;
+const World = @import("../game.zig").World;
 
 const WIDTH: f32 = 578.0;
 const HEIGHT: f32 = 320.0;

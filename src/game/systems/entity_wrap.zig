@@ -1,6 +1,6 @@
 const std = @import("std");
 const ecs = @import("../../engine/ecs.zig");
-const World = @import("../world.zig").World;
+const World = @import("../game.zig").World;
 
 pub fn system(world: *World) void {
     enemiesWrap(world);

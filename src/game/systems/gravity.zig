@@ -1,6 +1,6 @@
 const std = @import("std");
 const ecs = @import("../../engine/ecs.zig");
-const World = @import("../world.zig").World;
+const World = @import("../game.zig").World;
 
 const GRAVITY = @import("../game.zig").GRAVITY;
 const MAX_FALL_SPEED = @import("../game.zig").MAX_FALL_SPEED;

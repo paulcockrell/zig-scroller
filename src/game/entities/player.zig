@@ -1,5 +1,5 @@
 const ecs = @import("../../engine/ecs.zig");
-const World = @import("../world.zig").World;
+const World = @import("../game.zig").World;
 
 pub const WIDTH: f32 = 32.0;
 pub const HEIGHT: f32 = 44.0;

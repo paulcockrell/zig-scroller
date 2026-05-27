@@ -1,5 +1,5 @@
 const std = @import("std");
-const World = @import("../world.zig").World;
+const World = @import("../game.zig").World;
 
 const WIDTH: f32 = 504.0;
 const FRAME_COUNT: i32 = 1;

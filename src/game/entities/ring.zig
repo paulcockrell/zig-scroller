@@ -1,4 +1,4 @@
-const World = @import("../world.zig").World;
+const World = @import("../game.zig").World;
 
 const WIDTH: f32 = 20.0;
 const HEIGHT: f32 = 20.0;

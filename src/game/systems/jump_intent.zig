@@ -1,5 +1,5 @@
 const std = @import("std");
-const World = @import("../world.zig").World;
+const World = @import("../game.zig").World;
 
 pub fn system(world: *World) void {
     var it = world.game.jump_intents.iterator();

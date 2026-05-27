@@ -1,7 +1,7 @@
 const std = @import("std");
 const raylib = @import("raylib");
 const ecs = @import("../../engine/ecs.zig");
-const World = @import("../world.zig").World;
+const World = @import("../game.zig").World;
 
 const OFFSET_Y: f32 = 25.0;
 const FONT_SIZE: i32 = 16;
