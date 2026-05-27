@@ -1,10 +1,10 @@
 const std = @import("std");
 const raylib = @import("raylib");
 const ecs = @import("../engine/ecs/ecs.zig");
-const input = @import("../systems/input/keyboard.zig");
-const scenes_change = @import("../systems/scenes/change.zig");
-const scenes_update = @import("../systems/scenes/update.zig");
-const scenes_render = @import("../systems/scenes/render.zig");
+const input = @import("../engine/platform/input.zig");
+const scenes_change = @import("../engine/runtime/scene_change.zig");
+const scenes_update = @import("../engine/runtime/scene_update.zig");
+const scenes_render = @import("../engine/runtime/scene_render.zig");
 
 pub const FPS: i32 = 60;
 pub const SCREEN_WIDTH: i32 = 1280;

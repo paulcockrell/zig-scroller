@@ -1,7 +1,7 @@
 const std = @import("std");
 const raylib = @import("raylib");
 const ecs = @import("../../engine/ecs/ecs.zig");
-const input = @import("../../systems/input/keyboard.zig");
+const input = @import("../../engine/platform/input.zig");
 const credits = @import("../../game/rendering/credits.zig");
 const Resources = @import("../../engine/assets/resources.zig").Resources;
 
