@@ -1,8 +1,8 @@
 const std = @import("std");
 
 const AudioManager = @import("./audio.zig").AudioManager;
-const FontManager = @import("./font.zig").FontManager;
-const TextureManager = @import("./texture.zig").TextureManager;
+const FontManager = @import("./fonts.zig").FontManager;
+const TextureManager = @import("./textures.zig").TextureManager;
 
 pub const Resources = struct {
     font_manager: FontManager,

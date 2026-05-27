@@ -1,6 +1,6 @@
 const raylib = @import("raylib");
-const ecs = @import("../engine/ecs/ecs.zig");
-const FONTS_DIR = @import("../shared/constants.zig").FONTS_DIR;
+const ecs = @import("../../engine/ecs/ecs.zig");
+const FONTS_DIR = @import("../../shared/constants.zig").FONTS_DIR;
 
 pub const FontManager = struct {
     pixel_font: raylib.Font,

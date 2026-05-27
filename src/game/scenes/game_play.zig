@@ -19,7 +19,7 @@ const ring = @import("../entities/ring.zig");
 const platform = @import("../entities/platform.zig");
 const background = @import("../entities/background.zig");
 const popup_points = @import("../../systems/rendering/popup_points.zig");
-const AudioTag = @import("../../resources/audio_tag.zig").AudioTag;
+const AudioTag = @import("../../engine/assets/audio_tags.zig").AudioTag;
 
 const JUMP_FORCE: f32 = -250.0;
 

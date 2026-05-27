@@ -3,7 +3,7 @@ const raylib = @import("raylib");
 const ecs = @import("../../engine/ecs/ecs.zig");
 const input = @import("../../systems/input/keyboard.zig");
 const game_over = @import("../rendering/game_over.zig");
-const Resources = @import("../../resources/resources.zig").Resources;
+const AudioTag = @import("../../engine/assets/audio_tags.zig").AudioTag;
 
 pub fn enter(world: *ecs.World) void {
     _ = world;

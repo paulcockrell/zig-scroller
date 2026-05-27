@@ -1,6 +1,6 @@
 const std = @import("std");
 const ecs = @import("../../engine/ecs/ecs.zig");
-const AudioTag = @import("../../resources/audio_tag.zig").AudioTag;
+const AudioTag = @import("../../engine/assets/audio_tags.zig").AudioTag;
 
 const JUMP_FORCE: f32 = -250.0;
 const RING_SCORE: i32 = 1;
