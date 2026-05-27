@@ -1,11 +1,11 @@
 const std = @import("std");
 const raylib = @import("raylib");
 const ecs = @import("../../engine/ecs/ecs.zig");
-const gravity = @import("../../systems/physics/gravity.zig");
-const jump = @import("../../systems/movement/jump.zig");
-const collision = @import("../../systems/movement/collision.zig");
+const gravity = @import("../systems/gravity.zig");
+const jump = @import("../systems/jump.zig");
+const collision = @import("../systems/collision.zig");
 const jump_intent = @import("../../systems/movement/jump_intent.zig");
-const difficulty = @import("../../systems/gameplay/difficulty.zig");
+const difficulty = @import("../systems/difficulty.zig");
 const hud = @import("../../systems/rendering/hud.zig");
 const game_play = @import("../rendering/game_play.zig");
 const scroll = @import("../../systems/movement/scroll.zig");
@@ -18,7 +18,7 @@ const enemy = @import("../entities/enemy.zig");
 const ring = @import("../entities/ring.zig");
 const platform = @import("../entities/platform.zig");
 const background = @import("../entities/background.zig");
-const popup_points = @import("../../systems/rendering/popup_points.zig");
+const popup_points = @import("../systems/popup_points.zig");
 const AudioTag = @import("../../engine/assets/audio_tags.zig").AudioTag;
 
 const JUMP_FORCE: f32 = -250.0;
