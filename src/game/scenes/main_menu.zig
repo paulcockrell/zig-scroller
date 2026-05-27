@@ -2,10 +2,8 @@ const std = @import("std");
 const raylib = @import("raylib");
 const World = @import("../world.zig").World;
 const Scene = @import("../world.zig").Scene;
-const main_menu = @import("../rendering/main_menu.zig");
 const jump = @import("../systems/jump.zig");
 const scroll = @import("../systems/scroll.zig");
-const game_play = @import("../rendering/game_play.zig");
 const scenery_wrap = @import("../systems/scenery_wrap.zig");
 const player = @import("../entities/player.zig");
 const platform = @import("../entities/platform.zig");
@@ -41,7 +39,47 @@ pub fn update(world: *World, delta: f32) void {
 }
 
 pub fn render(world: *World, delta: f32) void {
+    _ = delta;
+
+    const y_center = @as(f32, @floatFromInt(world.game.screen_height)) / 2.0;
+
     raylib.clearBackground(raylib.Color.black);
-    game_play.system(world, delta);
-    main_menu.system(world);
+
+    var text = raylib.textFormat("Zig Scroller", .{});
+    var font_size: f32 = 24.0;
+    world.resources.font_manager.drawTextPixelCentered(
+        world.game.screen_width,
+        text,
+        font_size,
+        y_center - 96.0,
+        raylib.Color.white,
+    );
+
+    text = raylib.textFormat("press 'space' to play", .{});
+    font_size = 16.0;
+    world.resources.font_manager.drawTextPixelCentered(
+        world.game.screen_width,
+        text,
+        font_size,
+        y_center - 48.0,
+        raylib.Color.white,
+    );
+
+    text = raylib.textFormat("press 'c' for credits", .{});
+    world.resources.font_manager.drawTextPixelCentered(
+        world.game.screen_width,
+        text,
+        font_size,
+        y_center - 24.0,
+        raylib.Color.white,
+    );
+
+    text = raylib.textFormat("press 'esc' to exit", .{});
+    world.resources.font_manager.drawTextPixelCentered(
+        world.game.screen_width,
+        text,
+        font_size,
+        y_center,
+        raylib.Color.white,
+    );
 }
