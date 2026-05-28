@@ -20,7 +20,8 @@ const platform = @import("../entities/platform.zig");
 const background = @import("../entities/background.zig");
 const popup_points = @import("../systems/popup_points.zig");
 const AudioTag = @import("../../engine/assets/audio_tags.zig").AudioTag;
-const TextureTag = @import("../../engine/assets//texture_tags.zig").TextureTag;
+const TextureTag = @import("../../engine/assets/texture_tags.zig").TextureTag;
+const renderer = @import("../renderer.zig");
 
 const JUMP_FORCE: f32 = -250.0;
 
@@ -94,7 +95,7 @@ fn renderBackgrounds(world: *World, delta: f32) void {
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
 
-        renderEntity(
+        renderer.renderEntity(
             world,
             ent,
             TextureTag.background,
@@ -108,7 +109,7 @@ fn renderPlatforms(world: *World, delta: f32) void {
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
 
-        renderEntity(
+        renderer.renderEntity(
             world,
             ent,
             TextureTag.platform,
@@ -122,7 +123,7 @@ fn renderEnemies(world: *World, delta: f32) void {
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
 
-        renderEntity(
+        renderer.renderEntity(
             world,
             ent,
             TextureTag.enemy,
@@ -136,7 +137,7 @@ fn renderRings(world: *World, delta: f32) void {
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
 
-        renderEntity(
+        renderer.renderEntity(
             world,
             ent,
             TextureTag.ring,
@@ -174,74 +175,13 @@ fn renderPlayer(
         else
             0.0;
 
-    processAnimation(anim, delta);
+    renderer.processAnimation(anim, delta);
 
-    drawTexture(
+    renderer.drawTexture(
         src_x,
         src_y,
         dim,
         pos,
         texture,
-    );
-}
-
-fn renderEntity(
-    world: *World,
-    ent: ecs.Entity,
-    texture_tag: TextureTag,
-    delta: f32,
-) void {
-    const texture = world.resources.texture_manager.get(texture_tag) orelse return;
-    const anim = world.ecs.animations.getPtr(ent) orelse return;
-    const pos = world.ecs.positions.getPtr(ent) orelse return;
-    const dim = world.ecs.dimensions.getPtr(ent) orelse return;
-    const src_x = @as(f32, @floatFromInt(anim.frame_idx)) * dim.width;
-    const src_y: f32 = 0.0;
-
-    processAnimation(anim, delta);
-
-    drawTexture(
-        src_x,
-        src_y,
-        dim,
-        pos,
-        texture,
-    );
-}
-
-fn processAnimation(anim: *ecs.Animation, delta: f32) void {
-    if (anim.frame_count <= 1) return;
-
-    anim.animation_timer += delta;
-    if (anim.animation_timer >= anim.frame_duration) {
-        anim.animation_timer -= anim.frame_duration;
-        anim.frame_idx += 1;
-        if (anim.frame_idx >= anim.frame_count) anim.frame_idx = 0;
-    }
-}
-
-fn drawTexture(
-    src_x: f32,
-    src_y: f32,
-    dim: *ecs.Dimension,
-    pos: *ecs.Position,
-    texture: *raylib.Texture,
-) void {
-    const rl_rect = raylib.Rectangle.init(
-        src_x,
-        src_y,
-        dim.width,
-        dim.height,
-    );
-    const rl_pos = raylib.Vector2.init(
-        pos.x,
-        pos.y,
-    );
-
-    raylib.drawTextureRec(
-        texture.*,
-        rl_rect,
-        rl_pos,
-        .white,
     );
 }
