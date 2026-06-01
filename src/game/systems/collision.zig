@@ -8,13 +8,6 @@ const JUMP_FORCE: f32 = -250.0;
 const RING_SCORE: i32 = 1;
 const ENEMY_STOMP: i32 = 10;
 
-const EntityBundle = struct {
-    ent: ecs.Entity,
-    pos: *ecs.Position,
-    dim: *ecs.Dimension,
-    vel: ?*ecs.Velocity = null,
-};
-
 pub fn system(world: *World) void {
     var it = world.ecs.players.iterator();
     while (it.next()) |entry| {
@@ -23,7 +16,7 @@ pub fn system(world: *World) void {
         const dim = world.ecs.dimensions.getPtr(ent) orelse continue;
         const vel = world.ecs.velocities.getPtr(ent) orelse continue;
 
-        const player = EntityBundle{
+        const player = ecs.EntityBundle{
             .ent = ent,
             .pos = pos,
             .dim = dim,
@@ -36,7 +29,7 @@ pub fn system(world: *World) void {
 
 fn checkPlayerCollision(
     world: *World,
-    player: *const EntityBundle,
+    player: *const ecs.EntityBundle,
 ) void {
     handleEnemies(world, player);
     handleRings(world, player);
@@ -44,7 +37,7 @@ fn checkPlayerCollision(
 
 fn handleEnemies(
     world: *World,
-    player: *const EntityBundle,
+    player: *const ecs.EntityBundle,
 ) void {
     var it = world.ecs.enemies.iterator();
     while (it.next()) |entry| {
@@ -52,7 +45,7 @@ fn handleEnemies(
         const pos = world.ecs.positions.getPtr(ent) orelse continue;
         const dim = world.ecs.dimensions.getPtr(ent) orelse continue;
 
-        const enemy = EntityBundle{
+        const enemy = ecs.EntityBundle{
             .ent = ent,
             .pos = pos,
             .dim = dim,
@@ -74,7 +67,7 @@ fn handleEnemies(
 
 fn handleRings(
     world: *World,
-    player: *const EntityBundle,
+    player: *const ecs.EntityBundle,
 ) void {
     var it = world.ecs.rings.iterator();
     while (it.next()) |entry| {
@@ -82,7 +75,7 @@ fn handleRings(
         const pos = world.ecs.positions.getPtr(ent) orelse continue;
         const dim = world.ecs.dimensions.getPtr(ent) orelse continue;
 
-        const ring = EntityBundle{
+        const ring = ecs.EntityBundle{
             .ent = ent,
             .pos = pos,
             .dim = dim,
@@ -98,8 +91,8 @@ fn handleRings(
 
 fn checkEnemyStomp(
     world: *World,
-    player: *const EntityBundle,
-    enemy: *const EntityBundle,
+    player: *const ecs.EntityBundle,
+    enemy: *const ecs.EntityBundle,
 ) void {
     if (!enemyAttack(world, player, enemy)) return;
 
@@ -120,8 +113,8 @@ fn checkEnemyStomp(
 
 fn checkEnemyCollision(
     world: *World,
-    player: *const EntityBundle,
-    enemy: *const EntityBundle,
+    player: *const ecs.EntityBundle,
+    enemy: *const ecs.EntityBundle,
 ) void {
     if (!overlap(player, enemy)) return;
     if (enemyAttack(world, player, enemy)) return;
@@ -145,8 +138,8 @@ fn checkEnemyCollision(
 
 fn checkRingCollision(
     world: *World,
-    player: *const EntityBundle,
-    ring: *const EntityBundle,
+    player: *const ecs.EntityBundle,
+    ring: *const ecs.EntityBundle,
 ) void {
     if (!overlap(player, ring)) return;
 
@@ -163,16 +156,16 @@ fn checkRingCollision(
 
 fn enemyAttack(
     world: *World,
-    player: *const EntityBundle,
-    enemy: *const EntityBundle,
+    player: *const ecs.EntityBundle,
+    enemy: *const ecs.EntityBundle,
 ) bool {
     // player is jumping while colliding with enemy
     return (player.pos.y + player.dim.height) < world.game.groundY() and overlap(player, enemy);
 }
 
 fn overlap(
-    player: *const EntityBundle,
-    other: *const EntityBundle,
+    player: *const ecs.EntityBundle,
+    other: *const ecs.EntityBundle,
 ) bool {
     return !(player.pos.x + player.dim.width < other.pos.x or
         player.pos.x > other.pos.x + other.dim.width or

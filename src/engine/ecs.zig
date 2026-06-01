@@ -24,6 +24,13 @@ pub const Dimension = struct {
     height: f32,
 };
 
+pub const EntityBundle = struct {
+    ent: Entity,
+    pos: *Position,
+    dim: *Dimension,
+    vel: ?*Velocity = null,
+};
+
 pub const JumpIntent = struct {
     force: f32,
 };
