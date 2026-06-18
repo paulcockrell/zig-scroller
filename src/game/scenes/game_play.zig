@@ -78,7 +78,8 @@ fn jumpPlayer(
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
 
-        if (player.isJumping(world, ent)) return;
+        const state = player.state(world, ent);
+        if (state != player.PlayerState.running) return;
 
         world.game.jump_intents.put(ent, .{ .force = JUMP_FORCE }) catch |err| {
             std.debug.print("Entity jump intent failed {}\n", .{err});
@@ -168,14 +169,20 @@ fn renderPlayer(
     const pos = world.ecs.positions.getPtr(ent) orelse return;
     const dim = world.ecs.dimensions.getPtr(ent) orelse return;
     const texture = world.resources.texture_manager.get(TextureTag.player) orelse return;
-    const src_x = @as(f32, @floatFromInt(anim.frame_idx)) * dim.width;
-    const src_y =
-        if (player.isJumping(world, ent))
-            dim.height
-        else if (player.isFalling(world, ent))
-            dim.height * 2.0
-        else
-            0.0;
+
+    const state = player.state(world, ent);
+    const frame_idx = switch (state) {
+        .running => anim.frame_idx,
+        .jumping => 0,
+        .falling => 0,
+    };
+
+    const src_x = @as(f32, @floatFromInt(frame_idx)) * dim.width;
+    const src_y = switch (state) {
+        .running => 0.0,
+        .jumping => dim.height,
+        .falling => dim.height * 2.0,
+    };
 
     renderer.processAnimation(anim, delta);
 

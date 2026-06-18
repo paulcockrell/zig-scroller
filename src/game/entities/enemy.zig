@@ -1,9 +1,9 @@
 const std = @import("std");
 const World = @import("../game.zig").World;
 
-const WIDTH: f32 = 48.0;
-const HEIGHT: f32 = 30.0;
-const FRAME_COUNT: i32 = 5;
+const WIDTH: f32 = 40.0;
+const HEIGHT: f32 = 24.0;
+const FRAME_COUNT: i32 = 6;
 
 pub fn spawn(world: *World) !void {
     const ent = world.ecs.createEntity();

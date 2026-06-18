@@ -5,6 +5,11 @@ pub const WIDTH: f32 = 24.0;
 pub const HEIGHT: f32 = 30.0;
 pub const FRAME_COUNT: i32 = 6;
 pub const FPS: f32 = 10.0;
+pub const PlayerState = enum {
+    running,
+    jumping,
+    falling,
+};
 
 pub fn spawn(world: *World) !void {
     const ent = world.ecs.createEntity();
@@ -39,20 +44,27 @@ pub fn spawn(world: *World) !void {
     );
 }
 
-pub fn isJumping(world: *World, ent: ecs.Entity) bool {
-    const vel = world.ecs.velocities.getPtr(ent) orelse return false;
-    return vel.dy < 0.0;
+pub fn state(world: *World, ent: ecs.Entity) PlayerState {
+    if (isJumping(world, ent)) return .jumping;
+    if (isFalling(world, ent)) return .falling;
+
+    return .running;
 }
 
-pub fn isFalling(world: *World, ent: ecs.Entity) bool {
-    const vel = world.ecs.velocities.getPtr(ent) orelse return false;
-    return vel.dy > 0.0;
-}
-
-pub fn isRunning(world: *World, ent: ecs.Entity) bool {
+fn isRunning(world: *World, ent: ecs.Entity) bool {
     const pos = world.ecs.positions.getPtr(ent) orelse return false;
     const dim = world.ecs.dimensions.getPtr(ent) orelse return false;
     const running = pos.y + dim.height < world.game.groundY();
 
     return running;
+}
+
+fn isJumping(world: *World, ent: ecs.Entity) bool {
+    const vel = world.ecs.velocities.getPtr(ent) orelse return false;
+    return vel.dy < 0.0;
+}
+
+fn isFalling(world: *World, ent: ecs.Entity) bool {
+    const vel = world.ecs.velocities.getPtr(ent) orelse return false;
+    return vel.dy > 0.0;
 }
