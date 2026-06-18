@@ -1,21 +1,21 @@
 const ecs = @import("../../engine/ecs.zig");
 const World = @import("../game.zig").World;
 
-pub const WIDTH: f32 = 32.0;
-pub const HEIGHT: f32 = 44.0;
-pub const FRAME_COUNT: i32 = 8;
+pub const WIDTH: f32 = 24.0;
+pub const HEIGHT: f32 = 30.0;
+pub const FRAME_COUNT: i32 = 6;
+pub const FPS: f32 = 10.0;
 
 pub fn spawn(world: *World) !void {
     const ent = world.ecs.createEntity();
     const x = (@as(f32, @floatFromInt(world.game.screen_width)) / 2.0) - (WIDTH / 2.0);
     const y = world.game.groundY() - HEIGHT;
-    const frame_duration: f32 = 1.0 / 24.0;
+    const frame_duration: f32 = 1.0 / FPS;
 
     try world.ecs.players.put(
         ent,
         {},
     );
-
     try world.ecs.animations.put(
         ent,
         .{
@@ -40,9 +40,19 @@ pub fn spawn(world: *World) !void {
 }
 
 pub fn isJumping(world: *World, ent: ecs.Entity) bool {
+    const vel = world.ecs.velocities.getPtr(ent) orelse return false;
+    return vel.dy < 0.0;
+}
+
+pub fn isFalling(world: *World, ent: ecs.Entity) bool {
+    const vel = world.ecs.velocities.getPtr(ent) orelse return false;
+    return vel.dy > 0.0;
+}
+
+pub fn isRunning(world: *World, ent: ecs.Entity) bool {
     const pos = world.ecs.positions.getPtr(ent) orelse return false;
     const dim = world.ecs.dimensions.getPtr(ent) orelse return false;
-    const jumping = pos.y + dim.height < world.game.groundY();
+    const running = pos.y + dim.height < world.game.groundY();
 
-    return jumping;
+    return running;
 }

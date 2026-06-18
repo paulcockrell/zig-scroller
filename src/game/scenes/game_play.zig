@@ -172,6 +172,8 @@ fn renderPlayer(
     const src_y =
         if (player.isJumping(world, ent))
             dim.height
+        else if (player.isFalling(world, ent))
+            dim.height * 2.0
         else
             0.0;
 
