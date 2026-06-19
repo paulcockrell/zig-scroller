@@ -1,8 +1,8 @@
 const World = @import("../game.zig").World;
 
-const WIDTH: f32 = 20.0;
-const HEIGHT: f32 = 20.0;
-const FRAME_COUNT: i32 = 7;
+const WIDTH: f32 = 32.0;
+const HEIGHT: f32 = 32.0;
+const FRAME_COUNT: i32 = 4;
 
 pub fn spawn(world: *World) !void {
     const ent = world.ecs.createEntity();
@@ -10,7 +10,7 @@ pub fn spawn(world: *World) !void {
     const y = world.game.groundY() - HEIGHT;
     const frame_duration: f32 = 1.0 / 14.0;
 
-    try world.ecs.rings.put(
+    try world.ecs.coins.put(
         ent,
         {},
     );

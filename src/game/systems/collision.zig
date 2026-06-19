@@ -7,7 +7,7 @@ const Player = @import("../entities/player.zig");
 const Enemy = @import("../entities/enemy.zig");
 
 const JUMP_FORCE: f32 = -250.0;
-const RING_SCORE: i32 = 1;
+const COIN_SCORE: i32 = 1;
 const ENEMY_STOMP: i32 = 10;
 
 pub fn system(world: *World) void {
@@ -34,7 +34,7 @@ fn checkPlayerCollision(
     player: *const ecs.EntityBundle,
 ) void {
     handleEnemies(world, player);
-    handleRings(world, player);
+    handleCoins(world, player);
 }
 
 fn handleEnemies(
@@ -67,26 +67,26 @@ fn handleEnemies(
     }
 }
 
-fn handleRings(
+fn handleCoins(
     world: *World,
     player: *const ecs.EntityBundle,
 ) void {
-    var it = world.ecs.rings.iterator();
+    var it = world.ecs.coins.iterator();
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
         const pos = world.ecs.positions.getPtr(ent) orelse continue;
         const dim = world.ecs.dimensions.getPtr(ent) orelse continue;
 
-        const ring = ecs.EntityBundle{
+        const coin = ecs.EntityBundle{
             .ent = ent,
             .pos = pos,
             .dim = dim,
         };
 
-        checkRingCollision(
+        checkCoinCollision(
             world,
             player,
-            &ring,
+            &coin,
         );
     }
 }
@@ -129,6 +129,8 @@ fn checkEnemyCollision(
         world.game.changeScene(Scene.game_over) catch |err| {
             std.debug.print("Failed to change to scene 'game_over' {}\n", .{err});
         };
+
+        return;
     }
 
     if (world.ecs.health.getPtr(enemy.ent)) |enemy_health| {
@@ -146,21 +148,21 @@ fn checkEnemyCollision(
     }
 }
 
-fn checkRingCollision(
+fn checkCoinCollision(
     world: *World,
     player: *const ecs.EntityBundle,
-    ring: *const ecs.EntityBundle,
+    coin: *const ecs.EntityBundle,
 ) void {
-    if (!overlap(player, ring)) return;
+    if (!overlap(player, coin)) return;
 
-    world.game.addScore(RING_SCORE);
+    world.game.addScore(COIN_SCORE);
 
-    world.game.needs_reset.put(ring.ent, {}) catch |err| {
+    world.game.needs_reset.put(coin.ent, {}) catch |err| {
         std.debug.print("Entity reset failed {}\n", .{err});
     };
 
-    world.game.sound_intents.put(AudioTag.ring, .{ .volume = 0.3 }) catch |err| {
-        std.debug.print("Ring sound intent failed {}\n", .{err});
+    world.game.sound_intents.put(AudioTag.coin, .{ .volume = 0.3 }) catch |err| {
+        std.debug.print("Coin sound intent failed {}\n", .{err});
     };
 }
 

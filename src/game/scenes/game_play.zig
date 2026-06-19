@@ -15,7 +15,7 @@ const scenery_wrap = @import("../systems/scenery_wrap.zig");
 const sound_intent = @import("../systems/sound_intent.zig");
 const player = @import("../entities/player.zig");
 const enemy = @import("../entities/enemy.zig");
-const ring = @import("../entities/ring.zig");
+const coin = @import("../entities/coin.zig");
 const platform = @import("../entities/platform.zig");
 const background = @import("../entities/background.zig");
 const popup_points = @import("../systems/popup_points.zig");
@@ -33,7 +33,7 @@ pub fn enter(world: *World) !void {
         try enemy.spawn(world);
     }
     for (0..2) |_| {
-        try ring.spawn(world);
+        try coin.spawn(world);
     }
 }
 
@@ -65,7 +65,7 @@ pub fn render(world: *World, delta: f32) void {
     renderPlatforms(world, delta);
     renderPlayers(world, delta);
     renderEnemies(world, delta);
-    renderRings(world, delta);
+    renderCoins(world, delta);
 
     hud.system(world);
     popup_points.system(world, delta);
@@ -133,15 +133,15 @@ fn renderEnemies(world: *World, delta: f32) void {
     }
 }
 
-fn renderRings(world: *World, delta: f32) void {
-    var it = world.ecs.rings.iterator();
+fn renderCoins(world: *World, delta: f32) void {
+    var it = world.ecs.coins.iterator();
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
 
         renderer.renderEntity(
             world,
             ent,
-            TextureTag.ring,
+            TextureTag.coin,
             delta,
         );
     }

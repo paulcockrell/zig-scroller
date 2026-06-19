@@ -14,7 +14,7 @@ pub fn system(world: *World) void {
             resetPos(world, ent);
         }
 
-        if (world.ecs.rings.contains(ent)) {
+        if (world.ecs.coins.contains(ent)) {
             resetPos(world, ent);
         }
     }

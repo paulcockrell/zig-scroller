@@ -2,8 +2,8 @@ const std = @import("std");
 const ecs = @import("../../engine/ecs.zig");
 const World = @import("../game.zig").World;
 
-const WIDTH: f32 = 40.0;
-const HEIGHT: f32 = 24.0;
+const WIDTH: f32 = 80.0;
+const HEIGHT: f32 = 48.0;
 const FRAME_COUNT: i32 = 6;
 pub const MAX_HEALTH: i32 = 1;
 

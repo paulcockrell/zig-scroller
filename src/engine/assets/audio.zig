@@ -17,10 +17,10 @@ pub const AudioManager = struct {
         );
         errdefer raylib.unloadSound(jump);
 
-        const ring = try raylib.loadSound(
+        const coin = try raylib.loadSound(
             AUDIO_DIR ++ "ring.wav",
         );
-        errdefer raylib.unloadSound(ring);
+        errdefer raylib.unloadSound(coin);
 
         const hit = try raylib.loadSound(
             AUDIO_DIR ++ "destroy.wav",
@@ -33,7 +33,7 @@ pub const AudioManager = struct {
         errdefer raylib.unloadSound(stomp);
 
         try sounds.put(AudioTag.jump, jump);
-        try sounds.put(AudioTag.ring, ring);
+        try sounds.put(AudioTag.coin, coin);
         try sounds.put(AudioTag.hit, hit);
         try sounds.put(AudioTag.stomp, stomp);
 

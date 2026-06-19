@@ -1,7 +1,7 @@
 pub const AudioTag = enum {
     background,
     jump,
-    ring,
+    coin,
     hit,
     stomp,
 };

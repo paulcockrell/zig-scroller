@@ -50,7 +50,7 @@ pub const ECS = struct {
 
     players: std.AutoHashMap(Entity, void),
     enemies: std.AutoHashMap(Entity, void),
-    rings: std.AutoHashMap(Entity, void),
+    coins: std.AutoHashMap(Entity, void),
 
     next_entity: Entity = 0,
 
@@ -62,7 +62,7 @@ pub const ECS = struct {
             .animations = std.AutoHashMap(Entity, Animation).init(allocator),
             .players = std.AutoHashMap(Entity, void).init(allocator),
             .enemies = std.AutoHashMap(Entity, void).init(allocator),
-            .rings = std.AutoHashMap(Entity, void).init(allocator),
+            .coins = std.AutoHashMap(Entity, void).init(allocator),
             .platforms = std.AutoHashMap(Entity, void).init(allocator),
             .backgrounds = std.AutoHashMap(Entity, void).init(allocator),
             .health = std.AutoHashMap(Entity, Health).init(allocator),
@@ -76,7 +76,7 @@ pub const ECS = struct {
         self.dimensions.deinit();
         self.players.deinit();
         self.enemies.deinit();
-        self.rings.deinit();
+        self.coins.deinit();
         self.platforms.deinit();
         self.backgrounds.deinit();
         self.animations.deinit();
@@ -89,7 +89,7 @@ pub const ECS = struct {
         self.dimensions.clearRetainingCapacity();
         self.players.clearRetainingCapacity();
         self.enemies.clearRetainingCapacity();
-        self.rings.clearRetainingCapacity();
+        self.coins.clearRetainingCapacity();
         self.platforms.clearRetainingCapacity();
         self.backgrounds.clearRetainingCapacity();
         self.animations.clearRetainingCapacity();

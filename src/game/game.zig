@@ -9,7 +9,7 @@ const PLATFORM_HEIGHT = @import("entities/platform.zig").PLATFORM_HEIGHT;
 pub const Scene = enum { main_menu, game_play, game_over, credits };
 pub const BASE_SCROLL_SPEED: f32 = 50.0;
 pub const SCROLL_SPEED_FACTOR: f32 = 1;
-pub const MAX_SCROLL_SPEED: f32 = 250.0;
+pub const MAX_SCROLL_SPEED: f32 = 150.0;
 pub const GRAVITY: f32 = 500.0;
 pub const MAX_FALL_SPEED: f32 = 400.0;
 pub const POPUP_POINTS_TIMER_MAX: f32 = 1.0;
@@ -128,6 +128,6 @@ const GameState = struct {
     }
 
     pub fn groundY(self: *GameState) f32 {
-        return @as(f32, @floatFromInt(self.screen_height)) - PLATFORM_HEIGHT;
+        return @as(f32, @floatFromInt(self.screen_height)) - 10;
     }
 };

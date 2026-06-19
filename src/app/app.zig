@@ -11,7 +11,7 @@ pub const FPS: i32 = 60;
 pub const SCREEN_WIDTH: i32 = 1280;
 pub const SCREEN_HEIGHT: i32 = 720;
 pub const VIRTUAL_SCREEN_WIDTH: i32 = 480;
-pub const VIRTUAL_SCREEN_HEIGHT: i32 = 270;
+pub const VIRTUAL_SCREEN_HEIGHT: i32 = 224;
 
 pub const App = struct {
     world: World,
@@ -43,14 +43,14 @@ pub const App = struct {
     }
 
     pub fn run(self: *App) !void {
-        raylib.playMusicStream(self.bg_music);
+        // raylib.playMusicStream(self.bg_music);
 
         try self.world.game.changeScene(Scene.main_menu);
 
         while (!raylib.windowShouldClose()) {
             const delta = raylib.getFrameTime();
 
-            self.updateMusic();
+            // self.updateMusic();
             self.handleInput();
             self.update(delta);
             self.render(delta);

@@ -1,8 +1,8 @@
 const std = @import("std");
 const World = @import("../game.zig").World;
 
-const WIDTH: f32 = 578.0;
-const HEIGHT: f32 = 320.0;
+const WIDTH: f32 = 1778.0;
+const HEIGHT: f32 = 885.0;
 const FRAME_COUNT: i32 = 1;
 
 pub fn spawn(world: *World) !void {
