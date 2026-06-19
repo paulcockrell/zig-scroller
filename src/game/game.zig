@@ -10,7 +10,6 @@ pub const Scene = enum { main_menu, game_play, game_over, credits };
 pub const BASE_SCROLL_SPEED: f32 = 50.0;
 pub const SCROLL_SPEED_FACTOR: f32 = 1;
 pub const MAX_SCROLL_SPEED: f32 = 250.0;
-pub const MAX_HEALTH: i32 = 10;
 pub const GRAVITY: f32 = 500.0;
 pub const MAX_FALL_SPEED: f32 = 400.0;
 pub const POPUP_POINTS_TIMER_MAX: f32 = 1.0;
@@ -50,8 +49,6 @@ pub const World = struct {
 
 const GameState = struct {
     time: f32 = 0.0,
-
-    health: i32 = MAX_HEALTH,
 
     screen_width: i32 = 0,
     screen_height: i32 = 0,
@@ -104,7 +101,6 @@ const GameState = struct {
         self.sound_intents.clearRetainingCapacity();
         self.scene_transition_intents.clearRetainingCapacity();
         self.time = 0;
-        self.health = MAX_HEALTH;
         self.score = 0;
         self.popup_points = 0;
         self.popup_points_timer = 0.0;
@@ -116,11 +112,6 @@ const GameState = struct {
         self.score += val;
         self.popup_points = val;
         self.popup_points_timer = POPUP_POINTS_TIMER_MAX;
-    }
-
-    pub fn updateHealth(self: *GameState, val: i32) i32 {
-        self.health -= val;
-        return self.health;
     }
 
     pub fn changeScene(self: *GameState, scene: Scene) !void {

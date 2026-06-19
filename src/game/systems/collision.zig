@@ -3,6 +3,8 @@ const ecs = @import("../../engine/ecs.zig");
 const World = @import("../game.zig").World;
 const Scene = @import("../game.zig").Scene;
 const AudioTag = @import("../../engine/assets/audio_tags.zig").AudioTag;
+const Player = @import("../entities/player.zig");
+const Enemy = @import("../entities/enemy.zig");
 
 const JUMP_FORCE: f32 = -250.0;
 const RING_SCORE: i32 = 1;
@@ -119,19 +121,27 @@ fn checkEnemyCollision(
     if (!overlap(player, enemy)) return;
     if (enemyAttack(world, player, enemy)) return;
 
-    const health = world.game.updateHealth(1);
+    if (world.ecs.health.getPtr(player.ent)) |player_health| {
+        player_health.* -= 1;
+    }
 
-    world.game.needs_reset.put(enemy.ent, {}) catch |err| {
-        std.debug.print("Entity reset failed {}\n", .{err});
-    };
-
-    world.game.sound_intents.put(AudioTag.hit, .{ .volume = 0.3 }) catch |err| {
-        std.debug.print("Hit sound intent failed {}\n", .{err});
-    };
-
-    if (health <= 0) {
+    if (Player.isDead(world, player.ent)) {
         world.game.changeScene(Scene.game_over) catch |err| {
             std.debug.print("Failed to change to scene 'game_over' {}\n", .{err});
+        };
+    }
+
+    if (world.ecs.health.getPtr(enemy.ent)) |enemy_health| {
+        enemy_health.* -= 1;
+    }
+
+    if (Enemy.isDead(world, enemy.ent)) {
+        world.game.needs_reset.put(enemy.ent, {}) catch |err| {
+            std.debug.print("Entity reset failed {}\n", .{err});
+        };
+
+        world.game.sound_intents.put(AudioTag.hit, .{ .volume = 0.3 }) catch |err| {
+            std.debug.print("Hit sound intent failed {}\n", .{err});
         };
     }
 }

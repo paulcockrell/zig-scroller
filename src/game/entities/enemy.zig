@@ -1,9 +1,16 @@
 const std = @import("std");
+const ecs = @import("../../engine/ecs.zig");
 const World = @import("../game.zig").World;
 
 const WIDTH: f32 = 40.0;
 const HEIGHT: f32 = 24.0;
 const FRAME_COUNT: i32 = 6;
+pub const MAX_HEALTH: i32 = 1;
+
+pub const State = enum {
+    alive,
+    dead,
+};
 
 pub fn spawn(world: *World) !void {
     const ent = world.ecs.createEntity();
@@ -37,4 +44,19 @@ pub fn spawn(world: *World) !void {
         ent,
         .{ .width = WIDTH, .height = HEIGHT },
     );
+    try world.ecs.health.put(
+        ent,
+        MAX_HEALTH,
+    );
+}
+
+pub fn current_state(world: *World, ent: ecs.Entity) State {
+    if (isDead(world, ent)) return .dead;
+
+    return .alive;
+}
+
+pub fn isDead(world: *World, ent: ecs.Entity) bool {
+    const health = world.ecs.health.get(ent) orelse return true;
+    return health <= 0;
 }

@@ -42,18 +42,23 @@ fn drawTime(world: *World) void {
 }
 
 fn drawHealth(world: *World) void {
-    var text_color = raylib.Color.white;
-    text_color = switch (world.game.health) {
-        0...3 => raylib.Color.red,
-        4...7 => raylib.Color.orange,
-        else => raylib.Color.green,
-    };
+    var it = world.ecs.players.iterator();
 
-    world.resources.font_manager.drawTextPixel(
-        raylib.textFormat("HEALTH: %03i", .{world.game.health}),
-        10,
-        70,
-        16,
-        text_color,
-    );
+    while (it.next()) |entry| {
+        const ent = entry.key_ptr.*;
+        const health = world.ecs.health.get(ent) orelse continue;
+        const text_color = switch (health) {
+            0...3 => raylib.Color.red,
+            4...7 => raylib.Color.orange,
+            else => raylib.Color.green,
+        };
+
+        world.resources.font_manager.drawTextPixel(
+            raylib.textFormat("HEALTH: %03i", .{health}),
+            10,
+            70,
+            16,
+            text_color,
+        );
+    }
 }

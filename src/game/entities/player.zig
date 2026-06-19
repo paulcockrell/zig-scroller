@@ -5,10 +5,13 @@ pub const WIDTH: f32 = 24.0;
 pub const HEIGHT: f32 = 30.0;
 pub const FRAME_COUNT: i32 = 6;
 pub const FPS: f32 = 10.0;
-pub const PlayerState = enum {
+pub const MAX_HEALTH: i32 = 10;
+
+pub const State = enum {
     running,
     jumping,
     falling,
+    dead,
 };
 
 pub fn spawn(world: *World) !void {
@@ -42,29 +45,39 @@ pub fn spawn(world: *World) !void {
         ent,
         .{ .width = WIDTH, .height = HEIGHT },
     );
+    try world.ecs.health.put(
+        ent,
+        MAX_HEALTH,
+    );
 }
 
-pub fn state(world: *World, ent: ecs.Entity) PlayerState {
+pub fn current_state(world: *World, ent: ecs.Entity) State {
+    if (isDead(world, ent)) return .dead;
     if (isJumping(world, ent)) return .jumping;
     if (isFalling(world, ent)) return .falling;
 
     return .running;
 }
 
-fn isRunning(world: *World, ent: ecs.Entity) bool {
-    const pos = world.ecs.positions.getPtr(ent) orelse return false;
-    const dim = world.ecs.dimensions.getPtr(ent) orelse return false;
+pub fn isDead(world: *World, ent: ecs.Entity) bool {
+    const health = world.ecs.health.get(ent) orelse return true;
+    return health <= 0;
+}
+
+pub fn isRunning(world: *World, ent: ecs.Entity) bool {
+    const pos = world.ecs.positions.get(ent) orelse return false;
+    const dim = world.ecs.dimensions.get(ent) orelse return false;
     const running = pos.y + dim.height < world.game.groundY();
 
     return running;
 }
 
-fn isJumping(world: *World, ent: ecs.Entity) bool {
-    const vel = world.ecs.velocities.getPtr(ent) orelse return false;
+pub fn isJumping(world: *World, ent: ecs.Entity) bool {
+    const vel = world.ecs.velocities.get(ent) orelse return false;
     return vel.dy < 0.0;
 }
 
-fn isFalling(world: *World, ent: ecs.Entity) bool {
-    const vel = world.ecs.velocities.getPtr(ent) orelse return false;
+pub fn isFalling(world: *World, ent: ecs.Entity) bool {
+    const vel = world.ecs.velocities.get(ent) orelse return false;
     return vel.dy > 0.0;
 }

@@ -37,6 +37,8 @@ pub const JumpIntent = struct {
 
 pub const NeedsReset = struct {};
 
+pub const Health = i32;
+
 pub const ECS = struct {
     positions: std.AutoHashMap(Entity, Position),
     velocities: std.AutoHashMap(Entity, Velocity),
@@ -44,6 +46,7 @@ pub const ECS = struct {
     platforms: std.AutoHashMap(Entity, void),
     backgrounds: std.AutoHashMap(Entity, void),
     animations: std.AutoHashMap(Entity, Animation),
+    health: std.AutoHashMap(Entity, Health),
 
     players: std.AutoHashMap(Entity, void),
     enemies: std.AutoHashMap(Entity, void),
@@ -62,6 +65,7 @@ pub const ECS = struct {
             .rings = std.AutoHashMap(Entity, void).init(allocator),
             .platforms = std.AutoHashMap(Entity, void).init(allocator),
             .backgrounds = std.AutoHashMap(Entity, void).init(allocator),
+            .health = std.AutoHashMap(Entity, Health).init(allocator),
             .next_entity = 0,
         };
     }
@@ -76,6 +80,7 @@ pub const ECS = struct {
         self.platforms.deinit();
         self.backgrounds.deinit();
         self.animations.deinit();
+        self.health.deinit();
     }
 
     pub fn reset(self: *ECS) void {
@@ -88,6 +93,7 @@ pub const ECS = struct {
         self.platforms.clearRetainingCapacity();
         self.backgrounds.clearRetainingCapacity();
         self.animations.clearRetainingCapacity();
+        self.health.clearRetainingCapacity();
         self.next_entity = 0;
     }
 
