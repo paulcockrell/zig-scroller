@@ -2,11 +2,16 @@ const std = @import("std");
 
 pub const Entity = u32;
 
-pub const Animation = struct {
-    animation_timer: f32,
-    frame_duration: f32,
-    frame_idx: i32,
+pub const AnimationClip = struct {
+    row: i32,
     frame_count: i32,
+    frame_duration: f32,
+};
+
+pub const Animation = struct {
+    clip: *const AnimationClip,
+    frame_idx: i32,
+    timer: f32,
 };
 
 pub const Position = struct {

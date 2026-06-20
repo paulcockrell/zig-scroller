@@ -4,7 +4,7 @@ const ecs = @import("../engine/ecs.zig");
 const Resources = @import("../engine/assets/resources.zig").Resources;
 const AudioTag = @import("../engine/assets/audio_tags.zig").AudioTag;
 const AudioParams = @import("../engine/assets/audio_tags.zig").AudioParams;
-const PLATFORM_HEIGHT = @import("entities/platform.zig").PLATFORM_HEIGHT;
+const PLATFORM_HEIGHT = @import("entities/platform.zig").HEIGHT;
 
 pub const Scene = enum { main_menu, game_play, game_over, credits };
 pub const BASE_SCROLL_SPEED: f32 = 50.0;

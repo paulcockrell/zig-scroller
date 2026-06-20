@@ -1,10 +1,15 @@
+const ecs = @import("../../engine/ecs.zig");
 const std = @import("std");
 const World = @import("../game.zig").World;
 
-const WIDTH: f32 = 504.0;
-const FRAME_COUNT: i32 = 1;
+pub const WIDTH: f32 = 774.0;
+pub const HEIGHT: f32 = 35.0;
 
-pub const PLATFORM_HEIGHT: f32 = 57.0;
+pub const platform_clip = ecs.AnimationClip{
+    .row = 0,
+    .frame_count = 1,
+    .frame_duration = 0.0,
+};
 
 pub fn spawn(world: *World) !void {
     try spawnPlatform(world, 0, world.game.groundY());
@@ -18,14 +23,12 @@ fn spawnPlatform(world: *World, x: f32, y: f32) !void {
         ent,
         {},
     );
-
     try world.ecs.animations.put(
         ent,
         .{
-            .animation_timer = 0,
-            .frame_duration = 0,
+            .clip = &platform_clip,
             .frame_idx = 0,
-            .frame_count = FRAME_COUNT,
+            .timer = 0.0,
         },
     );
     try world.ecs.positions.put(
@@ -38,6 +41,6 @@ fn spawnPlatform(world: *World, x: f32, y: f32) !void {
     );
     try world.ecs.dimensions.put(
         ent,
-        .{ .width = WIDTH, .height = PLATFORM_HEIGHT },
+        .{ .width = WIDTH, .height = HEIGHT },
     );
 }

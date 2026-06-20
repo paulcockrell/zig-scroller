@@ -33,8 +33,15 @@ fn checkPlayerCollision(
     world: *World,
     player: *const ecs.EntityBundle,
 ) void {
+    handleGround(world, player);
     handleEnemies(world, player);
     handleCoins(world, player);
+}
+
+fn handleGround(world: *World, player: *const ecs.EntityBundle) void {
+    if (player.pos.y + player.dim.height > world.game.groundY()) {
+        player.pos.y = world.game.groundY();
+    }
 }
 
 fn handleEnemies(
@@ -123,28 +130,28 @@ fn checkEnemyCollision(
 
     if (world.ecs.health.getPtr(player.ent)) |player_health| {
         player_health.* -= 1;
-    }
 
-    if (Player.isDead(world, player.ent)) {
-        world.game.changeScene(Scene.game_over) catch |err| {
-            std.debug.print("Failed to change to scene 'game_over' {}\n", .{err});
-        };
+        if (player_health.* == 0) {
+            world.game.changeScene(Scene.game_over) catch |err| {
+                std.debug.print("Failed to change to scene 'game_over' {}\n", .{err});
+            };
 
-        return;
+            return;
+        }
     }
 
     if (world.ecs.health.getPtr(enemy.ent)) |enemy_health| {
         enemy_health.* -= 1;
-    }
 
-    if (Enemy.isDead(world, enemy.ent)) {
-        world.game.needs_reset.put(enemy.ent, {}) catch |err| {
-            std.debug.print("Entity reset failed {}\n", .{err});
-        };
+        if (enemy_health.* == 0) {
+            world.game.needs_reset.put(enemy.ent, {}) catch |err| {
+                std.debug.print("Entity reset failed {}\n", .{err});
+            };
 
-        world.game.sound_intents.put(AudioTag.hit, .{ .volume = 0.3 }) catch |err| {
-            std.debug.print("Hit sound intent failed {}\n", .{err});
-        };
+            world.game.sound_intents.put(AudioTag.hit, .{ .volume = 0.3 }) catch |err| {
+                std.debug.print("Hit sound intent failed {}\n", .{err});
+            };
+        }
     }
 }
 

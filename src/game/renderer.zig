@@ -29,13 +29,15 @@ pub fn renderEntity(
 }
 
 pub fn processAnimation(anim: *ecs.Animation, delta: f32) void {
-    if (anim.frame_count <= 1) return;
+    const anim_clip = anim.clip.*;
 
-    anim.animation_timer += delta;
-    if (anim.animation_timer >= anim.frame_duration) {
-        anim.animation_timer -= anim.frame_duration;
+    if (anim_clip.frame_count <= 1) return;
+
+    anim.timer += delta;
+    if (anim.timer >= anim_clip.frame_duration) {
+        anim.timer -= anim_clip.frame_duration;
         anim.frame_idx += 1;
-        if (anim.frame_idx >= anim.frame_count) anim.frame_idx = 0;
+        if (anim.frame_idx >= anim_clip.frame_count) anim.frame_idx = 0;
     }
 }
 
