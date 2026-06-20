@@ -13,6 +13,7 @@ const entity_wrap = @import("../systems/entity_wrap.zig");
 const entity_reset = @import("../systems/entity_reset.zig");
 const scenery_wrap = @import("../systems/scenery_wrap.zig");
 const sound_intent = @import("../systems/sound_intent.zig");
+const player_animation = @import("../systems/player_animation.zig");
 const player = @import("../entities/player.zig");
 const enemy = @import("../entities/enemy.zig");
 const coin = @import("../entities/coin.zig");
@@ -55,6 +56,7 @@ pub fn update(world: *World, delta: f32) void {
     entity_reset.system(world);
     scenery_wrap.system(world);
     difficulty.system(world);
+    player_animation.system(world);
     sound_intent.system(world);
 }
 
