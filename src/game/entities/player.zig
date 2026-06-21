@@ -14,12 +14,6 @@ pub const AnimationState = enum {
     dead,
 };
 
-pub const idle_clip = ecs.AnimationClip{
-    .row = 4,
-    .frame_count = 4,
-    .frame_duration = 0.1,
-};
-
 pub const running_clip = ecs.AnimationClip{
     .row = 0,
     .frame_count = 6,
@@ -44,8 +38,14 @@ pub const hit_clip = ecs.AnimationClip{
     .frame_duration = 0.1,
 };
 
-pub const dead_clip = ecs.AnimationClip{
+pub const idle_clip = ecs.AnimationClip{
     .row = 4,
+    .frame_count = 4,
+    .frame_duration = 0.1,
+};
+
+pub const dead_clip = ecs.AnimationClip{
+    .row = 5,
     .frame_count = 1,
     .frame_duration = 0.1,
 };
@@ -62,7 +62,7 @@ pub fn spawn(world: *World) !void {
     try world.ecs.animations.put(
         ent,
         .{
-            .clip = &running_clip,
+            .clip = &idle_clip,
             .frame_idx = 0,
             .timer = 0.0,
         },
@@ -83,12 +83,4 @@ pub fn spawn(world: *World) !void {
         ent,
         MAX_HEALTH,
     );
-}
-
-pub fn isGrounded(world: *World, ent: ecs.Entity) bool {
-    const pos = world.ecs.positions.getPtr(ent) orelse return true;
-    const dim = world.ecs.dimensions.getPtr(ent) orelse return true;
-    const vel = world.ecs.velocities.getPtr(ent) orelse return true;
-
-    return pos.y + dim.height >= world.game.groundY() and vel.dy == 0;
 }

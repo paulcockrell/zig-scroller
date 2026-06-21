@@ -2,6 +2,7 @@ const std = @import("std");
 const raylib = @import("raylib");
 const ecs = @import("../../engine/ecs.zig");
 const player = @import("../entities/player.zig");
+const collision = @import("../systems/collision.zig");
 const World = @import("../game.zig").World;
 const AnimationState = @import("../entities/player.zig").AnimationState;
 
@@ -32,7 +33,7 @@ fn updateAnimation(world: *World, ent: ecs.Entity) void {
 }
 
 fn determineAnimationState(world: *World, ent: ecs.Entity) AnimationState {
-    const grounded = player.isGrounded(world, ent);
+    const grounded = collision.isEntityGrounded(world, ent);
     const vel = world.ecs.velocities.getPtr(ent) orelse return .idle;
     const health = world.ecs.health.getPtr(ent) orelse return .idle;
 

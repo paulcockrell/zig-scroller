@@ -3,8 +3,6 @@ const ecs = @import("../../engine/ecs.zig");
 const World = @import("../game.zig").World;
 const Scene = @import("../game.zig").Scene;
 const AudioTag = @import("../../engine/assets/audio_tags.zig").AudioTag;
-const Player = @import("../entities/player.zig");
-const Enemy = @import("../entities/enemy.zig");
 
 const JUMP_FORCE: f32 = -250.0;
 const COIN_SCORE: i32 = 1;
@@ -33,18 +31,28 @@ fn checkPlayerCollision(
     world: *World,
     player: *const ecs.EntityBundle,
 ) void {
-    handleGround(world, player);
-    handleEnemies(world, player);
-    handleCoins(world, player);
+    handleGroundCollision(world, player);
+    handleEnemyCollision(world, player);
+    handleCoinCollision(world, player);
 }
 
-fn handleGround(world: *World, player: *const ecs.EntityBundle) void {
-    if (player.pos.y + player.dim.height > world.game.groundY()) {
-        player.pos.y = world.game.groundY();
-    }
+fn handleGroundCollision(
+    world: *World,
+    player: *const ecs.EntityBundle,
+) void {
+    const vel = player.vel orelse return;
+
+    if (vel.dy <= 0.0) return; // only when falling
+
+    const player_bottom = player.pos.y + player.dim.height;
+
+    if (player_bottom <= world.game.groundY()) return;
+
+    player.pos.y = world.game.groundY() - player.dim.height;
+    vel.dy = 0.0;
 }
 
-fn handleEnemies(
+fn handleEnemyCollision(
     world: *World,
     player: *const ecs.EntityBundle,
 ) void {
@@ -74,7 +82,7 @@ fn handleEnemies(
     }
 }
 
-fn handleCoins(
+fn handleCoinCollision(
     world: *World,
     player: *const ecs.EntityBundle,
 ) void {
@@ -179,7 +187,7 @@ fn enemyAttack(
     enemy: *const ecs.EntityBundle,
 ) bool {
     // player is jumping while colliding with enemy
-    return (player.pos.y + player.dim.height) < world.game.groundY() and overlap(player, enemy);
+    return !isEntityGrounded(world, player.ent) and overlap(player, enemy);
 }
 
 fn overlap(
@@ -190,4 +198,16 @@ fn overlap(
         player.pos.x > other.pos.x + other.dim.width or
         player.pos.y + player.dim.height < other.pos.y or
         player.pos.y > other.pos.y + other.dim.height);
+}
+
+pub fn isEntityGrounded(
+    world: *World,
+    ent: ecs.Entity,
+) bool {
+    const pos = world.ecs.positions.getPtr(ent) orelse return false;
+    const dim = world.ecs.dimensions.getPtr(ent) orelse return false;
+
+    const bottom = pos.y + dim.height;
+
+    return @abs(bottom - world.game.groundY()) < 0.5;
 }

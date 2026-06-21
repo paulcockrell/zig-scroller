@@ -128,6 +128,6 @@ const GameState = struct {
     }
 
     pub fn groundY(self: *GameState) f32 {
-        return @as(f32, @floatFromInt(self.screen_height)) - 10;
+        return @as(f32, @floatFromInt(self.screen_height)) - 10.0;
     }
 };

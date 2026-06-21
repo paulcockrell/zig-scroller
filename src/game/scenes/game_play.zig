@@ -47,10 +47,10 @@ pub fn update(world: *World, delta: f32) void {
 
     if (world.game.jump_intent) jumpPlayer(world);
 
-    collision.system(world);
     jump_intent.system(world);
-    gravity.system(world, delta);
     jump.system(world, delta);
+    gravity.system(world, delta);
+    collision.system(world);
     scroll.system(world, delta);
     entity_wrap.system(world);
     entity_reset.system(world);
@@ -80,7 +80,8 @@ fn jumpPlayer(
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
 
-        if (player.isGrounded(world, ent)) return;
+        // Only jump from floor
+        if (!collision.isEntityGrounded(world, ent)) return;
 
         world.game.jump_intents.put(ent, .{ .force = JUMP_FORCE }) catch |err| {
             std.debug.print("Entity jump intent failed {}\n", .{err});
@@ -153,34 +154,11 @@ fn renderPlayers(world: *World, delta: f32) void {
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
 
-        renderPlayer(
+        renderer.renderEntity(
             world,
             ent,
+            TextureTag.player,
             delta,
         );
     }
-}
-
-fn renderPlayer(
-    world: *World,
-    ent: ecs.Entity,
-    delta: f32,
-) void {
-    const anim = world.ecs.animations.getPtr(ent) orelse return;
-    const pos = world.ecs.positions.getPtr(ent) orelse return;
-    const dim = world.ecs.dimensions.getPtr(ent) orelse return;
-    const texture = world.resources.texture_manager.get(TextureTag.player) orelse return;
-
-    const src_x = @as(f32, @floatFromInt(anim.frame_idx)) * dim.width;
-    const src_y = @as(f32, @floatFromInt(anim.clip.row)) * dim.height;
-
-    renderer.processAnimation(anim, delta);
-
-    renderer.drawTexture(
-        src_x,
-        src_y,
-        dim,
-        pos,
-        texture,
-    );
 }

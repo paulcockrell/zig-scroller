@@ -15,7 +15,7 @@ pub fn renderEntity(
     const pos = world.ecs.positions.getPtr(ent) orelse return;
     const dim = world.ecs.dimensions.getPtr(ent) orelse return;
     const src_x = @as(f32, @floatFromInt(anim.frame_idx)) * dim.width;
-    const src_y: f32 = 0.0;
+    const src_y: f32 = @as(f32, @floatFromInt(anim.clip.row)) * dim.height;
 
     processAnimation(anim, delta);
 
