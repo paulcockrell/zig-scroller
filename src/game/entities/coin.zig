@@ -9,6 +9,8 @@ pub const coin_clip = ecs.AnimationClip{
     .row = 0,
     .frame_count = 4,
     .frame_duration = 0.1,
+    .frame_width = WIDTH,
+    .frame_height = HEIGHT,
 };
 
 pub fn spawn(world: *World) !void {
@@ -30,7 +32,7 @@ pub fn spawn(world: *World) !void {
     );
     try world.ecs.positions.put(
         ent,
-        .{ .x = x, .y = y },
+        .{ .x = @round(x), .y = @round(y) },
     );
     try world.ecs.velocities.put(
         ent,

@@ -18,36 +18,48 @@ pub const running_clip = ecs.AnimationClip{
     .row = 0,
     .frame_count = 6,
     .frame_duration = 0.1,
+    .frame_width = WIDTH,
+    .frame_height = HEIGHT,
 };
 
 pub const jumping_clip = ecs.AnimationClip{
     .row = 1,
     .frame_count = 1,
     .frame_duration = 0.1,
+    .frame_width = WIDTH,
+    .frame_height = HEIGHT,
 };
 
 pub const falling_clip = ecs.AnimationClip{
     .row = 2,
     .frame_count = 1,
     .frame_duration = 0.1,
+    .frame_width = WIDTH,
+    .frame_height = HEIGHT,
 };
 
 pub const hit_clip = ecs.AnimationClip{
     .row = 3,
     .frame_count = 1,
     .frame_duration = 0.1,
+    .frame_width = WIDTH,
+    .frame_height = HEIGHT,
 };
 
 pub const idle_clip = ecs.AnimationClip{
     .row = 4,
     .frame_count = 5,
     .frame_duration = 0.1,
+    .frame_width = WIDTH,
+    .frame_height = HEIGHT,
 };
 
 pub const dead_clip = ecs.AnimationClip{
     .row = 5,
     .frame_count = 1,
     .frame_duration = 0.1,
+    .frame_width = WIDTH,
+    .frame_height = HEIGHT,
 };
 
 pub fn spawn(world: *World) !void {

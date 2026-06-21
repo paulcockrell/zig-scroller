@@ -4,7 +4,7 @@ const World = @import("../game.zig").World;
 const Scene = @import("../game.zig").Scene;
 const AudioTag = @import("../../engine/assets/audio_tags.zig").AudioTag;
 
-const JUMP_FORCE: f32 = -250.0;
+const JUMP_FORCE: f32 = -200.0;
 const COIN_SCORE: i32 = 1;
 const ENEMY_STOMP: i32 = 10;
 

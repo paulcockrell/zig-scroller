@@ -16,14 +16,13 @@ pub fn renderEntity(
 
     const texture = world.resources.texture_manager.get(texture_tag) orelse return;
     const pos = world.ecs.positions.getPtr(ent) orelse return;
-    const dim = world.ecs.dimensions.getPtr(ent) orelse return;
-    const src_x = @as(f32, @floatFromInt(anim.frame_idx)) * dim.width;
-    const src_y: f32 = @as(f32, @floatFromInt(anim.clip.row)) * dim.height;
+    const src_x = @as(f32, @floatFromInt(anim.frame_idx)) * anim.clip.frame_width;
+    const src_y: f32 = @as(f32, @floatFromInt(anim.clip.row)) * anim.clip.frame_height;
 
     drawTexture(
         src_x,
         src_y,
-        dim,
+        anim,
         pos,
         texture,
     );
@@ -45,15 +44,15 @@ pub fn processAnimation(anim: *ecs.Animation, delta: f32) void {
 pub fn drawTexture(
     src_x: f32,
     src_y: f32,
-    dim: *ecs.Dimension,
+    anim: *ecs.Animation,
     pos: *ecs.Position,
     texture: *raylib.Texture,
 ) void {
     const rl_rect = raylib.Rectangle.init(
         src_x,
         src_y,
-        dim.width,
-        dim.height,
+        anim.clip.frame_width,
+        anim.clip.frame_height,
     );
     const rl_pos = raylib.Vector2.init(
         @round(pos.x),

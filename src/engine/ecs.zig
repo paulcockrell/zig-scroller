@@ -6,6 +6,8 @@ pub const AnimationClip = struct {
     row: i32,
     frame_count: i32,
     frame_duration: f32,
+    frame_width: f32,
+    frame_height: f32,
 };
 
 pub const Animation = struct {
