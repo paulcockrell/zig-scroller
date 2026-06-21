@@ -111,7 +111,7 @@ fn checkEnemyStomp(
     player: *const ecs.EntityBundle,
     enemy: *const ecs.EntityBundle,
 ) void {
-    if (!enemyAttack(world, player, enemy)) return;
+    if (!isEnemyStomped(world, player, enemy)) return;
 
     _ = world.game.addScore(ENEMY_STOMP);
 
@@ -134,7 +134,7 @@ fn checkEnemyCollision(
     enemy: *const ecs.EntityBundle,
 ) void {
     if (!overlap(player, enemy)) return;
-    if (enemyAttack(world, player, enemy)) return;
+    if (isEnemyStomped(world, player, enemy)) return;
 
     if (world.ecs.health.getPtr(player.ent)) |player_health| {
         player_health.* -= 1;
@@ -181,13 +181,18 @@ fn checkCoinCollision(
     };
 }
 
-fn enemyAttack(
+fn isEnemyStomped(
     world: *World,
     player: *const ecs.EntityBundle,
     enemy: *const ecs.EntityBundle,
 ) bool {
-    // player is jumping while colliding with enemy
-    return !isEntityGrounded(world, player.ent) and overlap(player, enemy);
+    _ = world;
+
+    if (player.vel) |vel| {
+        return vel.dy > 0.0 and overlap(player, enemy);
+    }
+
+    return false;
 }
 
 fn overlap(
