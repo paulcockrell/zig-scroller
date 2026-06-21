@@ -3,6 +3,7 @@ const raylib = @import("raylib");
 const ecs = @import("../engine/ecs.zig");
 const TextureTag = @import("../engine/assets//texture_tags.zig").TextureTag;
 const World = @import("game.zig").World;
+const player = @import("./entities/player.zig");
 
 pub fn renderEntity(
     world: *World,
@@ -10,14 +11,14 @@ pub fn renderEntity(
     texture_tag: TextureTag,
     delta: f32,
 ) void {
-    const texture = world.resources.texture_manager.get(texture_tag) orelse return;
     const anim = world.ecs.animations.getPtr(ent) orelse return;
+    processAnimation(anim, delta);
+
+    const texture = world.resources.texture_manager.get(texture_tag) orelse return;
     const pos = world.ecs.positions.getPtr(ent) orelse return;
     const dim = world.ecs.dimensions.getPtr(ent) orelse return;
     const src_x = @as(f32, @floatFromInt(anim.frame_idx)) * dim.width;
     const src_y: f32 = @as(f32, @floatFromInt(anim.clip.row)) * dim.height;
-
-    processAnimation(anim, delta);
 
     drawTexture(
         src_x,
@@ -55,8 +56,8 @@ pub fn drawTexture(
         dim.height,
     );
     const rl_pos = raylib.Vector2.init(
-        pos.x,
-        pos.y,
+        @round(pos.x),
+        @round(pos.y),
     );
 
     raylib.drawTextureRec(

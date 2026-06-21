@@ -56,5 +56,8 @@ fn loadTexture(img_path: [:0]const u8) !raylib.Texture {
     const image = try raylib.loadImage(img_path);
     defer image.unload();
 
-    return try raylib.loadTextureFromImage(image);
+    const texture = try raylib.loadTextureFromImage(image);
+    raylib.setTextureFilter(texture, .point);
+
+    return texture;
 }

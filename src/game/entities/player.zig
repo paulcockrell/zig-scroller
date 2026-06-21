@@ -40,7 +40,7 @@ pub const hit_clip = ecs.AnimationClip{
 
 pub const idle_clip = ecs.AnimationClip{
     .row = 4,
-    .frame_count = 4,
+    .frame_count = 5,
     .frame_duration = 0.1,
 };
 
@@ -69,7 +69,7 @@ pub fn spawn(world: *World) !void {
     );
     try world.ecs.positions.put(
         ent,
-        .{ .x = x, .y = y },
+        .{ .x = @round(x), .y = @round(y) },
     );
     try world.ecs.velocities.put(
         ent,
