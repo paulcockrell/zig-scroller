@@ -47,13 +47,13 @@ pub fn update(world: *World, delta: f32) void {
 
     if (world.game.jump_intent) jumpPlayer(world);
 
+    entity_reset.system(world);
     jump_intent.system(world);
     jump.system(world, delta);
     gravity.system(world, delta);
     collision.system(world);
     scroll.system(world, delta);
     entity_wrap.system(world);
-    entity_reset.system(world);
     scenery_wrap.system(world);
     difficulty.system(world);
     player_animation.system(world);

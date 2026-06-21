@@ -3,6 +3,7 @@ const ecs = @import("../../engine/ecs.zig");
 const World = @import("../game.zig").World;
 const background = @import("../../game/entities/background.zig");
 const platform = @import("../../game/entities/background.zig");
+const enemy_entity = @import("../entities/enemy.zig");
 
 pub fn system(world: *World) void {
     var it = world.game.needs_reset.iterator();
@@ -11,7 +12,7 @@ pub fn system(world: *World) void {
         const ent = entry.key_ptr.*;
 
         if (world.ecs.enemies.contains(ent)) {
-            resetPos(world, ent);
+            resetEnemy(world, ent);
         }
 
         if (world.ecs.coins.contains(ent)) {
@@ -20,6 +21,13 @@ pub fn system(world: *World) void {
     }
 
     world.game.needs_reset.clearRetainingCapacity();
+}
+
+fn resetEnemy(world: *World, ent: ecs.Entity) void {
+    resetPos(world, ent);
+
+    const health = world.ecs.health.getPtr(ent) orelse return;
+    health.* = enemy_entity.MAX_HEALTH;
 }
 
 fn resetPos(world: *World, ent: ecs.Entity) void {
