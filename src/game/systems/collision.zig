@@ -3,11 +3,9 @@ const ecs = @import("../../engine/ecs.zig");
 const World = @import("../game.zig").World;
 const Scene = @import("../game.zig").Scene;
 const AudioTag = @import("../../engine/assets/audio_tags.zig").AudioTag;
-const Player = @import("../entities/player.zig");
-const Enemy = @import("../entities/enemy.zig");
 
-const JUMP_FORCE: f32 = -250.0;
-const RING_SCORE: i32 = 1;
+const JUMP_FORCE: f32 = -200.0;
+const COIN_SCORE: i32 = 1;
 const ENEMY_STOMP: i32 = 10;
 
 pub fn system(world: *World) void {
@@ -33,11 +31,28 @@ fn checkPlayerCollision(
     world: *World,
     player: *const ecs.EntityBundle,
 ) void {
-    handleEnemies(world, player);
-    handleRings(world, player);
+    handleGroundCollision(world, player);
+    handleEnemyCollision(world, player);
+    handleCoinCollision(world, player);
 }
 
-fn handleEnemies(
+fn handleGroundCollision(
+    world: *World,
+    player: *const ecs.EntityBundle,
+) void {
+    const vel = player.vel orelse return;
+
+    if (vel.dy <= 0.0) return; // only when falling
+
+    const player_bottom = player.pos.y + player.dim.height;
+
+    if (player_bottom <= world.game.groundY()) return;
+
+    player.pos.y = world.game.groundY() - player.dim.height;
+    vel.dy = 0.0;
+}
+
+fn handleEnemyCollision(
     world: *World,
     player: *const ecs.EntityBundle,
 ) void {
@@ -67,26 +82,26 @@ fn handleEnemies(
     }
 }
 
-fn handleRings(
+fn handleCoinCollision(
     world: *World,
     player: *const ecs.EntityBundle,
 ) void {
-    var it = world.ecs.rings.iterator();
+    var it = world.ecs.coins.iterator();
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
         const pos = world.ecs.positions.getPtr(ent) orelse continue;
         const dim = world.ecs.dimensions.getPtr(ent) orelse continue;
 
-        const ring = ecs.EntityBundle{
+        const coin = ecs.EntityBundle{
             .ent = ent,
             .pos = pos,
             .dim = dim,
         };
 
-        checkRingCollision(
+        checkCoinCollision(
             world,
             player,
-            &ring,
+            &coin,
         );
     }
 }
@@ -96,7 +111,7 @@ fn checkEnemyStomp(
     player: *const ecs.EntityBundle,
     enemy: *const ecs.EntityBundle,
 ) void {
-    if (!enemyAttack(world, player, enemy)) return;
+    if (!isEnemyStomped(world, player, enemy)) return;
 
     _ = world.game.addScore(ENEMY_STOMP);
 
@@ -119,58 +134,65 @@ fn checkEnemyCollision(
     enemy: *const ecs.EntityBundle,
 ) void {
     if (!overlap(player, enemy)) return;
-    if (enemyAttack(world, player, enemy)) return;
+    if (isEnemyStomped(world, player, enemy)) return;
 
     if (world.ecs.health.getPtr(player.ent)) |player_health| {
         player_health.* -= 1;
-    }
 
-    if (Player.isDead(world, player.ent)) {
-        world.game.changeScene(Scene.game_over) catch |err| {
-            std.debug.print("Failed to change to scene 'game_over' {}\n", .{err});
-        };
+        if (player_health.* == 0) {
+            world.game.changeScene(Scene.game_over) catch |err| {
+                std.debug.print("Failed to change to scene 'game_over' {}\n", .{err});
+            };
+
+            return;
+        }
     }
 
     if (world.ecs.health.getPtr(enemy.ent)) |enemy_health| {
         enemy_health.* -= 1;
-    }
 
-    if (Enemy.isDead(world, enemy.ent)) {
-        world.game.needs_reset.put(enemy.ent, {}) catch |err| {
-            std.debug.print("Entity reset failed {}\n", .{err});
-        };
+        if (enemy_health.* == 0) {
+            world.game.needs_reset.put(enemy.ent, {}) catch |err| {
+                std.debug.print("Entity reset failed {}\n", .{err});
+            };
 
-        world.game.sound_intents.put(AudioTag.hit, .{ .volume = 0.3 }) catch |err| {
-            std.debug.print("Hit sound intent failed {}\n", .{err});
-        };
+            world.game.sound_intents.put(AudioTag.hit, .{ .volume = 0.3 }) catch |err| {
+                std.debug.print("Hit sound intent failed {}\n", .{err});
+            };
+        }
     }
 }
 
-fn checkRingCollision(
+fn checkCoinCollision(
     world: *World,
     player: *const ecs.EntityBundle,
-    ring: *const ecs.EntityBundle,
+    coin: *const ecs.EntityBundle,
 ) void {
-    if (!overlap(player, ring)) return;
+    if (!overlap(player, coin)) return;
 
-    world.game.addScore(RING_SCORE);
+    world.game.addScore(COIN_SCORE);
 
-    world.game.needs_reset.put(ring.ent, {}) catch |err| {
+    world.game.needs_reset.put(coin.ent, {}) catch |err| {
         std.debug.print("Entity reset failed {}\n", .{err});
     };
 
-    world.game.sound_intents.put(AudioTag.ring, .{ .volume = 0.3 }) catch |err| {
-        std.debug.print("Ring sound intent failed {}\n", .{err});
+    world.game.sound_intents.put(AudioTag.coin, .{ .volume = 0.3 }) catch |err| {
+        std.debug.print("Coin sound intent failed {}\n", .{err});
     };
 }
 
-fn enemyAttack(
+fn isEnemyStomped(
     world: *World,
     player: *const ecs.EntityBundle,
     enemy: *const ecs.EntityBundle,
 ) bool {
-    // player is jumping while colliding with enemy
-    return (player.pos.y + player.dim.height) < world.game.groundY() and overlap(player, enemy);
+    _ = world;
+
+    if (player.vel) |vel| {
+        return vel.dy > 0.0 and overlap(player, enemy);
+    }
+
+    return false;
 }
 
 fn overlap(
@@ -181,4 +203,16 @@ fn overlap(
         player.pos.x > other.pos.x + other.dim.width or
         player.pos.y + player.dim.height < other.pos.y or
         player.pos.y > other.pos.y + other.dim.height);
+}
+
+pub fn isEntityGrounded(
+    world: *World,
+    ent: ecs.Entity,
+) bool {
+    const pos = world.ecs.positions.getPtr(ent) orelse return false;
+    const dim = world.ecs.dimensions.getPtr(ent) orelse return false;
+
+    const bottom = pos.y + dim.height;
+
+    return @abs(bottom - world.game.groundY()) < 0.5;
 }

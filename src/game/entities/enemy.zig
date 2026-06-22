@@ -2,39 +2,44 @@ const std = @import("std");
 const ecs = @import("../../engine/ecs.zig");
 const World = @import("../game.zig").World;
 
-const WIDTH: f32 = 40.0;
-const HEIGHT: f32 = 24.0;
-const FRAME_COUNT: i32 = 6;
+const WIDTH: f32 = 80.0;
+const HEIGHT: f32 = 48.0;
 pub const MAX_HEALTH: i32 = 1;
 
-pub const State = enum {
-    alive,
-    dead,
+pub const running_clip = ecs.AnimationClip{
+    .row = 0,
+    .frame_count = 4,
+    .frame_duration = 0.1,
+    .frame_width = WIDTH,
+    .frame_height = HEIGHT,
+};
+
+pub const dead_clip = ecs.AnimationClip{
+    .row = 1,
+    .frame_count = 4,
+    .frame_duration = 0.1,
 };
 
 pub fn spawn(world: *World) !void {
     const ent = world.ecs.createEntity();
     const x = @as(f32, @floatFromInt(world.game.screen_width + world.game.rng(0, 1000)));
     const y = world.game.groundY() - HEIGHT;
-    const frame_duration: f32 = 1.0 / 6.0;
 
     try world.ecs.enemies.put(
         ent,
         {},
     );
-
     try world.ecs.animations.put(
         ent,
         .{
-            .animation_timer = 0,
-            .frame_duration = frame_duration,
+            .clip = &running_clip,
             .frame_idx = 0,
-            .frame_count = FRAME_COUNT,
+            .timer = 0.0,
         },
     );
     try world.ecs.positions.put(
         ent,
-        .{ .x = x, .y = y },
+        .{ .x = @round(x), .y = @round(y) },
     );
     try world.ecs.velocities.put(
         ent,
@@ -48,15 +53,4 @@ pub fn spawn(world: *World) !void {
         ent,
         MAX_HEALTH,
     );
-}
-
-pub fn current_state(world: *World, ent: ecs.Entity) State {
-    if (isDead(world, ent)) return .dead;
-
-    return .alive;
-}
-
-pub fn isDead(world: *World, ent: ecs.Entity) bool {
-    const health = world.ecs.health.get(ent) orelse return true;
-    return health <= 0;
 }

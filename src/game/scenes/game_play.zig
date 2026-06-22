@@ -13,9 +13,10 @@ const entity_wrap = @import("../systems/entity_wrap.zig");
 const entity_reset = @import("../systems/entity_reset.zig");
 const scenery_wrap = @import("../systems/scenery_wrap.zig");
 const sound_intent = @import("../systems/sound_intent.zig");
+const player_animation = @import("../systems/player_animation.zig");
 const player = @import("../entities/player.zig");
 const enemy = @import("../entities/enemy.zig");
-const ring = @import("../entities/ring.zig");
+const coin = @import("../entities/coin.zig");
 const platform = @import("../entities/platform.zig");
 const background = @import("../entities/background.zig");
 const popup_points = @import("../systems/popup_points.zig");
@@ -26,14 +27,14 @@ const renderer = @import("../renderer.zig");
 const JUMP_FORCE: f32 = -250.0;
 
 pub fn enter(world: *World) !void {
-    try player.spawn(world);
+    try player.spawn(world, player.ScreenMode.game);
     try platform.spawn(world);
     try background.spawn(world);
     for (0..3) |_| {
         try enemy.spawn(world);
     }
     for (0..2) |_| {
-        try ring.spawn(world);
+        try coin.spawn(world);
     }
 }
 
@@ -46,15 +47,16 @@ pub fn update(world: *World, delta: f32) void {
 
     if (world.game.jump_intent) jumpPlayer(world);
 
-    collision.system(world);
+    entity_reset.system(world);
     jump_intent.system(world);
-    gravity.system(world, delta);
     jump.system(world, delta);
+    gravity.system(world, delta);
+    collision.system(world);
     scroll.system(world, delta);
     entity_wrap.system(world);
-    entity_reset.system(world);
     scenery_wrap.system(world);
     difficulty.system(world);
+    player_animation.system(world);
     sound_intent.system(world);
 }
 
@@ -65,7 +67,7 @@ pub fn render(world: *World, delta: f32) void {
     renderPlatforms(world, delta);
     renderPlayers(world, delta);
     renderEnemies(world, delta);
-    renderRings(world, delta);
+    renderCoins(world, delta);
 
     hud.system(world);
     popup_points.system(world, delta);
@@ -78,8 +80,8 @@ fn jumpPlayer(
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
 
-        const state = player.current_state(world, ent);
-        if (state != player.State.running) return;
+        // Only jump from floor
+        if (!collision.isEntityGrounded(world, ent)) return;
 
         world.game.jump_intents.put(ent, .{ .force = JUMP_FORCE }) catch |err| {
             std.debug.print("Entity jump intent failed {}\n", .{err});
@@ -133,15 +135,15 @@ fn renderEnemies(world: *World, delta: f32) void {
     }
 }
 
-fn renderRings(world: *World, delta: f32) void {
-    var it = world.ecs.rings.iterator();
+fn renderCoins(world: *World, delta: f32) void {
+    var it = world.ecs.coins.iterator();
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
 
         renderer.renderEntity(
             world,
             ent,
-            TextureTag.ring,
+            TextureTag.coin,
             delta,
         );
     }
@@ -152,47 +154,11 @@ fn renderPlayers(world: *World, delta: f32) void {
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
 
-        renderPlayer(
+        renderer.renderEntity(
             world,
             ent,
+            TextureTag.player,
             delta,
         );
     }
-}
-
-fn renderPlayer(
-    world: *World,
-    ent: ecs.Entity,
-    delta: f32,
-) void {
-    const anim = world.ecs.animations.getPtr(ent) orelse return;
-    const pos = world.ecs.positions.getPtr(ent) orelse return;
-    const dim = world.ecs.dimensions.getPtr(ent) orelse return;
-    const texture = world.resources.texture_manager.get(TextureTag.player) orelse return;
-
-    const state = player.current_state(world, ent);
-    const frame_idx = switch (state) {
-        .running => anim.frame_idx,
-        .jumping => 0,
-        .falling => 0,
-        .dead => anim.frame_idx,
-    };
-
-    const src_x = @as(f32, @floatFromInt(frame_idx)) * dim.width;
-    const src_y = switch (state) {
-        .running => 0.0,
-        .jumping => dim.height,
-        .falling => dim.height * 2.0,
-        .dead => dim.height * 3.0,
-    };
-
-    renderer.processAnimation(anim, delta);
-
-    renderer.drawTexture(
-        src_x,
-        src_y,
-        dim,
-        pos,
-        texture,
-    );
 }

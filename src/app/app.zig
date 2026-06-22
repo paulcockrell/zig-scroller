@@ -10,8 +10,8 @@ const scenes_render = @import("../game/runtime/scene_render.zig");
 pub const FPS: i32 = 60;
 pub const SCREEN_WIDTH: i32 = 1280;
 pub const SCREEN_HEIGHT: i32 = 720;
-pub const VIRTUAL_SCREEN_WIDTH: i32 = 480;
-pub const VIRTUAL_SCREEN_HEIGHT: i32 = 270;
+pub const VIRTUAL_SCREEN_WIDTH: i32 = 426;
+pub const VIRTUAL_SCREEN_HEIGHT: i32 = 240;
 
 pub const App = struct {
     world: World,
@@ -43,14 +43,14 @@ pub const App = struct {
     }
 
     pub fn run(self: *App) !void {
-        raylib.playMusicStream(self.bg_music);
+        // raylib.playMusicStream(self.bg_music);
 
         try self.world.game.changeScene(Scene.main_menu);
 
         while (!raylib.windowShouldClose()) {
             const delta = raylib.getFrameTime();
 
-            self.updateMusic();
+            // self.updateMusic();
             self.handleInput();
             self.update(delta);
             self.render(delta);
@@ -113,6 +113,11 @@ pub const App = struct {
             VIRTUAL_SCREEN_HEIGHT,
         );
 
+        raylib.setTextureFilter(
+            target_texture.texture,
+            .point,
+        );
+
         return target_texture;
     }
 
@@ -125,8 +130,8 @@ pub const App = struct {
             @as(f32, @floatFromInt(window_width)) / @as(f32, @floatFromInt(VIRTUAL_SCREEN_WIDTH)),
             @as(f32, @floatFromInt(window_height)) / @as(f32, @floatFromInt(VIRTUAL_SCREEN_HEIGHT)),
         );
-        const scaled_width = @as(f32, @floatFromInt(VIRTUAL_SCREEN_WIDTH)) * scale;
-        const scaled_height = @as(f32, @floatFromInt(VIRTUAL_SCREEN_HEIGHT)) * scale;
+        const scaled_width = @floor(@as(f32, @floatFromInt(VIRTUAL_SCREEN_WIDTH)) * scale);
+        const scaled_height = @floor(@as(f32, @floatFromInt(VIRTUAL_SCREEN_HEIGHT)) * scale);
         const center_x = (@as(f32, @floatFromInt(window_width)) - scaled_width) / 2;
         const center_y = (@as(f32, @floatFromInt(window_height)) - scaled_height) / 2;
 

@@ -3,6 +3,7 @@ const raylib = @import("raylib");
 const ecs = @import("../engine/ecs.zig");
 const TextureTag = @import("../engine/assets//texture_tags.zig").TextureTag;
 const World = @import("game.zig").World;
+const player = @import("./entities/player.zig");
 
 pub fn renderEntity(
     world: *World,
@@ -10,51 +11,52 @@ pub fn renderEntity(
     texture_tag: TextureTag,
     delta: f32,
 ) void {
-    const texture = world.resources.texture_manager.get(texture_tag) orelse return;
     const anim = world.ecs.animations.getPtr(ent) orelse return;
-    const pos = world.ecs.positions.getPtr(ent) orelse return;
-    const dim = world.ecs.dimensions.getPtr(ent) orelse return;
-    const src_x = @as(f32, @floatFromInt(anim.frame_idx)) * dim.width;
-    const src_y: f32 = 0.0;
-
     processAnimation(anim, delta);
+
+    const texture = world.resources.texture_manager.get(texture_tag) orelse return;
+    const pos = world.ecs.positions.getPtr(ent) orelse return;
+    const src_x = @as(f32, @floatFromInt(anim.frame_idx)) * anim.clip.frame_width;
+    const src_y: f32 = @as(f32, @floatFromInt(anim.clip.row)) * anim.clip.frame_height;
 
     drawTexture(
         src_x,
         src_y,
-        dim,
+        anim,
         pos,
         texture,
     );
 }
 
 pub fn processAnimation(anim: *ecs.Animation, delta: f32) void {
-    if (anim.frame_count <= 1) return;
+    const anim_clip = anim.clip.*;
 
-    anim.animation_timer += delta;
-    if (anim.animation_timer >= anim.frame_duration) {
-        anim.animation_timer -= anim.frame_duration;
+    if (anim_clip.frame_count <= 1) return;
+
+    anim.timer += delta;
+    if (anim.timer >= anim_clip.frame_duration) {
+        anim.timer -= anim_clip.frame_duration;
         anim.frame_idx += 1;
-        if (anim.frame_idx >= anim.frame_count) anim.frame_idx = 0;
+        if (anim.frame_idx >= anim_clip.frame_count) anim.frame_idx = 0;
     }
 }
 
 pub fn drawTexture(
     src_x: f32,
     src_y: f32,
-    dim: *ecs.Dimension,
+    anim: *ecs.Animation,
     pos: *ecs.Position,
     texture: *raylib.Texture,
 ) void {
     const rl_rect = raylib.Rectangle.init(
         src_x,
         src_y,
-        dim.width,
-        dim.height,
+        anim.clip.frame_width,
+        anim.clip.frame_height,
     );
     const rl_pos = raylib.Vector2.init(
-        pos.x,
-        pos.y,
+        @round(pos.x),
+        @round(pos.y),
     );
 
     raylib.drawTextureRec(

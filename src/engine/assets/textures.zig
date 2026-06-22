@@ -21,9 +21,9 @@ pub const TextureManager = struct {
         errdefer raylib.unloadTexture(enemy_texture);
         try textures.put(TextureTag.enemy, enemy_texture);
 
-        const ring_texture = try loadTexture(GRAPHICS_DIR ++ "ring.png");
-        errdefer raylib.unloadTexture(ring_texture);
-        try textures.put(TextureTag.ring, ring_texture);
+        const coin_texture = try loadTexture(GRAPHICS_DIR ++ "coin.png");
+        errdefer raylib.unloadTexture(coin_texture);
+        try textures.put(TextureTag.coin, coin_texture);
 
         const background_texture = try loadTexture(GRAPHICS_DIR ++ "background.png");
         errdefer raylib.unloadTexture(background_texture);
@@ -56,5 +56,8 @@ fn loadTexture(img_path: [:0]const u8) !raylib.Texture {
     const image = try raylib.loadImage(img_path);
     defer image.unload();
 
-    return try raylib.loadTextureFromImage(image);
+    const texture = try raylib.loadTextureFromImage(image);
+    raylib.setTextureFilter(texture, .point);
+
+    return texture;
 }

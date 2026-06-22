@@ -1,9 +1,17 @@
+const ecs = @import("../../engine/ecs.zig");
 const std = @import("std");
 const World = @import("../game.zig").World;
 
-const WIDTH: f32 = 578.0;
-const HEIGHT: f32 = 320.0;
-const FRAME_COUNT: i32 = 1;
+const WIDTH: f32 = 1192.0;
+const HEIGHT: f32 = 265.0;
+
+pub const background_clip = ecs.AnimationClip{
+    .row = 0,
+    .frame_count = 1,
+    .frame_duration = 0.0,
+    .frame_width = WIDTH,
+    .frame_height = HEIGHT,
+};
 
 pub fn spawn(world: *World) !void {
     const y = (@as(f32, @floatFromInt(world.game.screen_height)) - HEIGHT) / 2.0;
@@ -27,19 +35,17 @@ fn spawnBackground(world: *World, x: f32, y: f32) !void {
         ent,
         {},
     );
-
     try world.ecs.animations.put(
         ent,
         .{
-            .animation_timer = 0,
-            .frame_duration = 0,
+            .clip = &background_clip,
             .frame_idx = 0,
-            .frame_count = FRAME_COUNT,
+            .timer = 0.0,
         },
     );
     try world.ecs.positions.put(
         ent,
-        .{ .x = x, .y = y },
+        .{ .x = @round(x), .y = @round(y) },
     );
     try world.ecs.velocities.put(
         ent,

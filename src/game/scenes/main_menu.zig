@@ -3,8 +3,6 @@ const raylib = @import("raylib");
 const World = @import("../game.zig").World;
 const Scene = @import("../game.zig").Scene;
 const jump = @import("../systems/jump.zig");
-const scroll = @import("../systems/scroll.zig");
-const scenery_wrap = @import("../systems/scenery_wrap.zig");
 const player = @import("../entities/player.zig");
 const platform = @import("../entities/platform.zig");
 const background = @import("../entities/background.zig");
@@ -13,7 +11,7 @@ const TextureTag = @import("../../engine/assets/texture_tags.zig").TextureTag;
 const renderer = @import("../renderer.zig");
 
 pub fn enter(world: *World) !void {
-    try player.spawn(world);
+    try player.spawn(world, player.ScreenMode.menu);
     try platform.spawn(world);
     try background.spawn(world);
 }
@@ -36,8 +34,6 @@ pub fn update(world: *World, delta: f32) void {
     }
 
     jump.system(world, delta);
-    scroll.system(world, delta);
-    scenery_wrap.system(world);
 }
 
 pub fn render(world: *World, delta: f32) void {

@@ -1,7 +1,7 @@
 pub const TextureTag = enum {
     player,
     enemy,
-    ring,
+    coin,
     background,
     platform,
 };

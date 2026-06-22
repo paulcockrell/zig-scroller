@@ -1,6 +1,7 @@
 const std = @import("std");
 const ecs = @import("../../engine/ecs.zig");
 const World = @import("../game.zig").World;
+const collision = @import("../systems/collision.zig");
 
 const GRAVITY = @import("../game.zig").GRAVITY;
 const MAX_FALL_SPEED = @import("../game.zig").MAX_FALL_SPEED;
@@ -9,15 +10,10 @@ pub fn system(world: *World, delta: f32) void {
     var it = world.ecs.players.iterator();
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
-        const pos = world.ecs.positions.getPtr(ent) orelse continue;
-        const dim = world.ecs.dimensions.getPtr(ent) orelse continue;
-        const vel = world.ecs.velocities.getPtr(ent) orelse continue;
 
         applyPlayerGravity(
             world,
-            pos,
-            vel,
-            dim,
+            ent,
             delta,
         );
     }
@@ -25,24 +21,23 @@ pub fn system(world: *World, delta: f32) void {
 
 fn applyPlayerGravity(
     world: *World,
-    pos: *ecs.Position,
-    vel: *ecs.Velocity,
-    dim: *ecs.Dimension,
+    ent: ecs.Entity,
     delta: f32,
 ) void {
-    const is_grounded = pos.y + dim.height >= world.game.groundY() and vel.dy == 0;
+    const vel = world.ecs.velocities.getPtr(ent) orelse return;
 
-    if (is_grounded) {
-        vel.dy = 0;
+    // Player is on the ground
+    if (collision.isEntityGrounded(world, ent)) {
+        return;
+    }
+
+    if (vel.dy > 0.0) {
+        vel.dy += GRAVITY * 1.5 * delta; // fall faster than jump
     } else {
-        if (vel.dy > 0) {
-            vel.dy += GRAVITY * 1.5 * delta; // fall faster than jump
-        } else {
-            vel.dy += GRAVITY * delta;
-        }
+        vel.dy += GRAVITY * delta;
+    }
 
-        if (vel.dy > MAX_FALL_SPEED) {
-            vel.dy = MAX_FALL_SPEED;
-        }
+    if (vel.dy > MAX_FALL_SPEED) {
+        vel.dy = MAX_FALL_SPEED;
     }
 }

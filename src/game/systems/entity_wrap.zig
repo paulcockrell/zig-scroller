@@ -4,7 +4,7 @@ const World = @import("../game.zig").World;
 
 pub fn system(world: *World) void {
     enemiesWrap(world);
-    ringsWrap(world);
+    coinsWrap(world);
 }
 
 fn enemiesWrap(world: *World) void {
@@ -15,8 +15,8 @@ fn enemiesWrap(world: *World) void {
     }
 }
 
-fn ringsWrap(world: *World) void {
-    var it = world.ecs.rings.iterator();
+fn coinsWrap(world: *World) void {
+    var it = world.ecs.coins.iterator();
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
         wrap(world, ent);

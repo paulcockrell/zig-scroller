@@ -3,7 +3,7 @@ const World = @import("../game.zig").World;
 
 pub fn system(world: *World, delta: f32) void {
     enemiesScroll(world, delta);
-    ringsScroll(world, delta);
+    coinsScroll(world, delta);
     backgroundsScroll(world, delta);
     platformsScroll(world, delta);
 }
@@ -19,8 +19,8 @@ fn enemiesScroll(world: *World, delta: f32) void {
     }
 }
 
-fn ringsScroll(world: *World, delta: f32) void {
-    var it = world.ecs.rings.iterator();
+fn coinsScroll(world: *World, delta: f32) void {
+    var it = world.ecs.coins.iterator();
     while (it.next()) |entry| {
         const ent = entry.key_ptr.*;
         const pos = world.ecs.positions.getPtr(ent) orelse return;
