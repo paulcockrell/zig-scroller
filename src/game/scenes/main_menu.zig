@@ -11,7 +11,7 @@ const TextureTag = @import("../../engine/assets/texture_tags.zig").TextureTag;
 const renderer = @import("../renderer.zig");
 
 pub fn enter(world: *World) !void {
-    try player.spawn(world);
+    try player.spawn(world, player.ScreenMode.menu);
     try platform.spawn(world);
     try background.spawn(world);
 }

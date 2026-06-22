@@ -27,7 +27,7 @@ const renderer = @import("../renderer.zig");
 const JUMP_FORCE: f32 = -250.0;
 
 pub fn enter(world: *World) !void {
-    try player.spawn(world);
+    try player.spawn(world, player.ScreenMode.game);
     try platform.spawn(world);
     try background.spawn(world);
     for (0..3) |_| {
