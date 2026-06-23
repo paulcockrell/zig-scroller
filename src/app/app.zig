@@ -20,7 +20,7 @@ pub const App = struct {
 
     pub fn init(allocator: std.mem.Allocator) !App {
         const target_texture = try initRaylib();
-        const bg_music = try raylib.loadMusicStream("resources/audio/djartmusic-best-game-console-301284.mp3");
+        const bg_music = try raylib.loadMusicStream("resources/audio/ebunny-pirate-jolly-roger-loop-369969.mp3");
         const world = try World.init(
             allocator,
             VIRTUAL_SCREEN_WIDTH,
@@ -43,14 +43,15 @@ pub const App = struct {
     }
 
     pub fn run(self: *App) !void {
-        // raylib.playMusicStream(self.bg_music);
+        raylib.playMusicStream(self.bg_music);
+        raylib.setMusicVolume(self.bg_music, 0.1);
 
         try self.world.game.changeScene(Scene.main_menu);
 
         while (!raylib.windowShouldClose()) {
             const delta = raylib.getFrameTime();
 
-            // self.updateMusic();
+            self.updateMusic();
             self.handleInput();
             self.update(delta);
             self.render(delta);
