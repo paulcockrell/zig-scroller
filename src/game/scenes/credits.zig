@@ -17,9 +17,7 @@ pub fn update(world: *World, delta: f32) void {
     _ = delta;
 
     if (world.game.confirm_intent) {
-        world.game.changeScene(Scene.main_menu) catch |err| {
-            std.debug.print("Failed to change scene: Credits -> Main Menu: {}\n", .{err});
-        };
+        world.game.next_scene = Scene.main_menu;
     }
 }
 

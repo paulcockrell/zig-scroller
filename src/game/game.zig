@@ -63,9 +63,10 @@ const GameState = struct {
     needs_reset: std.AutoHashMap(ecs.Entity, void),
     jump_intents: std.AutoHashMap(ecs.Entity, ecs.JumpIntent),
     sound_intents: std.AutoHashMap(AudioTag, AudioParams),
-    scene_transition_intents: std.AutoHashMap(Scene, void),
     jump_intent: bool,
     confirm_intent: bool,
+
+    next_scene: ?Scene,
 
     prng: std.Random.Xoshiro256,
 
@@ -74,9 +75,9 @@ const GameState = struct {
             .needs_reset = std.AutoHashMap(ecs.Entity, void).init(allocator),
             .jump_intents = std.AutoHashMap(ecs.Entity, ecs.JumpIntent).init(allocator),
             .sound_intents = std.AutoHashMap(AudioTag, AudioParams).init(allocator),
-            .scene_transition_intents = std.AutoHashMap(Scene, void).init(allocator),
             .jump_intent = false,
             .confirm_intent = false,
+            .next_scene = Scene.main_menu,
             .time = 0.0,
             .popup_points_timer = 0.0,
             .popup_points = 0,
@@ -92,14 +93,12 @@ const GameState = struct {
         self.needs_reset.deinit();
         self.jump_intents.deinit();
         self.sound_intents.deinit();
-        self.scene_transition_intents.deinit();
     }
 
     pub fn reset(self: *GameState) void {
         self.needs_reset.clearRetainingCapacity();
         self.jump_intents.clearRetainingCapacity();
         self.sound_intents.clearRetainingCapacity();
-        self.scene_transition_intents.clearRetainingCapacity();
         self.time = 0;
         self.score = 0;
         self.popup_points = 0;
@@ -114,10 +113,11 @@ const GameState = struct {
         self.popup_points_timer = POPUP_POINTS_TIMER_MAX;
     }
 
-    pub fn changeScene(self: *GameState, scene: Scene) !void {
-        self.scene_transition_intents.put(scene, {}) catch |err| {
-            std.debug.print("Add scene transition intent failed {}: {}\n", .{ scene, err });
-        };
+    pub fn changeScene(self: *GameState) void {
+        if (self.next_scene) |next_scene| {
+            self.scene = next_scene;
+            self.next_scene = null;
+        }
     }
 
     pub fn rng(self: *GameState, floor: u16, ceil: u16) u16 {

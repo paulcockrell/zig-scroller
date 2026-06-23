@@ -140,10 +140,7 @@ fn checkEnemyCollision(
         player_health.* -= 1;
 
         if (player_health.* == 0) {
-            world.game.changeScene(Scene.game_over) catch |err| {
-                std.debug.print("Failed to change to scene 'game_over' {}\n", .{err});
-            };
-
+            world.game.next_scene = Scene.game_over;
             return;
         }
     }

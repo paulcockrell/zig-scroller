@@ -7,19 +7,15 @@ const game_over = @import("../../game/scenes/game_over.zig");
 const credits = @import("../../game/scenes/credits.zig");
 
 pub fn system(world: *World) void {
-    var it = world.game.scene_transition_intents.iterator();
-    while (it.next()) |ent| {
+    if (world.game.next_scene) |next_scene| {
         exitCurrentScene(world.game.scene, world);
 
-        const new_scene = ent.key_ptr.*;
-        world.game.scene = new_scene;
+        world.game.changeScene();
 
-        enterScene(new_scene, world) catch |err| {
-            std.debug.print("Failed to enter scene {}: {}", .{ new_scene, err });
+        enterScene(world, next_scene) catch |err| {
+            std.debug.print("Failed to enter scene {}: {}", .{ next_scene, err });
         };
     }
-
-    world.game.scene_transition_intents.clearRetainingCapacity();
 }
 
 fn exitCurrentScene(scene: Scene, world: *World) void {
@@ -39,8 +35,8 @@ fn exitCurrentScene(scene: Scene, world: *World) void {
     }
 }
 
-fn enterScene(scene: Scene, world: *World) !void {
-    switch (scene) {
+fn enterScene(world: *World, next_scene: Scene) !void {
+    switch (next_scene) {
         Scene.game_play => {
             try game_play.enter(world);
         },
