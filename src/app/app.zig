@@ -46,8 +46,6 @@ pub const App = struct {
         raylib.playMusicStream(self.bg_music);
         raylib.setMusicVolume(self.bg_music, 0.1);
 
-        try self.world.game.changeScene(Scene.main_menu);
-
         while (!raylib.windowShouldClose()) {
             const delta = raylib.getFrameTime();
 

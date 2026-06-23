@@ -22,15 +22,11 @@ pub fn exit(world: *World) void {
 
 pub fn update(world: *World, delta: f32) void {
     if (world.game.jump_intent) {
-        world.game.changeScene(Scene.game_play) catch |err| {
-            std.debug.print("Failed to change scene: Main Menu -> Game Play: {}\n", .{err});
-        };
+        world.game.next_scene = Scene.game_play;
     }
 
     if (world.game.confirm_intent) {
-        world.game.changeScene(Scene.credits) catch |err| {
-            std.debug.print("Failed to change scene: Main Menu -> Credits: {}\n", .{err});
-        };
+        world.game.next_scene = Scene.credits;
     }
 
     jump.system(world, delta);
