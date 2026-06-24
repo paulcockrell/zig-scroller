@@ -22,7 +22,11 @@ pub const dead_clip = ecs.AnimationClip{
 
 pub fn spawn(world: *World) !void {
     const ent = world.ecs.createEntity();
-    const x = @as(f32, @floatFromInt(world.game.screen_width + world.game.rng(0, 1000)));
+    const x = if (world.ecs.enemies.count() == 0)
+        (@as(f32, @floatFromInt(world.game.screen_width)) * 2.0 / 3.0) - (WIDTH / 2.0)
+    else
+        @as(f32, @floatFromInt(world.game.screen_width + world.game.rng(0, 1000)));
+
     const y = world.game.groundY() - HEIGHT;
 
     try world.ecs.enemies.put(

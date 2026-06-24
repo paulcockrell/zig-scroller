@@ -62,18 +62,10 @@ pub const dead_clip = ecs.AnimationClip{
     .frame_height = HEIGHT,
 };
 
-pub const ScreenMode = enum {
-    menu,
-    game,
-};
-
-pub fn spawn(world: *World, mode: ScreenMode) !void {
+pub fn spawn(world: *World) !void {
     const ent = world.ecs.createEntity();
     const y = world.game.groundY() - HEIGHT;
-    const x = switch (mode) {
-        .menu => (@as(f32, @floatFromInt(world.game.screen_width)) / 2.0) - (WIDTH / 2.0),
-        .game => (@as(f32, @floatFromInt(world.game.screen_width)) / 3.0) - (WIDTH / 2.0),
-    };
+    const x = (@as(f32, @floatFromInt(world.game.screen_width)) / 3.0) - (WIDTH / 2.0);
 
     try world.ecs.players.put(
         ent,

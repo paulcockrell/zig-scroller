@@ -30,7 +30,7 @@ fn resetEnemy(world: *World, ent: ecs.Entity) void {
     health.* = enemy_entity.MAX_HEALTH;
 }
 
-fn resetPos(world: *World, ent: ecs.Entity) void {
+pub fn resetPos(world: *World, ent: ecs.Entity) void {
     var farthest_enemy_x: f32 = 0.0;
     var it = world.ecs.enemies.iterator();
 

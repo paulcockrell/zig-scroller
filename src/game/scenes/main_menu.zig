@@ -4,6 +4,7 @@ const World = @import("../game.zig").World;
 const Scene = @import("../game.zig").Scene;
 const jump = @import("../systems/jump.zig");
 const player = @import("../entities/player.zig");
+const enemy = @import("../entities/enemy.zig");
 const platform = @import("../entities/platform.zig");
 const background = @import("../entities/background.zig");
 const Resources = @import("../../engine/assets/resources.zig").Resources;
@@ -11,7 +12,8 @@ const TextureTag = @import("../../engine/assets/texture_tags.zig").TextureTag;
 const renderer = @import("../renderer.zig");
 
 pub fn enter(world: *World) !void {
-    try player.spawn(world, player.ScreenMode.menu);
+    try player.spawn(world);
+    try enemy.spawn(world);
     try platform.spawn(world);
     try background.spawn(world);
 }
@@ -40,6 +42,7 @@ pub fn render(world: *World, delta: f32) void {
     renderBackgrounds(world, delta);
     renderPlatforms(world, delta);
     renderPlayers(world, delta);
+    renderEnemies(world, delta);
 
     var text = raylib.textFormat("Zig Scroller", .{});
     var font_size: f32 = 24.0;
@@ -117,6 +120,20 @@ fn renderPlayers(world: *World, delta: f32) void {
             world,
             ent,
             TextureTag.player,
+            delta,
+        );
+    }
+}
+
+fn renderEnemies(world: *World, delta: f32) void {
+    var it = world.ecs.enemies.iterator();
+    while (it.next()) |entry| {
+        const ent = entry.key_ptr.*;
+
+        renderer.renderEntity(
+            world,
+            ent,
+            TextureTag.enemy,
             delta,
         );
     }
